@@ -1,9 +1,9 @@
-package net.fabricmc.notnotmelon_client.commands;
+package net.fabricmc.notnotmelonclient.commands;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.notnotmelon_client.Util;
+import net.fabricmc.notnotmelonclient.Util;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.*;
 

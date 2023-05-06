@@ -1,11 +1,11 @@
-package net.fabricmc.notnotmelon_client;
+package net.fabricmc.notnotmelonclient;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.command.CommandRegistryAccess;
 import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.notnotmelon_client.commands.ProtectItem;
+import net.fabricmc.notnotmelonclient.commands.ProtectItem;
 
 import java.io.IOException;
 import java.nio.file.Files;

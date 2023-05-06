@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "notnotmelon-client",
+  "id": "notnotmelonclient",
   "version": "${version}",
 
   "name": "Example Mod",
@@ -12,16 +12,16 @@
   },
 
   "license": "CC0-1.0",
-  "icon": "assets/notnotmelon-client/icon.png",
+  "icon": "assets/notnotmelonclient/icon.png",
 
   "environment": "*", 
   "entrypoints": {
     "client": [
-      "net.fabricmc.notnotmelon_client.Main"
+      "net.fabricmc.notnotmelonclient.Main"
     ]
   },
   "mixins": [
-    "notnotmelon-client.mixins.json"
+    "notnotmelonclient.mixins.json"
   ],
 
   "depends": {
@@ -39,5 +39,6 @@
         "modmenu.discord": "https://discord.gg/VWEbAT3PM3"
       }
     }
-  }
+  },
+  "accessWidener" : "notnotmelonclient.accesswidener"
 }

@@ -1,0 +1,9 @@
+accessWidener	v1	named
+
+accessible   field   Particle   x   D
+accessible   field   Particle   y   D
+accessible   field   Particle   z   D
+accessible   field   Particle   red   F
+accessible   field   Particle   green   F
+accessible   field   Particle   blue   F
+accessible   field   Particle   alpha   F

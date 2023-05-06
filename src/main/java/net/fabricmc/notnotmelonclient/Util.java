@@ -1,4 +1,4 @@
-package net.fabricmc.notnotmelon_client;
+package net.fabricmc.notnotmelonclient;
 
 import java.util.ArrayList;
 import java.util.Collections;
