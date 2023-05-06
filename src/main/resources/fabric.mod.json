@@ -16,7 +16,7 @@
 
   "environment": "*", 
   "entrypoints": {
-    "main": [
+    "client": [
       "net.fabricmc.notnotmelon_client.Main"
     ]
   },
