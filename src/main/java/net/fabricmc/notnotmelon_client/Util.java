@@ -20,7 +20,7 @@ public class Util {
 	}
 
 	public static void print(String s) {
-		if (s == null)a
+		if (s == null)
 			print("null");
 		print(Text.literal(s));
 	}
