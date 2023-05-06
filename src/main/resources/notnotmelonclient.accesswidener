@@ -1,9 +1,9 @@
 accessWidener	v1	named
 
-accessible   field   Particle   x   D
-accessible   field   Particle   y   D
-accessible   field   Particle   z   D
-accessible   field   Particle   red   F
-accessible   field   Particle   green   F
-accessible   field   Particle   blue   F
-accessible   field   Particle   alpha   F
+accessible   field   net/minecraft/client/particle/Particle   x   D
+accessible   field   net/minecraft/client/particle/Particle   y   D
+accessible   field   net/minecraft/client/particle/Particle   z   D
+accessible   field   net/minecraft/client/particle/Particle   red   F
+accessible   field   net/minecraft/client/particle/Particle   green   F
+accessible   field   net/minecraft/client/particle/Particle   blue   F
+accessible   field   net/minecraft/client/particle/Particle   alpha   F
