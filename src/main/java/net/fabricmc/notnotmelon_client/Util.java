@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.scoreboard.ScoreboardPlayerScore;
@@ -14,14 +15,10 @@ import net.minecraft.util.Formatting;
 
 public class Util {
 	public static void print(Text t) {
-		try (MinecraftClient client = MinecraftClient.getInstance()) {
-			client.player.sendMessage(t);
-		}
+		MinecraftClient.getInstance().player.sendMessage(t);
 	}
 
 	public static void print(String s) {
-		if (s == null)
-			print("null");
 		print(Text.literal(s));
 	}
 
@@ -44,9 +41,10 @@ public class Util {
 
 	// Source: https://github.com/SkyblockerMod/Skyblocker/blob/master/src/main/java/me/xmrvizzy/skyblocker/utils/Utils.java
 	public static List<String> getSidebar() {
-        try (MinecraftClient client = MinecraftClient.getInstance()) {
-            if (client.player == null) return new ArrayList<String>();
-            Scoreboard scoreboard = client.player.getScoreboard();
+        try {
+            ClientPlayerEntity client = MinecraftClient.getInstance().player;
+            if (client == null) return new ArrayList<String>();
+            Scoreboard scoreboard = client.getScoreboard();
             ScoreboardObjective objective = scoreboard.getObjectiveForSlot(1);
             List<String> lines = new ArrayList<String>();
             for (ScoreboardPlayerScore score : scoreboard.getAllPlayerScores(objective)) {
@@ -66,7 +64,7 @@ public class Util {
             }
             return lines;
         } catch (NullPointerException e) {
-            return new ArrayList<String>(); // This can fail silently. Risky?
+            return new ArrayList<String>();
         }
     }
 }
