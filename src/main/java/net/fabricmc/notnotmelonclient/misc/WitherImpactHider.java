@@ -1,12 +1,13 @@
 package net.fabricmc.notnotmelonclient.misc;
 
 import java.util.HashMap;
-import net.fabricmc.notnotmelonclient.Util;
 import net.minecraft.client.particle.ExplosionLargeParticle;
 import net.minecraft.client.MinecraftClient;
 
+// hides explosion particles from wither impact
+// surely its not overengineered
+
 public class WitherImpactHider {
-	// wither impact always creates 8 explosions on the same tile.
 	public static Boolean isWitherImpactParticle(ExplosionLargeParticle particle) {
 		Double x = particle.x;
 		Double y = particle.y;
@@ -16,6 +17,7 @@ public class WitherImpactHider {
 		if (!particleCanidatesPerTile.get(x).containsKey(y)) return false;
 		if (!particleCanidatesPerTile.get(x).get(y).containsKey(z)) return false;
 
+		// wither impact always creates 8 explosions on the same tile.
 		return particleCanidatesPerTile.get(x).get(y).get(z) >= 8;
 	}
 
