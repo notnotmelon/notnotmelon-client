@@ -56,9 +56,6 @@ public class WitherImpactHider {
 		if (particle.y - Math.rint(particle.y) != 0) return false;
 		if (Math.abs(particle.z - Math.rint(particle.z)) != 0.5) return false;
 
-		// Explosion sizes are randomized between -25 and 25
-		if (particle.getSize(0) < -25 || particle.getSize(0) > 25) return false;
-
 		// The particle color is randomized between 0.5 and 1, but is always in greyscale
 		if (particle.red == particle.blue && particle.blue == particle.green && particle.alpha == 1) return true;
 		return false;
