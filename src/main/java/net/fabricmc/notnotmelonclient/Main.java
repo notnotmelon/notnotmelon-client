@@ -1,11 +1,8 @@
 package net.fabricmc.notnotmelonclient;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.command.CommandRegistryAccess;
 import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.notnotmelonclient.commands.ProtectItem;
+import net.fabricmc.notnotmelonclient.util.Util;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -14,17 +11,16 @@ import java.nio.file.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mojang.brigadier.CommandDispatcher;
-
 public class Main implements ClientModInitializer {
-	public static final Logger LOGGER = LoggerFactory.getLogger("notnotmelon-client");
+	public static final Logger LOGGER = LoggerFactory.getLogger("notnotmelonclient");
 	public static Path configDir;
 
 	@Override
 	public void onInitializeClient() {
-		ClientCommandRegistrationCallback.EVENT.register(Main::registerCommands);
+		Util.logMethodDescriptor();
+		//ClientCommandRegistrationCallback.EVENT.register(Main::registerCommands);
 
-		configDir = FabricLoader.getInstance().getConfigDir().resolve("clientcommands");
+		configDir = FabricLoader.getInstance().getConfigDir().resolve("notnotmelonclient");
         try {
             Files.createDirectories(configDir);
         } catch (IOException e) {
@@ -32,7 +28,7 @@ public class Main implements ClientModInitializer {
         }
 	}
 
-	public static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
+	/*public static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
         ProtectItem.register(dispatcher);
-    }
+    }*/
 }
