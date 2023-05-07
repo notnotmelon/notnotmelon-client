@@ -1,19 +1,66 @@
 package net.fabricmc.notnotmelonclient.misc;
 
+import java.util.HashMap;
 import net.fabricmc.notnotmelonclient.Util;
 import net.minecraft.client.particle.ExplosionLargeParticle;
-
-// Hyperion spawns six stacked explosion particles at the same location.
+import net.minecraft.client.MinecraftClient;
 
 public class WitherImpactHider {
-	public enum Confidence {
-		NO,
-		MAYBE,
-		DEFINITELY
+	// wither impact always creates 8 explosions on the same tile.
+	public static Boolean isWitherImpactParticle(ExplosionLargeParticle particle) {
+		Double x = particle.x;
+		Double y = particle.y;
+		Double z = particle.z;
+
+		if (!particleCanidatesPerTile.containsKey(x)) return false;
+		if (!particleCanidatesPerTile.get(x).containsKey(y)) return false;
+		if (!particleCanidatesPerTile.get(x).get(y).containsKey(z)) return false;
+
+		return particleCanidatesPerTile.get(x).get(y).get(z) >= 8;
 	}
 
-	public static Confidence isWitherImpactParticle(ExplosionLargeParticle particle) {
-		Util.print("explode!"+particle.x);
-		return Confidence.DEFINITELY;
+	private static HashMap<Double, HashMap<Double, HashMap<Double, Integer>>> particleCanidatesPerTile = new HashMap<Double, HashMap<Double, HashMap<Double, Integer>>>();
+	private static long ageOfParticleCanidatesPerTile = -1; // particleCanidatesPerTile is cleared if the gametick changes
+	public static void registerExplosionCreation(ExplosionLargeParticle particle) {
+		long currentTick = MinecraftClient.getInstance().world.getTime();
+		if (ageOfParticleCanidatesPerTile != currentTick) {
+			ageOfParticleCanidatesPerTile = currentTick;
+			particleCanidatesPerTile = new HashMap<Double, HashMap<Double, HashMap<Double, Integer>>>();
+		}
+
+		Double x = particle.x;
+		Double y = particle.y;
+		Double z = particle.z;
+
+		// this is terrible, don't do this
+		if (!particleCanidatesPerTile.containsKey(x))
+			particleCanidatesPerTile.put(x, new HashMap<Double, HashMap<Double, Integer>>());
+
+		if (!particleCanidatesPerTile.get(x).containsKey(y))
+			particleCanidatesPerTile.get(x).put(y, new HashMap<Double, Integer>());
+
+		if (!particleCanidatesPerTile.get(x).get(y).containsKey(z))
+			particleCanidatesPerTile.get(x).get(y).put(z, 0);
+
+		// ++ is not supported here. java moments
+		particleCanidatesPerTile.get(x).get(y).put(z, particleCanidatesPerTile.get(x).get(y).get(z) + 1);
+	}
+
+	// attribute-based filters to check for hyperion particles
+	public static Boolean initalParticleFilter(ExplosionLargeParticle particle) {
+		// The particle max lifespan is between 6 and 9 ticks (randomized)
+		if (particle.getMaxAge() < 6 || particle.getMaxAge() > 9) return false;
+
+		// All particles spawn at coords x:*.5 y:*.0 z:*.5
+		if (Math.abs(particle.x - Math.rint(particle.x)) != 0.5) return false;
+		if (particle.y - Math.rint(particle.y) != 0) return false;
+		if (Math.abs(particle.z - Math.rint(particle.z)) != 0.5) return false;
+
+		// Explosion sizes are randomized between -25 and 25
+		if (particle.getSize(0) < -25 || particle.getSize(0) > 25) return false;
+
+		// The particle color is randomized between 0.5 and 1, but is always in greyscale
+		if (particle.red == particle.blue && particle.blue == particle.green && particle.alpha == 1) return true;
+		return false;
 	}
 }
