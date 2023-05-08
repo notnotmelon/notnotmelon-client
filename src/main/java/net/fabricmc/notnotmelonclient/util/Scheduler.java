@@ -10,18 +10,28 @@
 package net.fabricmc.notnotmelonclient.util;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.notnotmelonclient.Main;
 
 import java.util.PriorityQueue;
 
 public class Scheduler {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Scheduler.class);
+    private static final Logger LOGGER = Main.LOGGER;
     private int currentTick;
     private final PriorityQueue<ScheduledTask> tasks;
 
     public Scheduler() {
         currentTick = 0;
         tasks = new PriorityQueue<>();
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            currentTick += 1;
+            ScheduledTask task;
+            while ((task = tasks.peek()) != null && task.schedule <= currentTick) {
+                tasks.poll();
+                task.run();
+            }
+        });
     }
 
     public void schedule(Runnable task, int delay) {
@@ -36,15 +46,6 @@ public class Scheduler {
             LOGGER.error("Attempted to schedule a cyclic task with period lower than 1");
         else
             new CyclicTask(task, period).run();
-    }
-
-    public void tick() {
-        currentTick += 1;
-        ScheduledTask task;
-        while ((task = tasks.peek()) != null && task.schedule <= currentTick) {
-            tasks.poll();
-            task.run();
-        }
     }
 
     private class CyclicTask implements Runnable {

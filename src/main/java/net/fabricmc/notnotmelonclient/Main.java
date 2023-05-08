@@ -1,11 +1,14 @@
 package net.fabricmc.notnotmelonclient;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.notnotmelonclient.misc.FavoriteItem;
 import net.fabricmc.notnotmelonclient.util.DevUtil;
 import net.fabricmc.notnotmelonclient.util.Scheduler;
 import net.fabricmc.notnotmelonclient.util.Util;
+import net.minecraft.command.CommandRegistryAccess;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -14,10 +17,13 @@ import java.nio.file.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mojang.brigadier.CommandDispatcher;
+
 public class Main implements ClientModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("notnotmelonclient");
-	public static final Scheduler scheduler = new Scheduler();
 	public static Path configDir;
+
+	public final Scheduler scheduler = new Scheduler();
 
 	@Override
 	public void onInitializeClient() {
@@ -25,6 +31,7 @@ public class Main implements ClientModInitializer {
 
 		registerHotkeys();
 		registerCyclic();
+		ClientCommandRegistrationCallback.EVENT.register(Main::registerCommands);
 
 		configDir = FabricLoader.getInstance().getConfigDir().resolve("notnotmelonclient");
         try {
@@ -34,16 +41,20 @@ public class Main implements ClientModInitializer {
         }
 	}
 
-	public static void registerHotkeys() {
+	public void registerHotkeys() {
 		FavoriteItem.addHotkey();
 	}
 
-	public static void registerCyclic() {
-		scheduler.scheduleCyclic(Util::locationTracker, 20);
+	public void registerCyclic() {
+		scheduler.scheduleCyclic(Util::locationTracker, 23);
 	}
 
-	//ClientCommandRegistrationCallback.EVENT.register(Main::registerCommands);
-	/*public static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
-        ProtectItem.register(dispatcher);
-    }*/
+	public static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
+        
+    }
+
+	public void onTick() {
+		Util.print("zz");
+        scheduler.tick();
+    }
 }

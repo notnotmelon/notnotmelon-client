@@ -17,7 +17,8 @@ import net.minecraft.util.Formatting;
 public class Util {
 	public static void print(MutableText t) {
         MutableText prefixed = Text.literal("§d[nnc]§r ").append(t);
-		MinecraftClient.getInstance().player.sendMessage(prefixed);
+		ClientPlayerEntity player = MinecraftClient.getInstance().player;
+        if (player != null) player.sendMessage(prefixed);
 	}
 
 	public static void print(String s) {
@@ -73,6 +74,8 @@ public class Util {
     public static boolean isSkyblock = false;
     public static boolean isDungeons = false;
     public static void locationTracker() {
+        Util.print("skyblocking"+isSkyblock);
+        Util.print("dungeoning"+isDungeons);
         MinecraftClient client = MinecraftClient.getInstance();
         List<String> sidebar;
 
