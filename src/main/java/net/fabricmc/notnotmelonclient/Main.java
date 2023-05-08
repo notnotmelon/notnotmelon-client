@@ -2,6 +2,7 @@ package net.fabricmc.notnotmelonclient;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.notnotmelonclient.misc.FavoriteItem;
 import net.fabricmc.notnotmelonclient.util.Util;
 
 import java.io.IOException;
@@ -18,7 +19,8 @@ public class Main implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		Util.logMethodDescriptor();
-		//ClientCommandRegistrationCallback.EVENT.register(Main::registerCommands);
+
+		FavoriteItem.addHotkey();
 
 		configDir = FabricLoader.getInstance().getConfigDir().resolve("notnotmelonclient");
         try {
@@ -28,6 +30,7 @@ public class Main implements ClientModInitializer {
         }
 	}
 
+	//ClientCommandRegistrationCallback.EVENT.register(Main::registerCommands);
 	/*public static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
         ProtectItem.register(dispatcher);
     }*/

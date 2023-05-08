@@ -7,3 +7,5 @@ accessible   field   net/minecraft/client/particle/Particle   red   F
 accessible   field   net/minecraft/client/particle/Particle   green   F
 accessible   field   net/minecraft/client/particle/Particle   blue   F
 accessible   field   net/minecraft/client/particle/Particle   alpha   F
+
+accessible   field   net/minecraft/client/option/KeyBinding   boundKey   Lnet/minecraft/client/util/InputUtil$Key;

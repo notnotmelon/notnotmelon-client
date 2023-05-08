@@ -8,7 +8,11 @@
   "client": [
     "BillboardParticleMixin",
     "ExplosionLargeParticleMixin",
-    "MixinHandledScreen"
+    "ItemRendererMixin",
+    "ClientPlayerEntityMixin",
+    "HandledScreenMixin",
+    "GameRendererMixin",
+    "InGameOverlayRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

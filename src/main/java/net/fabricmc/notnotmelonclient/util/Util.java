@@ -27,7 +27,7 @@ public class Util {
 	}
 
 	public static void print(String s) {
-		print(Text.literal(s));
+		print(Text.literal("§d[nnc]§r " + s));
 	}
 
 	public static void print(Object o) {
@@ -120,7 +120,7 @@ public class Util {
             try {
                 Main.LOGGER.info("**** METHOD DESCRIPTOR");
                 Main.LOGGER.info(Util.getMethodDescriptor(ItemRenderer.class.getMethod(
-                    "renderItem",
+                    "renderGuiItemModel",
                     ItemStack.class, ModelTransformationMode.class, boolean.class, MatrixStack.class, VertexConsumerProvider.class, int.class, int.class, BakedModel.class
                 )));
             } catch (NoSuchMethodException e) {}
