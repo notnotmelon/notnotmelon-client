@@ -11,6 +11,9 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import org.lwjgl.glfw.GLFW;
@@ -59,6 +62,15 @@ public class FavoriteItem {
     }
 
     public static void printProtectMessage(ItemStack stack, String action) {
-        Util.print("§cPrevented you from " + action + " §r" + stack.getName().getString());
+        Util.print(Text.literal("§cPrevented you from " + action + " §r").append(stack.getName()));
+    }
+
+    private static 
+    public static void toggleFavorited(ItemStack stack) {
+        NbtCompound extraAttributes = ItemUtil.getExtraAttributes(stack);
+        if (extraAttributes == null) return;
+        if (extraAttributes.contains("uuid")) {
+            String uuid = extraAttributes.getString("uuid");
+        } else if (extraAttributes.contains())
     }
 }
