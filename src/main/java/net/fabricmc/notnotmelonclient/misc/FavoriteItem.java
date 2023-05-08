@@ -12,14 +12,18 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Unique;
 
 public class FavoriteItem {
+    private static Set<String> itemsToProtect = new HashSet<String>();
+
     @Unique private static final Identifier STAR_TEXTURE = new Identifier("notnotmelonclient", "textures/gui/star.png");
     public static KeyBinding keyBinding;
 
@@ -58,19 +62,42 @@ public class FavoriteItem {
     }
 
     public static boolean isProtected(ItemStack stack) {
-        return stack.getName().getString().equals("Jungle Log") || ItemUtil.getExtraAttributes(stack) != null;
+        NbtCompound extraAttributes = ItemUtil.getExtraAttributes(stack);
+        if (extraAttributes == null) return false;
+
+        if (extraAttributes.contains("uuid"))
+            if (itemsToProtect.contains(extraAttributes.getString("uuid")))
+                return true;
+
+        String itemId = ItemUtil.getSkyBlockItemID(stack);
+        if (itemId != null && itemsToProtect.contains(itemId))
+            return true;
+            
+        return false;
     }
 
     public static void printProtectMessage(ItemStack stack, String action) {
         Util.print(Text.literal("§cPrevented you from " + action + " §r").append(stack.getName()));
     }
 
-    private static 
     public static void toggleFavorited(ItemStack stack) {
+        if (ItemUtil.isSkyblockMenu(stack)) return;
         NbtCompound extraAttributes = ItemUtil.getExtraAttributes(stack);
         if (extraAttributes == null) return;
+
+        String protectionString = null;
         if (extraAttributes.contains("uuid")) {
-            String uuid = extraAttributes.getString("uuid");
-        } else if (extraAttributes.contains())
+            protectionString = extraAttributes.getString("uuid");
+        } else {
+            protectionString = ItemUtil.getSkyBlockItemID(stack);
+        }
+
+        if (protectionString == null) return;
+
+        if (itemsToProtect.contains(protectionString)) {
+            itemsToProtect.remove(protectionString);
+        } else {
+            itemsToProtect.add(protectionString);
+        }
     }
 }

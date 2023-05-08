@@ -26,10 +26,15 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
     // misleading method name. this also triggers on keypress
     @Inject(at = @At("HEAD"), method = "onMouseClick(Lnet/minecraft/screen/slot/Slot;IILnet/minecraft/screen/slot/SlotActionType;)V", cancellable = true)
-    public void onMouseClick(Slot slot, int invSlot, int clickData, SlotActionType actionType, CallbackInfo ci) {
+    public void onMouseClick(Slot slot, int invSlot, int button, SlotActionType actionType, CallbackInfo ci) {
         ItemStack stack = null;
 
-        if (invSlot == -999 && actionType == SlotActionType.PICKUP) // -999 is the slotid for clicking outside your inv
+        if (FavoriteItem.isKeyPressed()) {
+            stack = slot.getStack();
+            FavoriteItem.toggleFavorited(stack);
+            ci.cancel();
+            return;
+        } else if (invSlot == -999 && actionType == SlotActionType.PICKUP) // -999 is the slotid for clicking outside your inv
             stack = ((ScreenHandler) this.handler).getCursorStack();
         else if (slot != null && slot.hasStack() && actionType == SlotActionType.THROW) // This handles pressing Q while hovering over an item
             stack = slot.getStack();

@@ -18,16 +18,19 @@ import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.scoreboard.ScoreboardPlayerScore;
 import net.minecraft.scoreboard.Team;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 public class Util {
-	public static void print(Text t) {
-		MinecraftClient.getInstance().player.sendMessage(t);
+
+	public static void print(MutableText t) {
+        MutableText prefixed = Text.literal("§d[nnc]§r ").append(t);
+		MinecraftClient.getInstance().player.sendMessage(prefixed);
 	}
 
 	public static void print(String s) {
-		print(Text.literal("§d[nnc]§r " + s));
+		print(Text.literal(s));
 	}
 
 	public static void print(Object o) {
