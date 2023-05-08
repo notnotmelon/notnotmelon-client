@@ -70,27 +70,26 @@ public class Util {
         }
     }
 
-    // running this every tick may cause lag. optimize?
-    public static boolean isOnSkyblock = false;
-    public static boolean isInDungeons = false;
+    public static boolean isSkyblock = false;
+    public static boolean isDungeons = false;
     public static void locationTracker() {
         MinecraftClient client = MinecraftClient.getInstance();
         List<String> sidebar;
 
         if (client.world == null || client.isInSingleplayer() || (sidebar = getSidebar()) == null) {
-            isOnSkyblock = false;
-            isInDungeons = false;
+            isSkyblock = false;
+            isDungeons = false;
             return;
         }
 
         if (sidebar.isEmpty()) return;
         String objective = sidebar.get(0);
         if (objective.equals("SKYBLOCK") || objective.equals("SKIBLOCK")) {
-            isOnSkyblock = true;
-            isInDungeons = sidebar.toString().contains("The Catacombs");
-        } else if (isOnSkyblock) {
-            isOnSkyblock = false;
-            isInDungeons = false;
+            isSkyblock = true;
+            isDungeons = sidebar.toString().contains("The Catacombs");
+        } else if (isSkyblock) {
+            isSkyblock = false;
+            isDungeons = false;
         }
     }
 }
