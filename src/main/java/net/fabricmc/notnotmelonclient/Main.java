@@ -3,7 +3,7 @@ package net.fabricmc.notnotmelonclient;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.notnotmelonclient.misc.FavoriteItem;
-import net.fabricmc.notnotmelonclient.util.Util;
+import net.fabricmc.notnotmelonclient.util.DevUtil;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,7 +18,7 @@ public class Main implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		Util.logMethodDescriptor();
+		DevUtil.logMethodDescriptor();
 
 		FavoriteItem.addHotkey();
 

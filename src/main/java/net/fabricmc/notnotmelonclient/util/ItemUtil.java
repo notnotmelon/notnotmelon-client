@@ -26,7 +26,7 @@ public class ItemUtil {
     @Nullable public static ItemStack getCursorStack() {
         Screen screen = MinecraftClient.getInstance().currentScreen;
         if (screen == null || !(screen instanceof HandledScreen)) return null;
-        ScreenHandler handler = ((HandledScreen) screen).getScreenHandler();
+        ScreenHandler handler = ((HandledScreen<?>) screen).getScreenHandler();
         return handler.getCursorStack();
     }
 
