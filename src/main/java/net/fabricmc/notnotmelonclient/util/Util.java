@@ -74,8 +74,6 @@ public class Util {
     public static boolean isSkyblock = false;
     public static boolean isDungeons = false;
     public static void locationTracker() {
-        Util.print("skyblocking"+isSkyblock);
-        Util.print("dungeoning"+isDungeons);
         MinecraftClient client = MinecraftClient.getInstance();
         List<String> sidebar;
 

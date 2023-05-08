@@ -11,8 +11,6 @@
 
 package net.fabricmc.notnotmelonclient.util;
 
-import org.slf4j.Logger;
-
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.notnotmelonclient.Main;
 

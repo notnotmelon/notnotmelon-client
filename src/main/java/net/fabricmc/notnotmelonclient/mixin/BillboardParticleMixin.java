@@ -6,6 +6,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.fabricmc.notnotmelonclient.misc.WitherImpactHider;
+import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.client.particle.BillboardParticle;
 import net.minecraft.client.particle.ExplosionLargeParticle;
 
@@ -13,6 +14,8 @@ import net.minecraft.client.particle.ExplosionLargeParticle;
 public abstract class BillboardParticleMixin {
 	@Inject(at = @At("HEAD"), method = "buildGeometry()V", cancellable = true)
 	private void buildGeometry(CallbackInfo ci) {
+		if (!Util.isSkyblock) return;
+
 		if (!((Object) this instanceof ExplosionLargeParticle)) return;
 		ExplosionLargeParticle particle = (ExplosionLargeParticle) (Object) this;
 		if (!WitherImpactHider.initalParticleFilter(particle)) return;

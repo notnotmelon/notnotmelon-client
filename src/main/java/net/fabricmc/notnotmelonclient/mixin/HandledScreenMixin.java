@@ -1,6 +1,7 @@
 package net.fabricmc.notnotmelonclient.mixin;
 
 import net.fabricmc.notnotmelonclient.misc.FavoriteItem;
+import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.item.ItemStack;
@@ -27,6 +28,8 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
     // misleading method name. this also triggers on keypress
     @Inject(at = @At("HEAD"), method = "onMouseClick(Lnet/minecraft/screen/slot/Slot;IILnet/minecraft/screen/slot/SlotActionType;)V", cancellable = true)
     public void onMouseClick(Slot slot, int invSlot, int button, SlotActionType actionType, CallbackInfo ci) {
+		if (!Util.isSkyblock) return;
+
         ItemStack stack = null;
 
         if (FavoriteItem.isKeyPressed()) {
@@ -48,6 +51,8 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
     // prevents empty tooltips from rendering
 	@Inject(at = @At("HEAD"), method = "drawMouseoverTooltip", cancellable = true)
     public void drawMouseoverTooltip(CallbackInfo ci) {
+		if (!Util.isSkyblock) return;
+
 		if (this.focusedSlot != null && this.focusedSlot.hasStack()) {
             ItemStack stack = this.focusedSlot.getStack();
             if (stack.getName().getString().equals(" "))
