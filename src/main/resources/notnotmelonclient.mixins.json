@@ -12,7 +12,8 @@
     "ClientPlayerEntityMixin",
     "HandledScreenMixin",
     "GameRendererMixin",
-    "InGameOverlayRendererMixin"
+    "InGameOverlayRendererMixin",
+    "AbstractInventoryScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1
