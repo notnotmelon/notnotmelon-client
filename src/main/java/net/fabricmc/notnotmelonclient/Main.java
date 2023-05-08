@@ -52,9 +52,4 @@ public class Main implements ClientModInitializer {
 	public static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
         
     }
-
-	public void onTick() {
-		Util.print("zz");
-        scheduler.tick();
-    }
 }

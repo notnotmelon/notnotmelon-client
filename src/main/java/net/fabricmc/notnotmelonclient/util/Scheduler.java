@@ -2,7 +2,9 @@
  * This code is reused from
  * Source: https://github.com/SkyblockerMod/Skyblocker/blob/master/src/main/java/me/xmrvizzy/skyblocker/utils/Scheduler.java
  * 
- * Unmodified
+ * Modifications: 
+ * 1. ontick system is now event-based instead of mixin based
+ * 2. switched logger to reuse logger from entrypoint
  * 
  * GNU Lesser General Public License v3.0
  */
@@ -17,7 +19,6 @@ import net.fabricmc.notnotmelonclient.Main;
 import java.util.PriorityQueue;
 
 public class Scheduler {
-    private static final Logger LOGGER = Main.LOGGER;
     private int currentTick;
     private final PriorityQueue<ScheduledTask> tasks;
 
@@ -36,14 +37,14 @@ public class Scheduler {
 
     public void schedule(Runnable task, int delay) {
         if (delay < 0)
-            LOGGER.warn("Scheduled a task with negative delay");
+            Main.LOGGER.warn("Scheduled a task with negative delay");
         ScheduledTask tmp = new ScheduledTask(currentTick + delay, task);
         tasks.add(tmp);
     }
 
     public void scheduleCyclic(Runnable task, int period) {
         if (period <= 0)
-            LOGGER.error("Attempted to schedule a cyclic task with period lower than 1");
+            Main.LOGGER.error("Attempted to schedule a cyclic task with period lower than 1");
         else
             new CyclicTask(task, period).run();
     }
