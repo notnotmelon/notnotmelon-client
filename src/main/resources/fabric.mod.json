@@ -4,17 +4,18 @@
   "version": "${version}",
 
   "name": "Notnotmelon Client",
-  "description": "Does anyone actually read these?",
+  "description": "Do not §canger§r the goose.",
   "authors": ["notnotmelon"],
   "contact": {
     "homepage": "https://github.com/notnotmelon/notnotmelon-client",
-    "sources": "https://github.com/notnotmelon/notnotmelon-client"
+    "sources": "https://github.com/notnotmelon/notnotmelon-client",
+    "issues": "https://discord.gg/VWEbAT3PM3"
   },
 
   "license": "GNU Lesser General Public License v3.0",
   "icon": "assets/notnotmelonclient/icon.png",
 
-  "environment": "*", 
+  "environment": "client", 
   "entrypoints": {
     "client": [
       "net.fabricmc.notnotmelonclient.Main"
