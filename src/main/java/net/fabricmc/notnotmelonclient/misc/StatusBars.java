@@ -25,6 +25,7 @@ import net.minecraft.util.Identifier;
 public class StatusBars {
     private static final Identifier HEALTH_BARS = new Identifier(Main.NAMESPACE, "textures/gui/health_bars.png");
     private static final Identifier MANA_BARS = new Identifier(Main.NAMESPACE, "textures/gui/mana_bars.png");
+    private static final Identifier ORB = new Identifier(Main.NAMESPACE, "textures/gui/orb.png");
 
 	private static final Pattern HEALTH_PATTERN = Pattern.compile("§[c6]<num>/<num>❤".replace("<num>", "(\\d+(,\\d\\d\\d)*)"));
     private static final Pattern DEFENSE_PATTERN = Pattern.compile("§a<num>§a❈ Defense".replace("<num>", "(\\d+(,\\d\\d\\d)*)"));
@@ -77,6 +78,7 @@ public class StatusBars {
 		int x = scaledWidth / 2 - 91;
 		int y = scaledHeight - 33;
 
+		drawOrb(matrices, client, x + 184, y + 15);
 		RenderSystem.setShaderTexture(0, HEALTH_BARS);
 		drawBar(matrices, client, x, y, playerHealth, playerMaxHealth, 0xFFFF5555);
 		RenderSystem.setShaderTexture(0, MANA_BARS);
@@ -89,16 +91,26 @@ public class StatusBars {
 
 		int v = 9;
 		while (value > 0 && v != 27) {
-			if (value >= maxValue) {
+			if (value >= maxValue) { // draw a full bar
 				DrawableHelper.drawTexture(matrices, x, y, 0, v, 90, 9, 90, 27);
-			} else {
+			} else { // draw a partially filled bar
 				double fill = (float) value / maxValue;
 				DrawableHelper.drawTexture(matrices, x, y, 0, v, 11 + (int) Math.ceil(fill * 78), 9, 90, 27);
 			}
-			v += 9;
+			v += 9; // used for overflow bars. each overflow sprite is 9px lower on the spritesheet
 			value -= maxValue;
 		}
 
 		Util.drawCenteredText(matrices, client, x + 50, y - 3, text, color);
+	}
+
+	private static void drawOrb(MatrixStack matrices, MinecraftClient client, int x, int y) {
+		int level = client.player.experienceLevel;
+		float progress = client.player.experienceProgress;
+		String experience = String.valueOf(level) + "." + (int) (progress * 10);
+
+		RenderSystem.setShaderTexture(0, ORB);
+		DrawableHelper.drawTexture(matrices, x, y, 0, 0, 13, 13, 13, 13);
+		Util.drawText(matrices, client, x + 7, y + 6, Text.literal(experience), 0xFFC8FF8F);
 	}
 }
