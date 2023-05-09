@@ -50,12 +50,12 @@ public class FavoriteItem {
         RenderSystem.setShaderColor(0f, 0f, 0f, 0.25f);
         matrices.push();
         matrices.translate(0.5f, 0.5f, 0f);
-        DrawableHelper.drawTexture(matrices, x, y, 0, 0, 12, 12, 12, 12);
+        DrawableHelper.drawTexture(matrices, x, y, 0, 0, 8, 8, 8, 8);
         matrices.pop();
 
         // Draw star
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        DrawableHelper.drawTexture(matrices, x, y, 0, 0, 12, 12, 12, 12);
+        DrawableHelper.drawTexture(matrices, x, y, 0, 0, 8, 8, 8, 8);
 
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         RenderSystem.enableDepthTest();
