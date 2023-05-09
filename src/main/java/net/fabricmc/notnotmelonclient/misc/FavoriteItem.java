@@ -3,6 +3,7 @@ package net.fabricmc.notnotmelonclient.misc;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.notnotmelonclient.Main;
 import net.fabricmc.notnotmelonclient.util.ItemUtil;
 import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.client.MinecraftClient;
@@ -24,7 +25,7 @@ import org.spongepowered.asm.mixin.Unique;
 public class FavoriteItem {
     private static Set<String> itemsToProtect = new HashSet<String>();
 
-    @Unique private static final Identifier STAR_TEXTURE = new Identifier("notnotmelonclient", "textures/gui/star.png");
+    @Unique private static final Identifier STAR_TEXTURE = new Identifier(Main.NAMESPACE, "textures/gui/star.png");
     public static KeyBinding keyBinding;
 
     public static boolean isKeyPressed() {

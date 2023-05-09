@@ -5,7 +5,9 @@ import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.scoreboard.ScoreboardPlayerScore;
@@ -93,4 +95,20 @@ public class Util {
             isDungeons = false;
         }
     }
+
+    public static void drawText(MatrixStack matrices, MinecraftClient client, float x, float y, Text text, int color) {
+        TextRenderer textRenderer = client.textRenderer;
+		final int[] offsets = new int[]{-1, 1};
+		for (int i : offsets) {
+			textRenderer.draw(matrices, text, (float) (x + i), (float) y, 0);
+			textRenderer.draw(matrices, text, (float) x, (float) (y + i), 0);
+		}
+		textRenderer.draw(matrices, text, (float) x, (float) y, color);
+	}
+
+    public static void drawCenteredText(MatrixStack matrices, MinecraftClient client, float x, float y, Text text, int color) {
+        TextRenderer textRenderer = client.textRenderer;
+        x -= textRenderer.getWidth(text) / 2;
+        drawText(matrices, client, x, y, text, color);
+	}
 }

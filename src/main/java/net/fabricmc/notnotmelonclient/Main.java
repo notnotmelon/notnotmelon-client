@@ -21,6 +21,7 @@ import com.mojang.brigadier.CommandDispatcher;
 
 public class Main implements ClientModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("notnotmelonclient");
+	public static final String NAMESPACE = "notnotmelonclient";
 	public static Path configDir;
 
 	public final Scheduler scheduler = new Scheduler();

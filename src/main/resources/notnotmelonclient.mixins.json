@@ -13,7 +13,8 @@
     "HandledScreenMixin",
     "GameRendererMixin",
     "InGameOverlayRendererMixin",
-    "AbstractInventoryScreenMixin"
+    "AbstractInventoryScreenMixin",
+    "InGameHudMixin"
   ],
   "injectors": {
     "defaultRequire": 1
