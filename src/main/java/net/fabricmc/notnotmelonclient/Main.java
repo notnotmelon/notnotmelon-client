@@ -42,15 +42,15 @@ public class Main implements ClientModInitializer {
         }
 	}
 
-	public void registerHotkeys() {
+	private void registerHotkeys() {
 		FavoriteItem.addHotkey();
 	}
 
-	public void registerCyclic() {
+	private void registerCyclic() {
 		scheduler.scheduleCyclic(Util::locationTracker, 23);
 	}
 
-	public static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
+	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
         
     }
 }
