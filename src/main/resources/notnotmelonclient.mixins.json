@@ -15,7 +15,8 @@
     "InGameOverlayRendererMixin",
     "AbstractInventoryScreenMixin",
     "InGameHudMixin",
-    "MouseMixin"
+    "MouseMixin",
+    "ScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1
