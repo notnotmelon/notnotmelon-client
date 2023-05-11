@@ -49,10 +49,10 @@ public class Main implements ClientModInitializer {
 	}
 
 	private void registerCommands() {
-		ClientCommandRegistrationCallback.EVENT.register(Main::registerCommands);
+		ClientCommandRegistrationCallback.EVENT.register(this::registerCommands);
 	}
 
-	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
-        ConfigCommand.register(dispatcher);
+	private void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
+        ConfigCommand.register(dispatcher, scheduler);
     }
 }
