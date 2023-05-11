@@ -3,15 +3,14 @@ package net.fabricmc.notnotmelonclient;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.notnotmelonclient.commands.ConfigCommand;
+import net.fabricmc.notnotmelonclient.config.Config;
 import net.fabricmc.notnotmelonclient.misc.FavoriteItem;
 import net.fabricmc.notnotmelonclient.util.DevUtil;
 import net.fabricmc.notnotmelonclient.util.Scheduler;
 import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.command.CommandRegistryAccess;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.slf4j.Logger;
@@ -30,16 +29,14 @@ public class Main implements ClientModInitializer {
 	public void onInitializeClient() {
 		DevUtil.logMethodDescriptor();
 
+		registerConfig();
 		registerHotkeys();
 		registerCyclic();
-		ClientCommandRegistrationCallback.EVENT.register(Main::registerCommands);
+		registerCommands();
+	}
 
-		configDir = FabricLoader.getInstance().getConfigDir().resolve("notnotmelonclient");
-        try {
-            Files.createDirectories(configDir);
-        } catch (IOException e) {
-            LOGGER.error("Failed to create config dir", e);
-        }
+	private void registerConfig() {
+		Config.build();
 	}
 
 	private void registerHotkeys() {
@@ -50,7 +47,11 @@ public class Main implements ClientModInitializer {
 		scheduler.scheduleCyclic(Util::locationTracker, 23);
 	}
 
+	private void registerCommands() {
+		ClientCommandRegistrationCallback.EVENT.register(Main::registerCommands);
+	}
+
 	private static void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
-        
+        ConfigCommand.register(dispatcher);
     }
 }

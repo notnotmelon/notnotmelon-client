@@ -2,38 +2,38 @@
   "schemaVersion": 1,
   "id": "notnotmelonclient",
   "version": "${version}",
-
   "name": "Notnotmelon Client",
-  "description": "Do not §canger§r the goose.",
+  "description": "§c§ka§r§l§d Apungus §r§c§ka",
   "authors": ["notnotmelon"],
   "contact": {
     "homepage": "https://github.com/notnotmelon/notnotmelon-client",
     "sources": "https://github.com/notnotmelon/notnotmelon-client",
     "issues": "https://discord.gg/VWEbAT3PM3"
   },
-
   "license": "GNU Lesser General Public License v3.0",
   "icon": "assets/notnotmelonclient/icon.png",
-
   "environment": "client", 
   "entrypoints": {
     "client": [
       "net.fabricmc.notnotmelonclient.Main"
+    ],
+    "modmenu": [
+      "net.fabricmc.notnotmelonclient.config.ModMenu"
     ]
   },
   "mixins": [
     "notnotmelonclient.mixins.json"
   ],
-
   "depends": {
     "fabricloader": ">=0.14.19",
     "fabric-api": "*",
     "fabric-key-binding-api-v1": "*",
     "minecraft": "~1.19.4",
-    "java": ">=17"
+    "java": ">=17",
+    "yet_another_config_lib": "^2.5.1+1.19.4"
   },
   "suggests": {
-    "another-mod": "*"
+    "modmenu": "*"
   },
   "custom": {
     "modmenu": {
