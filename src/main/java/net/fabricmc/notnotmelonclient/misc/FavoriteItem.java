@@ -2,7 +2,10 @@ package net.fabricmc.notnotmelonclient.misc;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import dev.isxander.yacl.config.ConfigEntry;
+import dev.isxander.yacl.config.GsonConfigInstance;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.notnotmelonclient.Main;
 import net.fabricmc.notnotmelonclient.util.ItemUtil;
 import net.fabricmc.notnotmelonclient.util.Util;
@@ -16,6 +19,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
+import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,7 +27,18 @@ import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Unique;
 
 public class FavoriteItem {
-    private static Set<String> itemsToProtect = new HashSet<String>();
+    public static GsonConfigInstance<FavoriteItem> jsonInterface;
+    public static Path configDir;
+    public static void loadConfig() {
+        configDir = FabricLoader.getInstance().getConfigDir().resolve("notnotmelonclient/favoriteditems.properties");
+        jsonInterface = new GsonConfigInstance<FavoriteItem>(FavoriteItem.class, configDir);
+        jsonInterface.load();
+    }
+
+    @ConfigEntry public Set<String> itemsToProtect = new HashSet<String>();
+    private static Set<String> itemsToProtect() {
+        return jsonInterface.getConfig().itemsToProtect;
+    }
 
     @Unique private static final Identifier STAR_TEXTURE = new Identifier(Main.NAMESPACE, "textures/gui/star.png");
     public static KeyBinding keyBinding;
@@ -67,11 +82,11 @@ public class FavoriteItem {
         if (extraAttributes == null) return false;
 
         if (extraAttributes.contains("uuid"))
-            if (itemsToProtect.contains(extraAttributes.getString("uuid")))
+            if (itemsToProtect().contains(extraAttributes.getString("uuid")))
                 return true;
 
         String itemId = ItemUtil.getSkyBlockItemID(stack);
-        if (itemId != null && itemsToProtect.contains(itemId))
+        if (itemId != null && itemsToProtect().contains(itemId))
             return true;
             
         return false;
@@ -95,10 +110,12 @@ public class FavoriteItem {
 
         if (protectionString == null) return;
 
-        if (itemsToProtect.contains(protectionString)) {
-            itemsToProtect.remove(protectionString);
+        if (itemsToProtect().contains(protectionString)) {
+            itemsToProtect().remove(protectionString);
         } else {
-            itemsToProtect.add(protectionString);
+            itemsToProtect().add(protectionString);
         }
+
+        jsonInterface.save();
     }
 }

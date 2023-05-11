@@ -4,7 +4,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.notnotmelonclient.commands.ConfigCommand;
-import net.fabricmc.notnotmelonclient.config.Config;
+import net.fabricmc.notnotmelonclient.config.JsonLoader;
 import net.fabricmc.notnotmelonclient.misc.FavoriteItem;
 import net.fabricmc.notnotmelonclient.util.DevUtil;
 import net.fabricmc.notnotmelonclient.util.Scheduler;
@@ -36,7 +36,8 @@ public class Main implements ClientModInitializer {
 	}
 
 	private void registerConfig() {
-		Config.build();
+		JsonLoader.load();
+		FavoriteItem.loadConfig();
 	}
 
 	private void registerHotkeys() {

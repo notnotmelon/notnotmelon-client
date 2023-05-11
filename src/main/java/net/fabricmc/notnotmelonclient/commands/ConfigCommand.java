@@ -11,7 +11,7 @@ public class ConfigCommand {
 	public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
 		dispatcher.register(ClientCommandManager.literal("nnc")
 			.executes(ctx -> {
-				Config.draw();
+				Config.instance.draw();
 				return Command.SINGLE_SUCCESS;
 			})
         );
