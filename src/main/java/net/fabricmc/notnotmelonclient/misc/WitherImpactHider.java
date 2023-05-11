@@ -4,9 +4,6 @@ import java.util.HashMap;
 import net.minecraft.client.particle.ExplosionLargeParticle;
 import net.minecraft.client.MinecraftClient;
 
-// hides explosion particles from wither impact
-// surely its not overengineered
-
 public class WitherImpactHider {
 	public static Boolean isWitherImpactParticle(ExplosionLargeParticle particle) {
 		Double x = particle.x;
@@ -34,7 +31,6 @@ public class WitherImpactHider {
 		Double y = particle.y;
 		Double z = particle.z;
 
-		// this is terrible, don't do this
 		if (!particleCanidatesPerTile.containsKey(x))
 			particleCanidatesPerTile.put(x, new HashMap<Double, HashMap<Double, Integer>>());
 
@@ -43,8 +39,7 @@ public class WitherImpactHider {
 
 		if (!particleCanidatesPerTile.get(x).get(y).containsKey(z))
 			particleCanidatesPerTile.get(x).get(y).put(z, 0);
-
-		// ++ is not supported here. java moments
+			
 		particleCanidatesPerTile.get(x).get(y).put(z, particleCanidatesPerTile.get(x).get(y).get(z) + 1);
 	}
 
