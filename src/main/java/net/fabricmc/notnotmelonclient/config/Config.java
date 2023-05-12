@@ -30,7 +30,7 @@ public class Config {
 	public ConfigCategory Qol() {
 		return ConfigCategory.createBuilder()
 			.name(Text.literal("Quality of Life"))
-			.option(alwaysSprint())
+
 			.group(OptionGroup.createBuilder()
 				.name(Text.literal("Visual"))
 				.tooltip(Text.literal("Features dedicated to improving the graphics or UI of skyblock."))
@@ -85,20 +85,6 @@ public class Config {
 				getDefaults().witherImpactHider,
 				() -> getConfig().witherImpactHider,
 				v -> getConfig().witherImpactHider = v
-			)
-			.controller(TickBoxController::new)
-			.build();
-	}
-
-	@ConfigEntry public boolean alwaysSprint = true;
-	public Option<?> alwaysSprint() {
-		return Option.createBuilder(boolean.class)
-			.name(Text.of("Always Sprint"))
-			.tooltip(Text.of("Permanently enables sprinting and sprint-flying. The vanilla sprint key will do nothing, feel free to unbind."))
-			.binding(
-				getDefaults().alwaysSprint,
-				() -> getConfig().alwaysSprint,
-				v -> getConfig().alwaysSprint = v
 			)
 			.controller(TickBoxController::new)
 			.build();

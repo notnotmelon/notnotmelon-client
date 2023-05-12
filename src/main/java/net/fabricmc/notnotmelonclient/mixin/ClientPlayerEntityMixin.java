@@ -2,12 +2,10 @@ package net.fabricmc.notnotmelonclient.mixin;
 
 import com.mojang.authlib.GameProfile;
 
-import net.fabricmc.notnotmelonclient.config.Config;
 import net.fabricmc.notnotmelonclient.misc.FavoriteItem;
 import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
@@ -16,7 +14,6 @@ import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ClientPlayerEntity.class)
@@ -32,13 +29,5 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
             FavoriteItem.printProtectMessage(stack, Text.literal("dropping"));
             cir.setReturnValue(false);
         }
-    }
-    
-    @Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;isPressed()Z"), allow = 2)
-    public boolean isPressed(KeyBinding sprintKey) {
-        if (Config.getConfig().alwaysSprint)
-            return true;
-        //return sprintKey.isPressed();
-        return false;
     }
 }
