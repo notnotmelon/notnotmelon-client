@@ -9,6 +9,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -25,7 +26,7 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 
         ItemStack stack = this.getEquippedStack(EquipmentSlot.MAINHAND);
 		if (FavoriteItem.isProtected(stack)) {
-            FavoriteItem.printProtectMessage(stack, "dropping");
+            FavoriteItem.printProtectMessage(stack, Text.literal("dropping"));
             cir.setReturnValue(false);
         }
     }
