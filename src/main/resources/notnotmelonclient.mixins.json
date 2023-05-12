@@ -16,7 +16,8 @@
     "AbstractInventoryScreenMixin",
     "InGameHudMixin",
     "MouseMixin",
-    "ScreenMixin"
+    "ScreenMixin",
+    "TextFieldWidgetMixin"
   ],
   "injectors": {
     "defaultRequire": 1

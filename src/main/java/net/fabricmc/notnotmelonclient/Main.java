@@ -53,6 +53,6 @@ public class Main implements ClientModInitializer {
 	}
 
 	private void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
-        ConfigCommand.register(dispatcher, scheduler);
+        ConfigCommand.register(dispatcher);
     }
 }

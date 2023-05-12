@@ -17,6 +17,7 @@ import net.fabricmc.notnotmelonclient.Main;
 import java.util.PriorityQueue;
 
 public class Scheduler {
+    private static Scheduler instance;
     private int currentTick;
     private final PriorityQueue<ScheduledTask> tasks;
 
@@ -31,6 +32,11 @@ public class Scheduler {
                 task.run();
             }
         });
+        instance = this;
+    }
+
+    public static Scheduler getInstance() {
+        return instance;
     }
 
     public void schedule(Runnable task, int delay) {

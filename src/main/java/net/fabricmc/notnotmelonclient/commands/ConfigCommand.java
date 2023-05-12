@@ -9,10 +9,10 @@ import net.fabricmc.notnotmelonclient.config.Config;
 import net.fabricmc.notnotmelonclient.util.Scheduler;
 
 public class ConfigCommand {
-	public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher, Scheduler scheduler) {
+	public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
 		dispatcher.register(ClientCommandManager.literal("nnc")
 			.executes(ctx -> {
-				scheduler.schedule(() -> Config.instance.draw(), 1);
+				Scheduler.getInstance().schedule(() -> Config.instance.draw(), 1);
 				return Command.SINGLE_SUCCESS;
 			})
         );
