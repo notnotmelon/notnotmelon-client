@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.HashSet;
 import java.util.logging.Filter;
 import java.util.logging.LogRecord;
+import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LogEvent;
@@ -13,6 +14,7 @@ import org.apache.logging.log4j.core.filter.AbstractFilter;
 import org.jetbrains.annotations.NotNull;
 
 import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
+import net.fabricmc.notnotmelonclient.config.Config;
 
 // https://modrinth.com/mod/log-begone
 // https://github.com/AzureDoom/Log-Begone/blob/1.19Fabric/src/main/java/mod/azure/logbegone/LogBegoneMod.java
@@ -34,8 +36,13 @@ public class LogSpamFix implements PreLaunchEntrypoint {
 			logger.addFilter(logFilter);
 	}
 
-	public static boolean shouldFilterMessage(String message) {
-		return message.contains("Ignoring player info update for unknown player");
+	private static Pattern unknownTeamList = Pattern.compile("Received packet for unknown team .+?: team action: REMOVE, player action:");
+	private static boolean shouldFilterMessage(String message) {
+		if (!Config.getConfig().logSpamFix) return false;
+		if (message.contains("Ignoring player info update for unknown player")) return true;
+		if (message.equals("Received passengers for unknown entity")) return true;
+		if (unknownTeamList.matcher(message).find()) return true;
+		return false;
 	}
 
 	private final class FilteredPrintStream extends PrintStream {

@@ -42,6 +42,11 @@ public class Config {
 				.option(witherImpactHider())
 				.build())
 
+			.group(OptionGroup.createBuilder()
+				.name(Text.literal("Miscellaneous"))
+				.option(logSpamFix())
+				.build())
+
 			.build();
 	}
 
@@ -82,6 +87,20 @@ public class Config {
 				getDefaults().witherImpactHider,
 				() -> getConfig().witherImpactHider,
 				v -> getConfig().witherImpactHider = v
+			)
+			.controller(TickBoxController::new)
+			.build();
+	}
+
+	@ConfigEntry public boolean logSpamFix = true;
+	public Option<?> logSpamFix() {
+		return Option.createBuilder(boolean.class)
+			.name(Text.of("Log Spam Fix"))
+			.tooltip(Text.of("Fixes certian messages being spammed to your log files while on Hypixel."))
+			.binding(
+				getDefaults().logSpamFix,
+				() -> getConfig().logSpamFix,
+				v -> getConfig().logSpamFix = v
 			)
 			.controller(TickBoxController::new)
 			.build();
