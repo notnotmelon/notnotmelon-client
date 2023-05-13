@@ -1,5 +1,6 @@
 package net.fabricmc.notnotmelonclient.mixin;
 
+import net.fabricmc.notnotmelonclient.config.Config;
 import net.fabricmc.notnotmelonclient.misc.FavoriteItem;
 import net.fabricmc.notnotmelonclient.misc.ScrollableTooltips;
 import net.fabricmc.notnotmelonclient.util.Util;
@@ -36,7 +37,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	@Inject(at = @At("HEAD"), method = "drawMouseoverTooltip", cancellable = true)
     public void drawMouseoverTooltip(CallbackInfo ci) {
         ScrollableTooltips.changeHoveredSlot(this.focusedSlot);
-		if (!Util.isSkyblock) return;
+		if (!Util.isSkyblock || !Config.getConfig().hideEmptyTooltips) return;
 
 		if (this.focusedSlot != null && this.focusedSlot.hasStack()) {
             ItemStack stack = this.focusedSlot.getStack();

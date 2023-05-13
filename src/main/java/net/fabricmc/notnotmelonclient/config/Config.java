@@ -27,7 +27,8 @@ public class Config {
 		return YetAnotherConfigLib.createBuilder()
 			.title(Text.literal("Notnotmelon Client Config Options"))
 			.save(JsonLoader.jsonInterface::save)
-			.category(Qol())
+			.category(qol())
+			.category(removals())
 			.build();
 	}
 
@@ -36,13 +37,14 @@ public class Config {
 		client.setScreenAndRender(build().generateScreen(null));
 	}
 
-	public ConfigCategory Qol() {
+	public ConfigCategory qol() {
 		return ConfigCategory.createBuilder()
 			.name(Text.literal("Quality of Life"))
 
 			.group(OptionGroup.createBuilder()
 				.name(Text.literal("Visual"))
 				.option(fancyBars())
+				.option(hideEmptyTooltips())
 				.build())
 
 			.group(OptionGroup.createBuilder()
@@ -51,8 +53,21 @@ public class Config {
 				.option(witherImpactHider())
 				.build())
 
+			.build();
+	}
+
+	public ConfigCategory removals() {
+		return ConfigCategory.createBuilder()
+			.name(Text.literal("Removals"))
+
 			.group(OptionGroup.createBuilder()
-				.name(Text.literal("Miscellaneous"))
+				.name(Text.literal("Vanilla Feature Removal"))
+				.option(potionEffectsGui())
+				.option(hideFireOverlay())
+				.build())
+
+			.group(OptionGroup.createBuilder()
+				.name(Text.literal("Chat Spam"))
 				.option(logSpamFix())
 				.build())
 
@@ -110,6 +125,48 @@ public class Config {
 				getDefaults().logSpamFix,
 				() -> getConfig().logSpamFix,
 				v -> getConfig().logSpamFix = v
+			)
+			.controller(TickBoxController::new)
+			.build();
+	}
+
+	@ConfigEntry public boolean potionEffectsGui = true;
+	public Option<?> potionEffectsGui() {
+		return Option.createBuilder(boolean.class)
+			.name(Text.of("Hide Potion Effect GUI"))
+			.tooltip(Text.of("Hides the list of active potion effects from showing in your inventory."))
+			.binding(
+				getDefaults().potionEffectsGui,
+				() -> getConfig().potionEffectsGui,
+				v -> getConfig().potionEffectsGui = v
+			)
+			.controller(TickBoxController::new)
+			.build();
+	}
+
+	@ConfigEntry public boolean hideEmptyTooltips = true;
+	public Option<?> hideEmptyTooltips() {
+		return Option.createBuilder(boolean.class)
+			.name(Text.of("Hide Empty Tooltips"))
+			.tooltip(Text.of("Hides empty item tooltips in Skyblock GUIs."))
+			.binding(
+				getDefaults().hideEmptyTooltips,
+				() -> getConfig().hideEmptyTooltips,
+				v -> getConfig().hideEmptyTooltips = v
+			)
+			.controller(TickBoxController::new)
+			.build();
+	}
+
+	@ConfigEntry public boolean hideFireOverlay = true;
+	public Option<?> hideFireOverlay() {
+		return Option.createBuilder(boolean.class)
+			.name(Text.of("Hide Fire Overlay"))
+			.tooltip(Text.of("Prevents the first-person fire overlay from blocking your vision."))
+			.binding(
+				getDefaults().hideFireOverlay,
+				() -> getConfig().hideFireOverlay,
+				v -> getConfig().hideFireOverlay = v
 			)
 			.controller(TickBoxController::new)
 			.build();
