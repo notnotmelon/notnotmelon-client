@@ -5,14 +5,23 @@ import dev.isxander.yacl.api.Option;
 import dev.isxander.yacl.api.OptionGroup;
 import dev.isxander.yacl.api.YetAnotherConfigLib;
 import dev.isxander.yacl.config.ConfigEntry;
+import dev.isxander.yacl.config.GsonConfigInstance;
 import dev.isxander.yacl.gui.controllers.TickBoxController;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
 public class Config {
 	public static final Config instance = new Config();
-	public static Config getConfig() { return JsonLoader.jsonInterface.getConfig(); }
-	public static Config getDefaults() { return JsonLoader.jsonInterface.getDefaults(); }
+	public static Config getConfig() {
+		GsonConfigInstance<Config> jsonInterface = JsonLoader.jsonInterface;
+		if (jsonInterface == null) return instance;
+		return jsonInterface.getConfig();
+	}
+	public static Config getDefaults() {
+		GsonConfigInstance<Config> jsonInterface = JsonLoader.jsonInterface;
+		if (jsonInterface == null) return instance;
+		return jsonInterface.getDefaults();
+	}
 
 	public YetAnotherConfigLib build() {
 		return YetAnotherConfigLib.createBuilder()
