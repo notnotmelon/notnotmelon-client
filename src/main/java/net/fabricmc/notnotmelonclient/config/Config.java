@@ -33,14 +33,11 @@ public class Config {
 
 			.group(OptionGroup.createBuilder()
 				.name(Text.literal("Visual"))
-				.tooltip(Text.literal("Features dedicated to improving the graphics or UI of skyblock."))
 				.option(fancyBars())
-				.option(viewBobbing())
 				.build())
 
 			.group(OptionGroup.createBuilder()
 				.name(Text.literal("Item Features"))
-				.tooltip(Text.literal("Features related to item tooltips or item effects."))
 				.option(scrollableTooltips())
 				.option(witherImpactHider())
 				.build())
@@ -85,20 +82,6 @@ public class Config {
 				getDefaults().witherImpactHider,
 				() -> getConfig().witherImpactHider,
 				v -> getConfig().witherImpactHider = v
-			)
-			.controller(TickBoxController::new)
-			.build();
-	}
-
-	@ConfigEntry public boolean disableViewBobbing = true;
-	public Option<?> viewBobbing() {
-		return Option.createBuilder(boolean.class)
-			.name(Text.of("Disable View Bobbing"))
-			.tooltip(Text.of("Disables view bobbing when taking damage or sprinting."))
-			.binding(
-				getDefaults().disableViewBobbing,
-				() -> getConfig().disableViewBobbing,
-				v -> getConfig().disableViewBobbing = v
 			)
 			.controller(TickBoxController::new)
 			.build();
