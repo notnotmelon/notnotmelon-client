@@ -19,7 +19,10 @@
     ],
     "modmenu": [
       "net.fabricmc.notnotmelonclient.config.ModMenu"
-    ]
+    ],
+    "preLaunch": [
+		  "net.fabricmc.notnotmelonclient.misc.LogSpamFix"
+		]
   },
   "mixins": [
     "notnotmelonclient.mixins.json"
