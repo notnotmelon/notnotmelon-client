@@ -199,7 +199,7 @@ public class Config {
 	public Option<?> priceTooltips() {
 		return Option.createBuilder(boolean.class)
 			.name(Text.of("Price Tooltips"))
-			.tooltip(Text.of("Shows NPC, bazaar, and lowest BIN prices on item tooltips."))
+			.tooltip(Text.of("Shows NPC, bazaar, and lowest BIN prices on item tooltips. Press SHIFT for a full stack."))
 			.binding(
 				getDefaults().priceTooltips,
 				() -> getConfig().priceTooltips,

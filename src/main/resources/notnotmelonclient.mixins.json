@@ -16,7 +16,8 @@
     "InGameHudMixin",
     "MouseMixin",
     "ScreenMixin",
-    "TextFieldWidgetMixin"
+    "TextFieldWidgetMixin",
+    "ChatHudMixin"
   ],
   "injectors": {
     "defaultRequire": 1

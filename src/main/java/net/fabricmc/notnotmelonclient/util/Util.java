@@ -13,6 +13,7 @@ import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.scoreboard.ScoreboardPlayerScore;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -96,12 +97,23 @@ public class Util {
         }
     }
 
+    static final int[] offsets = new int[]{-1, 1};
     public static void drawText(MatrixStack matrices, MinecraftClient client, float x, float y, Text text, int color) {
         TextRenderer textRenderer = client.textRenderer;
-		final int[] offsets = new int[]{-1, 1};
+        int alpha = color>>24<<24;
 		for (int i : offsets) {
-			textRenderer.draw(matrices, text, (float) (x + i), (float) y, 0);
-			textRenderer.draw(matrices, text, (float) x, (float) (y + i), 0);
+			textRenderer.draw(matrices, text, (float) (x + i), (float) y, alpha);
+			textRenderer.draw(matrices, text, (float) x, (float) (y + i), alpha);
+		}
+		textRenderer.draw(matrices, text, (float) x, (float) y, color);
+	}
+
+    public static void drawText(MatrixStack matrices, TextRenderer textRenderer, float x, float y, OrderedText text, int color) {
+        Text s = orderedTextAsString(text);
+        int alpha = color>>24<<24;
+		for (int i : offsets) {
+			textRenderer.draw(matrices, s, (float) (x + i), (float) y, alpha);
+			textRenderer.draw(matrices, s, (float) x, (float) (y + i), alpha);
 		}
 		textRenderer.draw(matrices, text, (float) x, (float) y, color);
 	}
@@ -111,4 +123,10 @@ public class Util {
         x -= textRenderer.getWidth(text) / 2;
         drawText(matrices, client, x, y, text, color);
 	}
+
+    public static MutableText orderedTextAsString(OrderedText orderedText) {
+        MutableText text = Text.literal("");
+        orderedText.accept((i, s, c) -> { text.append(Text.of(String.valueOf((char) c)).); return true; } );
+        return text;
+    }
 }
