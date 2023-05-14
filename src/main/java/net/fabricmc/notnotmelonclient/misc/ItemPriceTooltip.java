@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ import com.google.gson.JsonObject;
 
 import net.fabricmc.notnotmelonclient.Main;
 import net.fabricmc.notnotmelonclient.api.ApiRequests;
+import net.fabricmc.notnotmelonclient.config.Config;
 import net.fabricmc.notnotmelonclient.util.ItemUtil;
 import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.client.MinecraftClient;
@@ -28,22 +30,30 @@ public class ItemPriceTooltip {
 	private static final MinecraftClient client = MinecraftClient.getInstance();
 	public static Formatting priceColor = Formatting.AQUA;
 	private static final Text UNKNOWN = Text.literal("UNKNOWN").formatted(Formatting.RED).formatted(Formatting.BOLD);
+	public static final Pattern GEAR_SCORE_PATTERN = Pattern.compile("^Gear Score: .+");
 
 	public static void onInjectTooltip(ItemStack stack, TooltipContext context, List<Text> lines) {
         if (!Util.isSkyblock || client.player == null) return;
 
-		lines.removeIf(text -> text.getString().equals("Unbreakable"));
+		if (Config.getConfig().hideUnbreakable)
+			lines.removeIf(text -> text.getString().equals("Unbreakable"));
+
+		if (Config.getConfig().hideGearScore)
+			lines.removeIf(text -> GEAR_SCORE_PATTERN.matcher(text.getString()).matches());
 
         String itemID = ItemUtil.getFullItemID(stack);
         if (itemID == null) return;
-
+		
 		try {
-			addNPCPrice(stack, itemID, lines);
-			if (!addBazaarPrice(stack, itemID, lines)) {
-				addLowestBIN(stack, itemID, lines);
-				addAveragePrice(stack, itemID, lines);
+			if (Config.getConfig().priceTooltips) {
+				addNPCPrice(stack, itemID, lines);
+				if (!addBazaarPrice(stack, itemID, lines)) {
+					addLowestBIN(stack, itemID, lines);
+					addAveragePrice(stack, itemID, lines);
+				}
 			}
-			addDateObtained(stack, itemID, lines);
+			if (Config.getConfig().createdDate)
+				addDateObtained(stack, itemID, lines);
 		} catch(Exception e) {
 			lines.add(Text.literal("ERROR PARSING PRICE DATA!").formatted(Formatting.BOLD).formatted(Formatting.DARK_RED));
 			lines.add(Text.literal("Please report this.").formatted(Formatting.BOLD).formatted(Formatting.DARK_RED));

@@ -51,6 +51,9 @@ public class Config {
 				.name(Text.literal("Item Features"))
 				.option(scrollableTooltips())
 				.option(witherImpactHider())
+				.option(priceTooltips())
+				.option(createdDate())
+				.option(oldMasterStars())
 				.build())
 
 			.build();
@@ -64,11 +67,17 @@ public class Config {
 				.name(Text.literal("Vanilla Feature Removal"))
 				.option(potionEffectsGui())
 				.option(hideFireOverlay())
+				.option(hideUnbreakable())
 				.build())
 
 			.group(OptionGroup.createBuilder()
 				.name(Text.literal("Chat Spam"))
 				.option(logSpamFix())
+				.build())
+
+			.group(OptionGroup.createBuilder()
+				.name(Text.literal("Other"))
+				.option(hideGearScore())
 				.build())
 
 			.build();
@@ -167,6 +176,76 @@ public class Config {
 				getDefaults().hideFireOverlay,
 				() -> getConfig().hideFireOverlay,
 				v -> getConfig().hideFireOverlay = v
+			)
+			.controller(TickBoxController::new)
+			.build();
+	}
+
+	@ConfigEntry public boolean hideGearScore = true;
+	public Option<?> hideGearScore() {
+		return Option.createBuilder(boolean.class)
+			.name(Text.of("Hide Gear Score"))
+			.tooltip(Text.of("Removes gear score from dungeon equipment tooltips."))
+			.binding(
+				getDefaults().hideGearScore,
+				() -> getConfig().hideGearScore,
+				v -> getConfig().hideGearScore = v
+			)
+			.controller(TickBoxController::new)
+			.build();
+	}
+
+	@ConfigEntry public boolean priceTooltips = true;
+	public Option<?> priceTooltips() {
+		return Option.createBuilder(boolean.class)
+			.name(Text.of("Price Tooltips"))
+			.tooltip(Text.of("Shows NPC, bazaar, and lowest BIN prices on item tooltips."))
+			.binding(
+				getDefaults().priceTooltips,
+				() -> getConfig().priceTooltips,
+				v -> getConfig().priceTooltips = v
+			)
+			.controller(TickBoxController::new)
+			.build();
+	}
+
+	@ConfigEntry public boolean createdDate = true;
+	public Option<?> createdDate() {
+		return Option.createBuilder(boolean.class)
+			.name(Text.of("Obtained Date"))
+			.tooltip(Text.of("Shows the date that an item was obtained date on its tooltip. Only works for items with a UUID."))
+			.binding(
+				getDefaults().createdDate,
+				() -> getConfig().createdDate,
+				v -> getConfig().createdDate = v
+			)
+			.controller(TickBoxController::new)
+			.build();
+	}
+
+	@ConfigEntry public boolean oldMasterStars = true;
+	public Option<?> oldMasterStars() {
+		return Option.createBuilder(boolean.class)
+			.name(Text.of("Old Master Stars"))
+			.tooltip(Text.of("Use the old master star format for item names. Replaces ... with ..."))
+			.binding(
+				getDefaults().oldMasterStars,
+				() -> getConfig().oldMasterStars,
+				v -> getConfig().oldMasterStars = v
+			)
+			.controller(TickBoxController::new)
+			.build();
+	}
+
+	@ConfigEntry public boolean hideUnbreakable = true;
+	public Option<?> hideUnbreakable() {
+		return Option.createBuilder(boolean.class)
+			.name(Text.of("Hide Unbreakable Tag"))
+			.tooltip(Text.of("Hides the \"Unbreakable\" tag found on every Skyblock item description."))
+			.binding(
+				getDefaults().hideUnbreakable,
+				() -> getConfig().hideUnbreakable,
+				v -> getConfig().hideUnbreakable = v
 			)
 			.controller(TickBoxController::new)
 			.build();
