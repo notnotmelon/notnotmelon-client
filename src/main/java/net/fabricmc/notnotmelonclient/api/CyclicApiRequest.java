@@ -5,6 +5,7 @@ import java.net.URL;
 
 import com.google.gson.JsonObject;
 import net.fabricmc.notnotmelonclient.util.Scheduler;
+import net.fabricmc.notnotmelonclient.util.Util;
 
 /**
  * Used to keep up-to-date rest API data. For example lowest BIN text on items.
@@ -32,6 +33,7 @@ public class CyclicApiRequest extends ApiRequest {
 	}
 
 	@Override protected void run(int index) {
+		if (!Util.isSkyblock && this.result != null) return;
 		if (index == endpoints.length) return;
 		URL url = endpoints[index];
 		try {

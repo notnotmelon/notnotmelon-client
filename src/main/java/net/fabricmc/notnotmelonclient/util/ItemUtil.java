@@ -2,7 +2,6 @@ package net.fabricmc.notnotmelonclient.util;
 
 import java.util.Locale;
 
-import org.apache.commons.lang3.ObjectUtils.Null;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.Gson;
@@ -73,15 +72,17 @@ public class ItemUtil {
                 result.append(enchants.getInt(enchant));
 
             } else if (base.equals("ATTRIBUTE_SHARD")) {
-                // TODO
+                NbtCompound attributes = extraAttributes.getCompound("attributes");
+                String attribute = attributes.getKeys().stream().findFirst().get();
+                result.append(attribute.toUpperCase(Locale.ENGLISH));
+                result.append('-');
+                result.append(attributes.getInt(attribute));
 
             } else if (base.equals("POTION")) {
                 result.append(extraAttributes.getString("potion").toUpperCase(Locale.ENGLISH));
                 result.append('-');
                 result.append(extraAttributes.getInt("potion_level"));
                 if (extraAttributes.contains("enhanced")) result.append("-ENHANCED");
-                if (extraAttributes.contains("extended")) result.append("-EXTENDED");
-                if (extraAttributes.contains("splash")) result.append("-SPLASH");
 
             } else if (base.equals("RUNE")) {
                 NbtCompound runes = extraAttributes.getCompound("runes");
@@ -96,5 +97,28 @@ public class ItemUtil {
         }
         
         return result.toString();
+    }
+
+    @Nullable public static String moulberryification(String itemID) {
+        if (itemID.contains("PET-")) {
+			return itemID.replace("PET-", "")
+				.replace("COMMON", "0")
+				.replace("UNCOMMON", "1")
+				.replace("RARE", "2")
+				.replace("EPIC", "3")
+				.replace("LEGENDARY", "4")
+				.replace("MYTHIC", "5")
+				.replace('-', ';');
+        } else if (itemID.contains("POTION-")) {
+            return null;
+		} else if (itemID.contains("ENCHANTED_BOOK-")) {
+			return itemID.replace("ENCHANTED_BOOK-", "").replace('-', ';');
+		} else if (itemID.contains("RUNE-")) {
+			return itemID.replace('-', ';');
+        } else if (itemID.contains("ATTRIBUTE_SHARD-")) {
+			return null;
+		} else {
+			return itemID.replace(":", "-");
+		}
     }
 }

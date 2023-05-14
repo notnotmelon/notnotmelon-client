@@ -62,7 +62,6 @@ public class ApiRequest {
 		try {
 			LOGGER.info("[nnc] Attempting API request. Endpoint: " + url.toString());
 			result = (JsonObject) decypherer.invoke(null, new Object[]{url});
-			Scheduler.getInstance().schedule(this::run, cooldown);
 		} catch (Exception e) {
 			LOGGER.warn("[nnc] API request failed. Endpoint: " + url.toString(), e);
 			run(index + 1);

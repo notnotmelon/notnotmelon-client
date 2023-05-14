@@ -3,9 +3,12 @@ package net.fabricmc.notnotmelonclient;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
+import net.fabricmc.notnotmelonclient.api.ApiRequests;
 import net.fabricmc.notnotmelonclient.commands.ConfigCommand;
 import net.fabricmc.notnotmelonclient.config.JsonLoader;
 import net.fabricmc.notnotmelonclient.misc.FavoriteItem;
+import net.fabricmc.notnotmelonclient.misc.ItemPriceTooltip;
 import net.fabricmc.notnotmelonclient.util.DevUtil;
 import net.fabricmc.notnotmelonclient.util.Scheduler;
 import net.fabricmc.notnotmelonclient.util.Util;
@@ -33,6 +36,7 @@ public class Main implements ClientModInitializer {
 		registerHotkeys();
 		registerCyclic();
 		registerCommands();
+		registerEvents();
 	}
 
 	private void registerConfig() {
@@ -46,6 +50,7 @@ public class Main implements ClientModInitializer {
 
 	private void registerCyclic() {
 		scheduler.scheduleCyclic(Util::locationTracker, 23);
+		ApiRequests.init();
 	}
 
 	private void registerCommands() {
@@ -55,4 +60,8 @@ public class Main implements ClientModInitializer {
 	private void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
         ConfigCommand.register(dispatcher);
     }
+
+	private void registerEvents() {
+		ItemTooltipCallback.EVENT.register(ItemPriceTooltip::onInjectTooltip);
+	}
 }
