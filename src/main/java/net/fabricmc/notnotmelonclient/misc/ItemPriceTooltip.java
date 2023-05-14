@@ -55,8 +55,8 @@ public class ItemPriceTooltip {
 			if (Config.getConfig().createdDate)
 				addDateObtained(stack, itemID, lines);
 		} catch(Exception e) {
-			lines.add(Text.literal("ERROR PARSING PRICE DATA!").formatted(Formatting.BOLD).formatted(Formatting.DARK_RED));
-			lines.add(Text.literal("Please report this.").formatted(Formatting.BOLD).formatted(Formatting.DARK_RED));
+			lines.add(Text.literal("ERROR PARSING PRICE DATA! Please report this.").formatted(Formatting.BOLD).formatted(Formatting.DARK_RED));
+			lines.add(Text.literal(e.getLocalizedMessage()).formatted(Formatting.BOLD).formatted(Formatting.DARK_RED));
 			LOGGER.error("[nnc] Failed to parse price data!", e);
 		}
 	}
