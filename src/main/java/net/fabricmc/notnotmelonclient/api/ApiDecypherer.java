@@ -9,12 +9,14 @@ import java.util.zip.GZIPInputStream;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-// these are decypherers for various formats of rest API.
-// they convert a URL into JsonObject
-// some of these try statemements are unnecessary. too bad!
-
+/**
+ * these are decypherers for various formats of rest API.
+ * they convert a URL into JsonObject
+ * some of these try statemements are unnecessary. too bad!
+ * See: CyclicApiRequest.java
+ */
 public class ApiDecypherer {
-	public static JsonObject Json(URL url) throws IOException {
+	public static JsonObject json(URL url) throws IOException {
 		try (InputStream stream = url.openStream()) {
 			try (InputStreamReader reader = new InputStreamReader(stream)) {
 				return new Gson().fromJson(reader, JsonObject.class);
@@ -22,7 +24,7 @@ public class ApiDecypherer {
 		}
 	}
 
-	public static JsonObject Moulberry(URL url) throws IOException {
+	public static JsonObject moulberry(URL url) throws IOException {
 		try (InputStream stream = url.openStream()) {
 			try (GZIPInputStream gzip = new GZIPInputStream(stream)) {
 				try (InputStreamReader reader = new InputStreamReader(gzip)) {
