@@ -48,7 +48,6 @@ public class Reparty implements ChatTrigger {
         Matcher plist = PLIST.matcher(asString);
         if (!plist.matches()) return ActionResult.PASS;
         if (plist.group(1) != null) {
-            Util.print(plist.group(1));
             try {
                 this.playersSoFar = 0;
                 this.players = new String[Integer.parseInt(plist.group(1)) - 1];
