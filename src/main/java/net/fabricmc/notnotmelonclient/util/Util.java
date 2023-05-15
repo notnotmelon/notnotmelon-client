@@ -121,6 +121,9 @@ public class Util {
     }
 
     public static void sendDelayedCommand(String command, int delay) {
-        Scheduler.getInstance().schedule(() -> MinecraftClient.getInstance().player.networkHandler.sendCommand(command), delay);
+        Scheduler.getInstance().schedule(() -> {
+            ClientPlayerEntity player = MinecraftClient.getInstance().player;
+            if (player != null) player.networkHandler.sendCommand(command);
+        }, delay);
     }
 }

@@ -17,7 +17,7 @@ import com.mojang.brigadier.CommandDispatcher;
 public class Reparty implements ChatTrigger {
     private static final MinecraftClient client = MinecraftClient.getInstance();
     private String[] players;
-    private int playersSoFar = 0;
+    private int foundPlayers = 0;
     private boolean repartying = false;
 
     public Reparty(CommandDispatcher<FabricClientCommandSource> dispatcher) {
@@ -33,6 +33,7 @@ public class Reparty implements ChatTrigger {
 
     private static final Pattern PLIST = Pattern.compile("^Party (?:Members|Moderators)(?: \\((\\d+)\\)|:( .*))$");
     private static final Pattern PLAYER = Pattern.compile(" ([a-zA-Z0-9_]{2,16}) ●");
+    private static final Pattern DISBAND = Pattern.compile("^(\\[.+?\\] )?([a-zA-Z0-9_]{2,16}) has disbanded the party!$");
     public ActionResult onMessage(Text message, String asString) {
         if (!repartying) return ActionResult.PASS;
 
@@ -49,7 +50,7 @@ public class Reparty implements ChatTrigger {
         if (!plist.matches()) return ActionResult.PASS;
         if (plist.group(1) != null) {
             try {
-                this.playersSoFar = 0;
+                this.foundPlayers = 0;
                 this.players = new String[Integer.parseInt(plist.group(1)) - 1];
             } catch(NumberFormatException e) {
                 Util.print("Reparty failed. Please report this!");
@@ -59,17 +60,17 @@ public class Reparty implements ChatTrigger {
         } else if (plist.group(2) != null) {
             Matcher player = PLAYER.matcher(plist.group(2));
             while (player.find()) {
-                this.players[playersSoFar] = player.group(1);
-                playersSoFar++;
+                this.players[foundPlayers] = player.group(1);
+                foundPlayers++;
             }
         }
-        if (this.playersSoFar == this.players.length) reparty();
+        if (this.foundPlayers == this.players.length) reparty();
         return ActionResult.SUCCESS;
     }
 
     private void reparty() {
         Util.sendDelayedCommand("p disband", 5);
-        int delay = 10;
+        int delay = 15;
         for (String player : this.players) {
             delay += 5;
             Util.sendDelayedCommand("p invite " + player, delay);
@@ -80,6 +81,6 @@ public class Reparty implements ChatTrigger {
     private void reset() {
         this.repartying = false;
         this.players = null;
-        this.playersSoFar = 0;
+        this.foundPlayers = 0;
     }
 }
