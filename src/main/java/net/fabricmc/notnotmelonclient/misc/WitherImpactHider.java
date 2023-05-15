@@ -5,6 +5,8 @@ import net.minecraft.client.particle.ExplosionLargeParticle;
 import net.minecraft.client.MinecraftClient;
 
 public class WitherImpactHider {
+	private static final MinecraftClient client = MinecraftClient.getInstance();
+
 	public static Boolean isWitherImpactParticle(ExplosionLargeParticle particle) {
 		Double x = particle.x;
 		Double y = particle.y;
@@ -21,7 +23,7 @@ public class WitherImpactHider {
 	private static HashMap<Double, HashMap<Double, HashMap<Double, Integer>>> particleCanidatesPerTile = new HashMap<Double, HashMap<Double, HashMap<Double, Integer>>>();
 	private static long ageOfParticleCanidatesPerTile = -1; // particleCanidatesPerTile is cleared if the gametick changes
 	public static void registerExplosionCreation(ExplosionLargeParticle particle) {
-		long currentTick = MinecraftClient.getInstance().world.getTime();
+		long currentTick = client.world.getTime();
 		if (ageOfParticleCanidatesPerTile != currentTick) {
 			ageOfParticleCanidatesPerTile = currentTick;
 			particleCanidatesPerTile = new HashMap<Double, HashMap<Double, HashMap<Double, Integer>>>();

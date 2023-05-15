@@ -15,6 +15,8 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.ScreenHandler;
 
 public class ItemUtil {
+	private static final MinecraftClient client = MinecraftClient.getInstance();
+
     // skyblock stores most nbt in the ExtraAttributes tag
     @Nullable public static NbtCompound getExtraAttributes(ItemStack stack) {
         if (stack == null || stack.getNbt() == null)
@@ -31,7 +33,7 @@ public class ItemUtil {
 
     // returns the "hover stack" used in GUIs
     @Nullable public static ItemStack getCursorStack() {
-        Screen screen = MinecraftClient.getInstance().currentScreen;
+        Screen screen = client.currentScreen;
         if (screen == null || !(screen instanceof HandledScreen))
             return null;
         ScreenHandler handler = ((HandledScreen<?>) screen).getScreenHandler();

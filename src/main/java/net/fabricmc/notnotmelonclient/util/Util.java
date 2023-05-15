@@ -48,9 +48,9 @@ public class Util {
 	// Source: https://github.com/SkyblockerMod/Skyblocker/blob/master/src/main/java/me/xmrvizzy/skyblocker/utils/Utils.java
 	public static List<String> getSidebar() {
         try {
-            ClientPlayerEntity client = MinecraftClient.getInstance().player;
-            if (client == null) return new ArrayList<String>();
-            Scoreboard scoreboard = client.getScoreboard();
+            ClientPlayerEntity player = MinecraftClient.getInstance().player;
+            if (player == null) return new ArrayList<String>();
+            Scoreboard scoreboard = player.getScoreboard();
             ScoreboardObjective objective = scoreboard.getObjectiveForSlot(1);
             List<String> lines = new ArrayList<String>();
             for (ScoreboardPlayerScore score : scoreboard.getAllPlayerScores(objective)) {
@@ -108,25 +108,19 @@ public class Util {
 		textRenderer.draw(matrices, text, (float) x, (float) y, color);
 	}
 
-    public static void drawText(MatrixStack matrices, TextRenderer textRenderer, float x, float y, OrderedText text, int color) {
-        Text s = orderedTextAsString(text);
-        int alpha = color>>24<<24;
-		for (int i : offsets) {
-			textRenderer.draw(matrices, s, (float) (x + i), (float) y, alpha);
-			textRenderer.draw(matrices, s, (float) x, (float) (y + i), alpha);
-		}
-		textRenderer.draw(matrices, text, (float) x, (float) y, color);
-	}
-
     public static void drawCenteredText(MatrixStack matrices, MinecraftClient client, float x, float y, Text text, int color) {
         TextRenderer textRenderer = client.textRenderer;
         x -= textRenderer.getWidth(text) / 2;
         drawText(matrices, client, x, y, text, color);
 	}
 
-    public static MutableText orderedTextAsString(OrderedText orderedText) {
-        MutableText text = Text.literal("");
-        orderedText.accept((i, s, c) -> { text.append(Text.of(String.valueOf((char) c)).); return true; } );
-        return text;
+    public static String orderedTextAsString(OrderedText orderedText) {
+        StringBuilder sb = new StringBuilder();
+        orderedText.accept((i, s, c) -> { sb.append(c); return true; } );
+        return sb.toString();
+    }
+
+    public static void sendDelayedCommand(String command, int delay) {
+        Scheduler.getInstance().schedule(() -> MinecraftClient.getInstance().player.networkHandler.sendCommand(command), delay);
     }
 }
