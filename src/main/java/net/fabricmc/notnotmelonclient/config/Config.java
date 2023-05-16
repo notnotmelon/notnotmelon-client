@@ -29,6 +29,7 @@ public class Config {
 			.save(JsonLoader.jsonInterface::save)
 			.category(qol())
 			.category(removals())
+			.category(dungeons())
 			.build();
 	}
 
@@ -78,6 +79,26 @@ public class Config {
 			.group(OptionGroup.createBuilder()
 				.name(Text.literal("Other"))
 				.option(hideGearScore())
+				.build())
+
+			.build();
+	}
+
+	public ConfigCategory dungeons() {
+		return ConfigCategory.createBuilder()
+			.name(Text.literal("Dungeons"))
+
+			/*.group(OptionGroup.createBuilder()
+				.name(Text.literal("Puzzle Solvers"))
+				.build())
+
+			.group(OptionGroup.createBuilder()
+				.name(Text.literal("Bossfight"))
+				.build())*/
+
+			.group(OptionGroup.createBuilder()
+				.name(Text.literal("Other"))
+				.option(autoRepartyAccept())
 				.build())
 
 			.build();
@@ -246,6 +267,34 @@ public class Config {
 				getDefaults().hideUnbreakable,
 				() -> getConfig().hideUnbreakable,
 				v -> getConfig().hideUnbreakable = v
+			)
+			.controller(TickBoxController::new)
+			.build();
+	}
+
+	@ConfigEntry public boolean autoRepartyAccept = true;
+	public Option<?> autoRepartyAccept() {
+		return Option.createBuilder(boolean.class)
+			.name(Text.of("Auto Reparty"))
+			.tooltip(Text.of("If you are the party leader in dungeons, automatically run /rp at the end of a dungeon run. Otherwise, automatically accepts reparty requests from the party leader."))
+			.binding(
+				getDefaults().autoRepartyAccept,
+				() -> getConfig().autoRepartyAccept,
+				v -> getConfig().autoRepartyAccept = v
+			)
+			.controller(TickBoxController::new)
+			.build();
+	}
+
+	@ConfigEntry public boolean autoExtraStats = true;
+	public Option<?> autoExtraStats() {
+		return Option.createBuilder(boolean.class)
+			.name(Text.of("Extra Stats"))
+			.tooltip(Text.of("Runs /showextrastats after completing a dungeon run. This command shows score, time taken, deaths, secrets, and other values."))
+			.binding(
+				getDefaults().autoExtraStats,
+				() -> getConfig().autoExtraStats,
+				v -> getConfig().autoExtraStats = v
 			)
 			.controller(TickBoxController::new)
 			.build();

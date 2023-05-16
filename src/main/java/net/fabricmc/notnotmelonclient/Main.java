@@ -35,6 +35,7 @@ public class Main implements ClientModInitializer {
 		registerCyclic();
 		registerCommands();
 		registerEvents();
+		registerChatTriggers();
 	}
 
 	private void registerConfig() {
@@ -57,10 +58,15 @@ public class Main implements ClientModInitializer {
 
 	private void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
         ConfigCommand.register(dispatcher);
-		ChatTrigger.EVENT.register(new Reparty(dispatcher));
     }
 
 	private void registerEvents() {
 		ItemTooltipCallback.EVENT.register(ItemPriceTooltip::onInjectTooltip);
+	}
+
+	private void registerChatTriggers() {
+		for (ChatTrigger chatTrigger : new ChatTrigger[]{
+			new Reparty()
+		}) ChatTrigger.EVENT.register(chatTrigger);
 	}
 }
