@@ -309,7 +309,7 @@ public class Config {
 	public Option<?> dungeonMap() {
 		return Option.createBuilder(boolean.class)
 			.name(Text.of("Dungeon Map"))
-			.tooltip(Text.of("Runs /showextrastats after completing a dungeon run. This command shows score, time taken, deaths, secrets, and other values."))
+			.tooltip(Text.of("Shows a map of the dungeon on your HUD."))
 			.binding(
 				getDefaults().dungeonMap,
 				() -> getConfig().dungeonMap,
