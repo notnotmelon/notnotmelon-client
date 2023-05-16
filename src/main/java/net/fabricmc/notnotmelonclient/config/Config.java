@@ -97,6 +97,11 @@ public class Config {
 				.build())*/
 
 			.group(OptionGroup.createBuilder()
+				.name(Text.literal("Map"))
+				.option(dungeonMap())
+				.build())
+
+			.group(OptionGroup.createBuilder()
 				.name(Text.literal("Other"))
 				.option(autoRepartyAccept())
 				.build())
@@ -295,6 +300,20 @@ public class Config {
 				getDefaults().autoExtraStats,
 				() -> getConfig().autoExtraStats,
 				v -> getConfig().autoExtraStats = v
+			)
+			.controller(TickBoxController::new)
+			.build();
+	}
+
+	@ConfigEntry public boolean dungeonMap = true;
+	public Option<?> dungeonMap() {
+		return Option.createBuilder(boolean.class)
+			.name(Text.of("Dungeon Map"))
+			.tooltip(Text.of("Runs /showextrastats after completing a dungeon run. This command shows score, time taken, deaths, secrets, and other values."))
+			.binding(
+				getDefaults().dungeonMap,
+				() -> getConfig().dungeonMap,
+				v -> getConfig().dungeonMap = v
 			)
 			.controller(TickBoxController::new)
 			.build();

@@ -9,3 +9,16 @@ accessible   field   net/minecraft/client/particle/Particle   blue   F
 accessible   field   net/minecraft/client/particle/Particle   alpha   F
 
 accessible   field   net/minecraft/client/option/KeyBinding   boundKey   Lnet/minecraft/client/util/InputUtil$Key;
+
+accessible    class    net/minecraft/client/render/MapRenderer$MapTexture
+accessible    field    net/minecraft/client/render/MapRenderer$MapTexture    state    Lnet/minecraft/item/map/MapState;
+accessible    field    net/minecraft/client/render/MapRenderer$MapTexture    texture    Lnet/minecraft/client/texture/NativeImageBackedTexture;
+accessible    field    net/minecraft/client/render/MapRenderer$MapTexture    renderLayer    Lnet/minecraft/client/render/RenderLayer;
+accessible    field    net/minecraft/client/render/MapRenderer$MapTexture    needsUpdate    Z
+accessible    field    net/minecraft/client/render/MapRenderer    MAP_ICONS_RENDER_LAYER    Lnet/minecraft/client/render/RenderLayer;
+accessible    field    net/minecraft/client/render/MapRenderer    mapTextures    Lit/unimi/dsi/fastutil/ints/Int2ObjectMap;
+extendable    method    net/minecraft/client/render/MapRenderer$MapTexture    <init>    (Lnet/minecraft/client/render/MapRenderer;ILnet/minecraft/item/map/MapState;)V
+extendable    method    net/minecraft/client/render/MapRenderer$MapTexture    updateTexture    ()V
+extendable    method    net/minecraft/client/render/MapRenderer$MapTexture    draw    (Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ZI)V
+accessible    method    net/minecraft/client/render/MapRenderer$MapTexture    setState    (Lnet/minecraft/item/map/MapState;)V
+extendable    method    net/minecraft/client/render/MapRenderer    getMapTexture    (ILnet/minecraft/item/map/MapState;)Lnet/minecraft/client/render/MapRenderer$MapTexture;
