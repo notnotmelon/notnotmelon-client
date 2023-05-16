@@ -37,7 +37,7 @@ public class Reparty implements ChatTrigger {
     private static final Pattern PLAYER = Pattern.compile(" ([a-zA-Z0-9_]{2,16}) ●");
     private static final Pattern EXTRA_STATS = Pattern.compile("^§r                             §6> §e§lEXTRA STATS §6<$");
     public ActionResult onMessage(Text text, String asString) {
-        if (Config.getConfig().autoExtraStats && EXTRA_STATS.matcher(asString).matches()) {
+        if (Util.isDungeons && Config.getConfig().autoExtraStats && EXTRA_STATS.matcher(asString).matches()) {
             Util.sendDelayedCommand("showextrastats", 10);
             if (Config.getConfig().autoRepartyAccept) {
                 Util.sendDelayedCommand("p list", 20);
