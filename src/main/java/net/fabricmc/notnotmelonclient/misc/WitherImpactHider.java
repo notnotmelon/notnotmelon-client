@@ -2,6 +2,9 @@ package net.fabricmc.notnotmelonclient.misc;
 
 import java.util.HashMap;
 import net.minecraft.client.particle.ExplosionLargeParticle;
+import net.minecraft.entity.player.PlayerEntity;
+import net.fabricmc.notnotmelonclient.util.MathUtil;
+import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.client.MinecraftClient;
 
 public class WitherImpactHider {
@@ -50,10 +53,23 @@ public class WitherImpactHider {
 		// The particle max lifespan is between 6 and 9 ticks (randomized)
 		if (particle.getMaxAge() < 6 || particle.getMaxAge() > 9) return false;
 
-		// All particles spawn at coords x:*.5 y:*.0 z:*.5
-		if (Math.abs(particle.x - Math.rint(particle.x)) != 0.5) return false;
-		if (particle.y - Math.rint(particle.y) != 0) return false;
-		if (Math.abs(particle.z - Math.rint(particle.z)) != 0.5) return false;
+		boolean coordsCheck = false;
+		if (
+			Math.abs(particle.x - Math.rint(particle.x)) == 0.5 &&
+			Math.abs(particle.z - Math.rint(particle.z)) == 0.5 &&
+			particle.y - Math.rint(particle.y) == 0
+		) coordsCheck = true;
+
+		else {
+			PlayerEntity player = client.player;
+			if (
+				player != null &&
+				MathUtil.diffrence(player.getX(), particle.x) < 0.5 &&
+				MathUtil.diffrence(player.getZ(), particle.z) < 0.5
+			) coordsCheck = true;
+		}
+		
+		if (!coordsCheck) return false;
 
 		// The particle color is randomized between 0.5 and 1, but is always in greyscale
 		if (particle.red == particle.blue && particle.blue == particle.green && particle.alpha == 1) return true;
