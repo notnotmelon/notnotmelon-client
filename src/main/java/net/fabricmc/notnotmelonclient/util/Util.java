@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.lwjgl.glfw.GLFW;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -125,5 +127,29 @@ public class Util {
             ClientPlayerEntity player = MinecraftClient.getInstance().player;
             if (player != null) player.networkHandler.sendCommand(command);
         }, delay);
+    }
+
+    public static double[] getMousePosition() {
+        double[] mouseX = new double[1];
+        double[] mouseY = new double[1];
+        long handler = MinecraftClient.getInstance().getWindow().getHandle();
+        GLFW.glfwGetCursorPos(handler, mouseX, mouseY);
+        return new double[]{mouseX[0], mouseY[0]};
+    }
+
+    public static void setMousePosition(double x, double y) {
+        MinecraftClient client = MinecraftClient.getInstance();
+        long handler = client.getWindow().getHandle();
+        GLFW.glfwSetInputMode(handler, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_NORMAL);
+        GLFW.glfwSetCursorPos(handler, x, y);
+        client.mouse.onCursorPos(handler, x, y);
+    }
+
+    public static long getGametick() {
+        try {
+            return MinecraftClient.getInstance().world.getTime();
+        } catch(NullPointerException e) {
+            return -1;
+        }
     }
 }

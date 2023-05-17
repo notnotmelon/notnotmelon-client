@@ -22,3 +22,5 @@ extendable    method    net/minecraft/client/render/MapRenderer$MapTexture    up
 extendable    method    net/minecraft/client/render/MapRenderer$MapTexture    draw    (Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ZI)V
 accessible    method    net/minecraft/client/render/MapRenderer$MapTexture    setState    (Lnet/minecraft/item/map/MapState;)V
 extendable    method    net/minecraft/client/render/MapRenderer    getMapTexture    (ILnet/minecraft/item/map/MapState;)Lnet/minecraft/client/render/MapRenderer$MapTexture;
+
+accessible    method    net/minecraft/client/Mouse    onCursorPos    (JDD)V

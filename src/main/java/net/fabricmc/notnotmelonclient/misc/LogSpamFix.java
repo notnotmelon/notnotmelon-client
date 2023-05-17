@@ -37,12 +37,14 @@ public class LogSpamFix implements PreLaunchEntrypoint {
 			logger.addFilter(logFilter);
 	}
 
-	private static Pattern unknownTeamList = Pattern.compile("Received packet for unknown team .+?: team action: REMOVE, player action:");
+	private static final Pattern UNKNOWN_TEAM = Pattern.compile("^Received packet for unknown team .+?: team action: REMOVE, player action:");
+	private static final Pattern UNKNOWN_PLAYER = Pattern.compile("^Ignoring player info update for unknown player .+?$");
 	private static boolean shouldFilterMessage(String message) {
 		if (!Util.isSkyblock || !Config.getConfig().logSpamFix) return false;
 		if (message.contains("Ignoring player info update for unknown player")) return true;
 		if (message.equals("Received passengers for unknown entity")) return true;
-		if (unknownTeamList.matcher(message).find()) return true;
+		if (UNKNOWN_TEAM.matcher(message).find()) return true;
+		if (UNKNOWN_PLAYER.matcher(message).find()) return true;
 		return false;
 	}
 

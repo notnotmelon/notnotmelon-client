@@ -57,6 +57,11 @@ public class Config {
 				.option(oldMasterStars())
 				.build())
 
+			.group(OptionGroup.createBuilder()
+				.name(Text.literal("Temp"))
+				.option(fixCursorReset())
+				.build())
+
 			.build();
 	}
 
@@ -314,6 +319,20 @@ public class Config {
 				getDefaults().dungeonMap,
 				() -> getConfig().dungeonMap,
 				v -> getConfig().dungeonMap = v
+			)
+			.controller(TickBoxController::new)
+			.build();
+	}
+
+	@ConfigEntry public boolean fixCursorReset = true;
+	public Option<?> fixCursorReset() {
+		return Option.createBuilder(boolean.class)
+			.name(Text.of("Fix Cursor Reset"))
+			.tooltip(Text.of("Fixes that your cursor will reset to the center of the screen while navigating skyblock menus."))
+			.binding(
+				getDefaults().fixCursorReset,
+				() -> getConfig().fixCursorReset,
+				v -> getConfig().fixCursorReset = v
 			)
 			.controller(TickBoxController::new)
 			.build();

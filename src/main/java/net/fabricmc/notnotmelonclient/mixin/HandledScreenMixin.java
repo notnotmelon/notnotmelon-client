@@ -1,9 +1,11 @@
 package net.fabricmc.notnotmelonclient.mixin;
 
 import net.fabricmc.notnotmelonclient.config.Config;
+import net.fabricmc.notnotmelonclient.misc.CursorResetFix;
 import net.fabricmc.notnotmelonclient.misc.FavoriteItem;
 import net.fabricmc.notnotmelonclient.misc.ScrollableTooltips;
 import net.fabricmc.notnotmelonclient.util.Util;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.item.ItemStack;
@@ -28,14 +30,14 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
     // misleading method name. this also triggers on keypress
     @Inject(at = @At("HEAD"), method = "onMouseClick(Lnet/minecraft/screen/slot/Slot;IILnet/minecraft/screen/slot/SlotActionType;)V", cancellable = true)
-    public void onMouseClick(Slot slot, int invSlot, int button, SlotActionType actionType, CallbackInfo ci) {
+    private void onMouseClick(Slot slot, int invSlot, int button, SlotActionType actionType, CallbackInfo ci) {
 		if (!Util.isSkyblock) return;
         FavoriteItem.onSlotClick(slot, invSlot, (HandledScreen<?>) (Screen) this, actionType, ci);
     }
 
     // prevents empty tooltips from rendering
 	@Inject(at = @At("HEAD"), method = "drawMouseoverTooltip", cancellable = true)
-    public void drawMouseoverTooltip(CallbackInfo ci) {
+    private void drawMouseoverTooltip(CallbackInfo ci) {
         ScrollableTooltips.changeHoveredSlot(this.focusedSlot);
 		if (!Util.isSkyblock || !Config.getConfig().hideEmptyTooltips) return;
 
@@ -44,5 +46,15 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
             if (stack.getName().getString().equals(" "))
                 ci.cancel();
         }
+    }
+
+    @Inject(method = "close", at = @At("HEAD"))
+	private void close(CallbackInfo info) {
+		ScrollableTooltips.reset();
+	}
+
+    @Inject(method = "init", at = @At("TAIL"))
+    private void init(CallbackInfo info) {
+        CursorResetFix.onOpenScreen((HandledScreen<?>) (Screen) this);
     }
 }
