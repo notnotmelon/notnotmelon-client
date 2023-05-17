@@ -4,15 +4,18 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.notnotmelonclient.api.ApiRequests;
 import net.fabricmc.notnotmelonclient.commands.ConfigCommand;
 import net.fabricmc.notnotmelonclient.commands.Reparty;
 import net.fabricmc.notnotmelonclient.config.JsonLoader;
+import net.fabricmc.notnotmelonclient.dungeons.TicTacToeSolver;
 import net.fabricmc.notnotmelonclient.misc.FavoriteItem;
 import net.fabricmc.notnotmelonclient.misc.ItemPriceTooltip;
 import net.fabricmc.notnotmelonclient.util.ChatTrigger;
 import net.fabricmc.notnotmelonclient.util.Scheduler;
 import net.fabricmc.notnotmelonclient.util.Util;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryAccess;
 
 import java.nio.file.Path;
@@ -23,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import com.mojang.brigadier.CommandDispatcher;
 
 public class Main implements ClientModInitializer {
+	public static final MinecraftClient client = MinecraftClient.getInstance();
 	public static final Logger LOGGER = LoggerFactory.getLogger("notnotmelonclient");
 	public static final String NAMESPACE = "notnotmelonclient";
 	public static Path configDir;
@@ -36,6 +40,7 @@ public class Main implements ClientModInitializer {
 		registerCommands();
 		registerEvents();
 		registerChatTriggers();
+		registerRendering();
 	}
 
 	private void registerConfig() {
@@ -68,5 +73,9 @@ public class Main implements ClientModInitializer {
 		for (ChatTrigger chatTrigger : new ChatTrigger[]{
 			new Reparty()
 		}) ChatTrigger.EVENT.register(chatTrigger);
+	}
+
+	private void registerRendering() {
+		WorldRenderEvents.END.register(TicTacToeSolver::render);
 	}
 }

@@ -24,3 +24,5 @@ accessible    method    net/minecraft/client/render/MapRenderer$MapTexture    se
 extendable    method    net/minecraft/client/render/MapRenderer    getMapTexture    (ILnet/minecraft/item/map/MapState;)Lnet/minecraft/client/render/MapRenderer$MapTexture;
 
 accessible    method    net/minecraft/client/Mouse    onCursorPos    (JDD)V
+
+accessible    field    net/minecraft/client/render/WorldRenderer    frustum    Lnet/minecraft/client/render/Frustum;

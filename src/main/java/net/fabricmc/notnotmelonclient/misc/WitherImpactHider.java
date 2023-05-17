@@ -4,7 +4,6 @@ import java.util.HashMap;
 import net.minecraft.client.particle.ExplosionLargeParticle;
 import net.minecraft.entity.player.PlayerEntity;
 import net.fabricmc.notnotmelonclient.util.MathUtil;
-import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.client.MinecraftClient;
 
 public class WitherImpactHider {
