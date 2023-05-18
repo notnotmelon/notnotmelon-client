@@ -17,7 +17,8 @@
     "MouseMixin",
     "ScreenMixin",
     "TextFieldWidgetMixin",
-    "ChatHudListenerMixin"
+    "ChatHudListenerMixin",
+    "GameRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

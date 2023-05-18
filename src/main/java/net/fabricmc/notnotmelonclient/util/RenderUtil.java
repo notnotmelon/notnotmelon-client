@@ -27,6 +27,8 @@ public class RenderUtil {
     public static void drawBoxOutline(Box box, float lineWidth, Color color1, Color color2) {
         if (!getFrustum().isVisible(box)) return;
         Vec3d minVector = MathUtil.minVector(box);
+        double distance = client.player.getPos().distanceTo(minVector);
+        if (distance > 200) return;
 
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
@@ -34,7 +36,7 @@ public class RenderUtil {
         MatrixStack matrices = matrixOf(box.minX, box.minY, box.minZ);
 
         RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
-        lineWidth = 2 * (float) Math.max(1, lineWidth / Math.max(2, client.player.getPos().distanceTo(minVector)));
+        lineWidth = 2 * (float) Math.max(1, lineWidth / Math.max(2, distance));
         RenderSystem.lineWidth(lineWidth);
 		RenderSystem.disableCull();
 
@@ -51,17 +53,17 @@ public class RenderUtil {
         float z2 = (float) box.maxZ;
 
         new Line(x1, y1, z1, x2, y1, z1).consumeVertices(buffer, matrices, color1, color2);
-		new Line(x2, y1, z1, x2, y1, z2).consumeVertices(buffer, matrices, color2, color1);
 		new Line(x2, y1, z2, x1, y1, z2).consumeVertices(buffer, matrices, color1, color2);
-		new Line(x1, y1, z2, x1, y1, z1).consumeVertices(buffer, matrices, color2, color1);
-		new Line(x1, y1, z2, x1, y2, z2).consumeVertices(buffer, matrices, color2, color1);
 		new Line(x1, y1, z1, x1, y2, z1).consumeVertices(buffer, matrices, color1, color2);
 		new Line(x2, y1, z2, x2, y2, z2).consumeVertices(buffer, matrices, color1, color2);
+		new Line(x2, y2, z1, x2, y2, z2).consumeVertices(buffer, matrices, color1, color2);
+		new Line(x1, y2, z2, x1, y2, z1).consumeVertices(buffer, matrices, color1, color2);
+		new Line(x2, y1, z1, x2, y1, z2).consumeVertices(buffer, matrices, color2, color1);
+		new Line(x1, y1, z2, x1, y1, z1).consumeVertices(buffer, matrices, color2, color1);
+		new Line(x1, y1, z2, x1, y2, z2).consumeVertices(buffer, matrices, color2, color1);
 		new Line(x2, y1, z1, x2, y2, z1).consumeVertices(buffer, matrices, color2, color1);
 		new Line(x1, y2, z1, x2, y2, z1).consumeVertices(buffer, matrices, color2, color1);
-		new Line(x2, y2, z1, x2, y2, z2).consumeVertices(buffer, matrices, color1, color2);
 		new Line(x2, y2, z2, x1, y2, z2).consumeVertices(buffer, matrices, color2, color1);
-		new Line(x1, y2, z2, x1, y2, z1).consumeVertices(buffer, matrices, color1, color2);
         tessellator.draw();
 
         RenderSystem.enableCull();
@@ -69,17 +71,26 @@ public class RenderUtil {
     }
 
 	public static void drawBoxOutline(BlockPos blockPos, float lineWidth, Color color) {
-        drawBoxOutline(new Box(blockPos), lineWidth, color, color);
+        drawBoxOutline(blockPos, lineWidth, color, color);
     }
 
+    public static PointList<Integer> boxedPoints = new PointList<Integer>();
+    public static long lastBoxedTick;
     public static void drawBoxOutline(BlockPos blockPos, float lineWidth, Color color1, Color color2) {
+        long tick = Util.getGametick();
+        if (lastBoxedTick != tick) {
+            lastBoxedTick = tick;
+            boxedPoints = new PointList<Integer>();
+        }
+        
+        boxedPoints.add(blockPos.getX(), blockPos.getY(), blockPos.getZ());
         drawBoxOutline(new Box(blockPos), lineWidth, color1, color2);
     }
 
     public static void drawRainbowBoxOutline(BlockPos blockPos, float lineWidth, int period) {
         float hue1 = (Util.getGametick() % period + 1) / (float) period;
         float hue2 = (float) (hue1 + 0.25) % 1;
-        drawBoxOutline(new Box(blockPos), lineWidth, Color.getHSBColor(hue1, 1, 1), Color.getHSBColor(hue2, 1, 1));
+        drawBoxOutline(blockPos, lineWidth, Color.getHSBColor(hue1, 1, 1), Color.getHSBColor(hue2, 1, 1));
     }
 
     public static MatrixStack matrixOf(double x, double y, double z) {
