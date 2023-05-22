@@ -1,10 +1,7 @@
 package net.fabricmc.notnotmelonclient.dungeons;
 
-import java.util.HashMap;
-
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.notnotmelonclient.util.RenderUtil;
-import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.util.math.BlockPos;
 
 // The AI can only start in the corner or center.
@@ -16,30 +13,136 @@ public class TicTacToeSolver {
 	}
 
 	public static void onChangeRoom() {
-		Util.print("room changed!");
+		char[][] board = new char[][]{
+        	{' ', ' ', ' '},
+        	{' ', ' ', ' '},
+        	{'X', ' ', ' '}
+    	};
+    	char team = 'O';
+    	while (true) {
+        	int[] bestMove = bestMove(board, team);
+        	if (bestMove[0] == -1) break;
+        	board[bestMove[0]][bestMove[1]] = team;
+        	for (int i = 0; i < 3; i++) {
+            	for (int j = 0; j < 3; j++) {
+                	System.out.print(board[i][j]==' ' ? '.' : board[i][j]);
+				}
+				System.out.println();
+			}
+			System.out.println();
+        	team = team == 'X' ? 'O' : 'X';
+    	}
 	}
 
-	
-	private class TicTacToeBoard {
-		private String board;
+	public static int evaluate(char[][] board) {
+    	// columns
+    	for (int i = 0; i < 3; i++)
+        	if (board[0][i] != ' ' && board[0][i] == board[1][i] && board[1][i] == board[2][i])
+            	return board[0][i] == 'X' ? 1 : -1;
+		
+    	// rows
+    	for (int i = 0; i < 3; i++)
+        	if (board[i][0] != ' ' && board[i][0] == board[i][1] && board[i][1] == board[i][2])
+            	return board[i][0] == 'X' ? 1 : -1;
+		
+    	// diagonal
+    	if (board[0][0] != ' ' && board[0][0] == board[1][1] && board[1][1] == board[2][2])
+        	return board[0][0] == 'X' ? 1 : -1;
+    	if (board[2][0] != ' ' && board[2][0] == board[1][1] && board[1][1] == board[0][2])
+        	return board[2][0] == 'X' ? 1 : -1;
+       	
+    	return 0;
+	}
 
-		TicTacToeBoard(String board) {
-			this.board = board;
-		}
+	public static int miniMax(char[][] board, char team) {
+		int emptySquares = 0;
+		for (int i = 0; i < 3; i++)
+        	for (int j = 0; j < 3; j++)
+				if (board[i][j] == ' ')
+					emptySquares++;
 
-		// Coding is hard. Let's just hardcode it!
-		private static HashMap<String, Integer> nextMoves = new HashMap<String, Integer>();
-		static {
-			nextMoves.put("... .X. ...", 0);
-
-			nextMoves.put("0X. .X. ...", 7);
-			nextMoves.put("0.. .X. .X.", 1);
-
-
-
-
-			
-			nextMoves.put("X........", 4);
+		if (team == 'O') {
+			return max(board, emptySquares);
+		} else {
+			return min(board, emptySquares);
 		}
 	}
+
+	public static int max(char[][] board, int emptySquares) {
+		int evaluation = evaluate(board);
+		if (evaluation != 0 || emptySquares == 0) return evaluation;
+
+		evaluation = Integer.MIN_VALUE;
+    	for (int i = 0; i < 3; i++) {
+        	for (int j = 0; j < 3; j++) {
+            	if (board[i][j] == ' ') {
+                	board[i][j] = 'O';
+					evaluation = Math.max(evaluation, min(board, emptySquares - 1));
+                	board[i][j] = ' ';
+            	}
+			}
+		}
+		return evaluation;
+	}
+
+	public static int min(char[][] board, int emptySquares) {
+		int evaluation = evaluate(board);
+		if (evaluation != 0 || emptySquares == 0) return evaluation;
+
+		evaluation = Integer.MAX_VALUE;
+    	for (int i = 0; i < 3; i++) {
+        	for (int j = 0; j < 3; j++) {
+            	if (board[i][j] == ' ') {
+                	board[i][j] = 'X';
+					evaluation = Math.min(evaluation, max(board, emptySquares - 1));
+                	board[i][j] = ' ';
+            	}
+			}
+		}
+		return evaluation;
+	}	
+
+	public static int[] bestMove(char[][] board, char team) {
+        int[] bestMove = new int[]{-1, -1};
+		System.out.println("TURN: "+team);
+		if (team == 'O') {
+			int bestValue = Integer.MAX_VALUE;
+			for (int i = 0; i < 3; i++) {
+				for (int j = 0; j < 3; j++) {
+					if (board[i][j] == ' ') {
+						board[i][j] = team;
+						int moveValue = miniMax(board, team);
+						board[i][j] = ' ';
+						System.out.print(moveValue == 1 ? " 1" : moveValue == 0 ? " 0" : moveValue);
+						if (moveValue < bestValue) {
+							bestMove[0] = i;
+							bestMove[1] = j;
+							bestValue = moveValue;
+						}
+					}else {System.out.print(" _");}
+				}
+				System.out.println();
+			}
+		} else if (team == 'X') {
+			int bestValue = Integer.MIN_VALUE;
+			for (int i = 0; i < 3; i++) {
+				for (int j = 0; j < 3; j++) {
+					if (board[i][j] == ' ') {
+						board[i][j] = team;
+						int moveValue = miniMax(board, team);
+						board[i][j] = ' ';
+						System.out.print(moveValue == 1 ? " 1" : moveValue == 0 ? " 0" : moveValue);
+						if (moveValue > bestValue) {
+							bestMove[0] = i;
+							bestMove[1] = j;
+							bestValue = moveValue;
+						}
+					}else {System.out.print(" _");}
+				}
+				System.out.println();
+			}
+		}
+        
+        return bestMove;
+    }
 }
