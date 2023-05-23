@@ -26,9 +26,8 @@ public class RenderUtil {
 
     public static void drawBoxOutline(Box box, float lineWidth, Color color1, Color color2) {
         if (!getFrustum().isVisible(box)) return;
-        Vec3d minVector = MathUtil.minVector(box);
-        double distance = client.player.getPos().distanceTo(minVector);
-        if (distance > 200) return;
+        double distance = client.player.getPos().distanceTo(box.getCenter());
+        if (distance > 500) return;
 
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
@@ -44,6 +43,7 @@ public class RenderUtil {
         BufferBuilder buffer = tessellator.getBuffer();
         buffer.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
         
+        Vec3d minVector = MathUtil.minVector(box);
         box = box.offset(minVector.negate());
 		float x1 = (float) box.minX;
         float y1 = (float) box.minY;
@@ -69,6 +69,10 @@ public class RenderUtil {
         RenderSystem.enableCull();
         RenderSystem.disableBlend();
     }
+    
+    public static void drawBoxOutline(Box box) {
+        drawBoxOutline(box, 8, Color.WHITE, Color.WHITE);
+    }
 
 	public static void drawBoxOutline(BlockPos blockPos, float lineWidth, Color color) {
         drawBoxOutline(blockPos, lineWidth, color, color);
@@ -84,6 +88,12 @@ public class RenderUtil {
         }
         
         boxedPoints.add(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+        boxedPoints.add(blockPos.getX() - 1, blockPos.getY(), blockPos.getZ());
+        boxedPoints.add(blockPos.getX() + 1, blockPos.getY(), blockPos.getZ());
+        boxedPoints.add(blockPos.getX(), blockPos.getY() - 1, blockPos.getZ());
+        boxedPoints.add(blockPos.getX(), blockPos.getY() + 1, blockPos.getZ());
+        boxedPoints.add(blockPos.getX(), blockPos.getY(), blockPos.getZ() - 1);
+        boxedPoints.add(blockPos.getX(), blockPos.getY(), blockPos.getZ() + 1);
         drawBoxOutline(new Box(blockPos), lineWidth, color1, color2);
     }
 

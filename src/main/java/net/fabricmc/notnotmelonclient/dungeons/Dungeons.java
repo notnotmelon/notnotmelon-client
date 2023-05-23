@@ -1,9 +1,10 @@
 package net.fabricmc.notnotmelonclient.dungeons;
 
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.notnotmelonclient.Main;
-import net.fabricmc.notnotmelonclient.util.Util;
+import net.fabricmc.notnotmelonclient.util.RenderUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Box;
@@ -19,12 +20,12 @@ public class Dungeons {
 				for (ChangeRoomEvent listener : listeners) listener.onChangeRoom();
 			});
 	}
-
+	
 	private static int lastX;
 	private static int lastZ;
-	public static void tick(MinecraftClient client) {
-		if (Dungeons.client.player == null) return;
-		if (!Util.isDungeons) return;
+	public static void tick(MinecraftClient c) {
+		if (client.player == null) return;
+		//if (!Util.isDungeons) return;
 		int[] roomCoords = getRoomCoords();
 		int roomX = roomCoords[0];
 		int roomZ = roomCoords[1];
@@ -38,8 +39,8 @@ public class Dungeons {
 
 	public static int[] getRoomCoords() {
 		PlayerEntity player = client.player;
-		int roomX = (int) ((player.getX() + 8.5) / 32);
-		int roomZ = (int) ((player.getZ() + 8.5) / 32);
+		int roomX = (int) Math.ceil((player.getX() + 8.5) / 32);
+		int roomZ = (int) Math.ceil((player.getZ() + 8.5) / 32);
 		return new int[]{roomX, roomZ};
 	}
 
@@ -53,7 +54,7 @@ public class Dungeons {
 		double roomX = roomCenter[0];
 		double roomZ = roomCenter[1];
 
-		return new Box(roomX - 16, 0, roomZ - 16, roomX + 16, 255, roomZ + 16);
+		return new Box(roomX - 16, -64, roomZ - 16, roomX + 16, 255, roomZ + 16);
 	}
 
 	public static void registerEvents() {

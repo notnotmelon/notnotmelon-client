@@ -7,6 +7,8 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.notnotmelonclient.Main;
 import net.fabricmc.notnotmelonclient.util.RenderUtil;
 import net.fabricmc.notnotmelonclient.util.Util;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
@@ -15,6 +17,7 @@ import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.map.MapState;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 // The AI can only start in the corner or center.
@@ -23,39 +26,112 @@ import net.minecraft.world.World;
 public class TicTacToeSolver {
 	private static final MinecraftClient client = Main.client;
 
+	public static BlockPos bestMoveIndicator;
+
 	public static void render(WorldRenderContext wrc) {
-		RenderUtil.drawRainbowBoxOutline(new BlockPos(0, 100, 0), 6, 60);
+		if (bestMoveIndicator != null) RenderUtil.drawRainbowBoxOutline(bestMoveIndicator, 16, 60);
 	}
 
 	public static void onChangeRoom() {
 		ClientWorld world = client.world;
-		List<ItemFrameEntity> maps = new ArrayList<ItemFrameEntity>();
+		List<ItemFrameEntity> itemFrames = new ArrayList<ItemFrameEntity>();
 		Iterable<Entity> entities = world.getEntities();
 		for (Entity entity : entities) {
 			if (entity instanceof ItemFrameEntity && Dungeons.getRoomBounds().contains(entity.getPos())) {
-				ItemFrameEntity map = (ItemFrameEntity) entity;
-				ItemStack stack = map.getHeldItemStack();
+				ItemFrameEntity itemFrame = (ItemFrameEntity) entity;
+				ItemStack stack = itemFrame.getHeldItemStack();
 				if (stack != null && stack.getItem() instanceof FilledMapItem)
-					maps.add(map);
+				itemFrames.add(itemFrame);
 			}
 		}
 
-		if (maps.size() >= 9) return;
+		if (itemFrames.size() >= 9) return;
 
-		for (ItemFrameEntity map : maps) {
-			MapState mapState = FilledMapItem.getMapState(map.getHeldItemStack(), (World) world);
-			Util.print(getTeam(mapState));
+		BlockPos topLeft = null;
+		Direction facing = null;
+		char[][] board = new char[][]{
+			{' ', ' ', ' '},
+			{' ', ' ', ' '},
+			{' ', ' ', ' '}
+		};
+
+		for (ItemFrameEntity itemFrame : itemFrames) {
+			int x = (int) Math.floor(itemFrame.getX());
+			int y = (int) Math.floor(itemFrame.getY());
+			int z = (int) Math.floor(itemFrame.getZ());
+
+			int row;
+			if (y == 72) row = 0;
+			else if (y == 71) row = 1;
+			else if (y == 70) row = 2;
+			else continue;
+
+			int column;
+			BlockPos mapPosition = new BlockPos(x, y, z);
+			BlockPos left;
+			BlockPos right;
+			if (itemFrame.facing == Direction.EAST || itemFrame.facing == Direction.WEST) {
+				left = mapPosition.add(0, 0, -1);
+				right = mapPosition.add(0, 0, 1);
+			} else {
+				left = mapPosition.add(-1, 0, 0);
+				right = mapPosition.add(1, 0, 0);
+			}
+
+			Block leftBlock = world.getBlockState(left).getBlock();
+			Block rightBlock = world.getBlockState(right).getBlock();
+			if (leftBlock == Blocks.POLISHED_ANDESITE) column = 0;
+			else if (rightBlock == Blocks.POLISHED_ANDESITE) column = 2;
+			else column = 1;
+			
+			if (itemFrame.facing == Direction.EAST || itemFrame.facing == Direction.NORTH)
+				column = 2 - column;
+
+			MapState mapState = FilledMapItem.getMapState(itemFrame.getHeldItemStack(), (World) world);
+			board[row][column] = getTeam(mapState);
+
+			if (topLeft == null) {
+				facing = itemFrame.facing;
+				if (facing == Direction.NORTH)
+					topLeft = mapPosition.add(column, row, 1);
+				else if (facing == Direction.SOUTH)
+					topLeft = mapPosition.add(-column, row, -1);
+				else if (facing == Direction.EAST)
+					topLeft = mapPosition.add(-1, row, column);
+				else if (facing == Direction.WEST)
+					topLeft = mapPosition.add(1, row, -column);
+			}
 		}
+
+		if (topLeft == null) return;
+		int[] bestMove = bestMove(board);
+		if (bestMove[0] == -1 && bestMove[1] == -1) return;
+		Util.print(bestMove[0]+" "+bestMove[1]);
+
+		if (facing == Direction.NORTH)
+			bestMoveIndicator = topLeft.add(-bestMove[1], -bestMove[0], 0);
+		else if (facing == Direction.SOUTH)
+			bestMoveIndicator = topLeft.add(bestMove[1], -bestMove[0], 0);
+		else if (facing == Direction.EAST)
+			bestMoveIndicator = topLeft.add(0, -bestMove[0], bestMove[1]);
+		else if (facing == Direction.WEST)
+			bestMoveIndicator = topLeft.add(0, -bestMove[0], -bestMove[1]);
+
+		for (char[] z : board) {String s= "";for (char c : z) s+=c==' '?'_':c; s +=' ';Util.print(s);}
+	}
+
+	public static boolean isBlank(Block block) {
+		return block == Blocks.STONE_BUTTON;
 	}
 
 	public static char getTeam(MapState mapState) {
-		int red = mapState.colors[16384 / 2] & 255; // calcuate the RED value of the map's center pixel
+		int red = mapState.colors[8000] & 255;
 		if (red == 114) {
 			return 'X';
 		} else if (red == 33) {
 			return 'O';
 		} else {
-			return '?';
+			return 'X';
 		}
 	}
 

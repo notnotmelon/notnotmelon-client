@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import org.joml.Matrix4f;
 
+import net.fabricmc.notnotmelonclient.Main;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.MapRenderer;
@@ -18,6 +19,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 
 public class DungeonMapRenderer extends MapRenderer {
+    private static final MinecraftClient client = Main.client;
+
 	private static DungeonMapRenderer instance;
 	public static DungeonMapRenderer getInstance() {
 		if (instance == null)
@@ -79,7 +82,7 @@ public class DungeonMapRenderer extends MapRenderer {
                 vertexConsumer2.vertex(matrix4f2, -1.0f, -1.0f, (float)k * -0.001f).color(255, 255, 255, 255).texture(g, m).light(light).next();
                 matrices.pop();
                 if (mapIcon.getText() != null) {
-                    TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+                    TextRenderer textRenderer = client.textRenderer;
                     Text text = mapIcon.getText();
                     float o = textRenderer.getWidth(text);
                     float f2 = 25.0f / o;
