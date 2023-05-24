@@ -6,19 +6,20 @@
   "mixins": [
   ],
   "client": [
-    "BillboardParticleMixin",
-    "ExplosionLargeParticleMixin",
-    "ItemRendererMixin",
-    "ClientPlayerEntityMixin",
-    "HandledScreenMixin",
-    "InGameOverlayRendererMixin",
     "AbstractInventoryScreenMixin",
+    "BillboardParticleMixin",
+    "ChatHudListenerMixin",
+    "ClientPlayerEntityMixin",
+    "ClientPlayNetworkHandlerMixin",
+    "ExplosionLargeParticleMixin",
+    "GameRendererMixin",
+    "HandledScreenMixin",
     "InGameHudMixin",
+    "InGameOverlayRendererMixin",
+    "ItemRendererMixin",
     "MouseMixin",
     "ScreenMixin",
-    "TextFieldWidgetMixin",
-    "ChatHudListenerMixin",
-    "GameRendererMixin"
+    "TextFieldWidgetMixin"
   ],
   "injectors": {
     "defaultRequire": 1

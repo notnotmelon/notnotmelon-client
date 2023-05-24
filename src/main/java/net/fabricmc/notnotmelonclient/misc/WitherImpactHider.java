@@ -64,8 +64,8 @@ public class WitherImpactHider {
 			PlayerEntity player = client.player;
 			if (
 				player != null &&
-				MathUtil.diffrence(player.getX(), particle.x) < 0.5 &&
-				MathUtil.diffrence(player.getZ(), particle.z) < 0.5
+				MathUtil.difference(player.getX(), particle.x) < 0.5 &&
+				MathUtil.difference(player.getZ(), particle.z) < 0.5
 			) coordsCheck = true;
 		}
 		

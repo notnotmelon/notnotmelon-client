@@ -7,12 +7,14 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.notnotmelonclient.api.ApiRequests;
 import net.fabricmc.notnotmelonclient.commands.ConfigCommand;
 import net.fabricmc.notnotmelonclient.commands.Reparty;
 import net.fabricmc.notnotmelonclient.config.JsonLoader;
 import net.fabricmc.notnotmelonclient.dungeons.Dungeons;
 import net.fabricmc.notnotmelonclient.dungeons.TicTacToeSolver;
+import net.fabricmc.notnotmelonclient.fishing.Fishing;
 import net.fabricmc.notnotmelonclient.misc.FavoriteItem;
 import net.fabricmc.notnotmelonclient.misc.ItemPriceTooltip;
 import net.fabricmc.notnotmelonclient.util.ChatTrigger;
@@ -69,11 +71,13 @@ public class Main implements ClientModInitializer {
 		ItemTooltipCallback.EVENT.register(ItemPriceTooltip::onInjectTooltip);
 		Dungeons.registerEvents();
 		ClientTickEvents.END_CLIENT_TICK.register(Dungeons::tick);
+		UseItemCallback.EVENT.register(Fishing::castRod);
 	}
 
 	private void registerChatTriggers() {
 		for (ChatTrigger chatTrigger : new ChatTrigger[]{
-			new Reparty()
+			new Reparty(),
+			new Fishing()
 		}) ChatTrigger.EVENT.register(chatTrigger);
 	}
 
