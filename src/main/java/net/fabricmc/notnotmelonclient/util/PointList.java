@@ -3,7 +3,7 @@ package net.fabricmc.notnotmelonclient.util;
 import java.util.HashMap;
 
 public class PointList<T extends Number> {
-	private HashMap<T, HashMap<T, HashMap<T, Boolean>>> points = new HashMap<T, HashMap<T, HashMap<T, Boolean>>>();
+	private final HashMap<T, HashMap<T, HashMap<T, Boolean>>> points = new HashMap<T, HashMap<T, HashMap<T, Boolean>>>();
 	
 	public void add(T x, T y, T z) {
 		if (!points.containsKey(x))

@@ -1,11 +1,11 @@
 package net.fabricmc.notnotmelonclient.api;
 
-import java.lang.reflect.Method;
-import java.net.URL;
-
 import com.google.gson.JsonObject;
 import net.fabricmc.notnotmelonclient.util.Scheduler;
 import net.fabricmc.notnotmelonclient.util.Util;
+
+import java.lang.reflect.Method;
+import java.net.URL;
 
 /**
  * Used to keep up-to-date rest API data. For example lowest BIN text on items.

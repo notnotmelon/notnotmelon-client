@@ -1,13 +1,6 @@
 package net.fabricmc.notnotmelonclient.mixin;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
 import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.fabricmc.notnotmelonclient.config.Config;
 import net.fabricmc.notnotmelonclient.dungeons.DungeonMap;
 import net.fabricmc.notnotmelonclient.misc.StatusBars;
@@ -16,10 +9,15 @@ import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(InGameHud.class)
 public class InGameHudMixin {
-	@ModifyVariable(method = "setOverlayMessage(Lnet/minecraft/text/Text;Z)V", at = @At("HEAD"), ordinal = 0)
+	@ModifyVariable(method = "setOverlayMessage(Lnet/minecraft/text/Text;Z)V", at = @At("HEAD"), ordinal = 0, argsOnly = true)
     private Text setOverlayMessage(Text message) {
         if (!Util.isSkyblock || !Config.getConfig().fancyBars) return message;
 		return Text.literal(StatusBars.parseOverlayMessage(message.getString()));

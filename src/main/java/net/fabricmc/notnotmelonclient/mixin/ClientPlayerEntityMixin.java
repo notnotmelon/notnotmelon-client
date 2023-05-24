@@ -1,7 +1,6 @@
 package net.fabricmc.notnotmelonclient.mixin;
 
 import com.mojang.authlib.GameProfile;
-
 import net.fabricmc.notnotmelonclient.misc.CursorResetFix;
 import net.fabricmc.notnotmelonclient.misc.FavoriteItem;
 import net.fabricmc.notnotmelonclient.util.Util;
@@ -11,7 +10,6 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

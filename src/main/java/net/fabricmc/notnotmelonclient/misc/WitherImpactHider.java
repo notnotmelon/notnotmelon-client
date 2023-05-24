@@ -1,10 +1,11 @@
 package net.fabricmc.notnotmelonclient.misc;
 
-import java.util.HashMap;
-import net.minecraft.client.particle.ExplosionLargeParticle;
-import net.minecraft.entity.player.PlayerEntity;
 import net.fabricmc.notnotmelonclient.util.MathUtil;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.particle.ExplosionLargeParticle;
+import net.minecraft.entity.player.PlayerEntity;
+
+import java.util.HashMap;
 
 public class WitherImpactHider {
 	private static final MinecraftClient client = MinecraftClient.getInstance();
@@ -71,7 +72,6 @@ public class WitherImpactHider {
 		if (!coordsCheck) return false;
 
 		// The particle color is randomized between 0.5 and 1, but is always in greyscale
-		if (particle.red == particle.blue && particle.blue == particle.green && particle.alpha == 1) return true;
-		return false;
+		return particle.red == particle.blue && particle.blue == particle.green && particle.alpha == 1;
 	}
 }

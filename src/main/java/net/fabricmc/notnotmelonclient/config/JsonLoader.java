@@ -1,9 +1,9 @@
 package net.fabricmc.notnotmelonclient.config;
 
-import java.nio.file.Path;
-
 import dev.isxander.yacl.config.GsonConfigInstance;
 import net.fabricmc.loader.api.FabricLoader;
+
+import java.nio.file.Path;
 
 public class JsonLoader {
     public static GsonConfigInstance<Config> jsonInterface;

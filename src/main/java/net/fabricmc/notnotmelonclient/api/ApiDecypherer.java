@@ -1,18 +1,18 @@
 package net.fabricmc.notnotmelonclient.api;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.zip.GZIPInputStream;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-
 /**
  * these are decypherers for various formats of rest API.
  * they convert a URL into JsonObject
- * some of these try statemements are unnecessary. too bad!
+ * some of these try statements are unnecessary. too bad!
  * See: CyclicApiRequest.java
  */
 public class ApiDecypherer {

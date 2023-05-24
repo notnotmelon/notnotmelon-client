@@ -1,16 +1,6 @@
 package net.fabricmc.notnotmelonclient.misc;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.List;
-import java.util.Locale;
-import java.util.regex.Pattern;
-
-import org.lwjgl.glfw.GLFW;
-import org.slf4j.Logger;
-
 import com.google.gson.JsonObject;
-
 import net.fabricmc.notnotmelonclient.Main;
 import net.fabricmc.notnotmelonclient.api.ApiRequests;
 import net.fabricmc.notnotmelonclient.config.Config;
@@ -24,11 +14,19 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.lwjgl.glfw.GLFW;
+import org.slf4j.Logger;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.Locale;
+import java.util.regex.Pattern;
 
 public class ItemPriceTooltip {
 	protected static final Logger LOGGER = Main.LOGGER;
 	private static final MinecraftClient client = MinecraftClient.getInstance();
-	public static Formatting priceColor = Formatting.AQUA;
+	public static final Formatting priceColor = Formatting.AQUA;
 	private static final Text UNKNOWN = Text.literal("UNKNOWN").formatted(Formatting.RED).formatted(Formatting.BOLD);
 	public static final Pattern GEAR_SCORE_PATTERN = Pattern.compile("^Gear Score: .+");
 
@@ -138,7 +136,7 @@ public class ItemPriceTooltip {
 
 		try {
 			result = outputDateFormat.format(inputDateFormat.parse(result));
-		} catch (ParseException e) {}
+		} catch (ParseException ignored) {}
 
         return result;
     }

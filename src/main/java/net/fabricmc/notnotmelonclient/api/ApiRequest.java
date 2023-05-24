@@ -1,15 +1,13 @@
 package net.fabricmc.notnotmelonclient.api;
 
-import java.lang.reflect.Method;
-import java.net.URL;
-
+import com.google.gson.JsonObject;
+import net.fabricmc.notnotmelonclient.Main;
+import net.fabricmc.notnotmelonclient.util.Scheduler;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
-import com.google.gson.JsonObject;
-
-import net.fabricmc.notnotmelonclient.Main;
-import net.fabricmc.notnotmelonclient.util.Scheduler;
+import java.lang.reflect.Method;
+import java.net.URL;
 
 /**
  * Used to periodically run API calls until a successful response.

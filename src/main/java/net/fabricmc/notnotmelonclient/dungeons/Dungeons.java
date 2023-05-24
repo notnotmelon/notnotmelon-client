@@ -1,10 +1,9 @@
 package net.fabricmc.notnotmelonclient.dungeons;
 
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.notnotmelonclient.Main;
-import net.fabricmc.notnotmelonclient.util.RenderUtil;
+import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Box;
@@ -25,7 +24,7 @@ public class Dungeons {
 	private static int lastZ;
 	public static void tick(MinecraftClient c) {
 		if (client.player == null) return;
-		//if (!Util.isDungeons) return;
+		if (!Util.isDungeons) return;
 		int[] roomCoords = getRoomCoords();
 		int roomX = roomCoords[0];
 		int roomZ = roomCoords[1];

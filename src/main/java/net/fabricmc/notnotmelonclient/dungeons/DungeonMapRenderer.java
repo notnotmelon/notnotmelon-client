@@ -1,9 +1,5 @@
 package net.fabricmc.notnotmelonclient.dungeons;
 
-import java.util.Objects;
-
-import org.joml.Matrix4f;
-
 import net.fabricmc.notnotmelonclient.Main;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -17,6 +13,9 @@ import net.minecraft.item.map.MapState;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
+import org.joml.Matrix4f;
+
+import java.util.Objects;
 
 public class DungeonMapRenderer extends MapRenderer {
     private static final MinecraftClient client = Main.client;
@@ -35,7 +34,7 @@ public class DungeonMapRenderer extends MapRenderer {
     @Override public MapTexture getMapTexture(int id, MapState state) {
         return this.mapTextures.compute(id, (id2, texture) -> {
             if (texture == null) {
-                return new DungeonMapTexture((int)id2, state);
+                return new DungeonMapTexture(id2, state);
             }
             texture.setState(state);
             return texture;
@@ -70,8 +69,8 @@ public class DungeonMapRenderer extends MapRenderer {
                 matrices.scale(4.0f, 4.0f, 3.0f);
                 matrices.translate(-0.125f, 0.125f, 0.0f);
                 byte b = mapIcon.getTypeId();
-                float g = (float)(b % 16 + 0) / 16.0f;
-                float h = (float)(b / 16 + 0) / 16.0f;
+                float g = (float)(b % 16) / 16.0f;
+                float h = (float)(b / 16) / 16.0f;
                 float l = (float)(b % 16 + 1) / 16.0f;
                 float m = (float)(b / 16 + 1) / 16.0f;
                 Matrix4f matrix4f2 = matrices.peek().getPositionMatrix();

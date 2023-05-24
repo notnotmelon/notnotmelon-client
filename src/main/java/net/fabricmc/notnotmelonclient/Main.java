@@ -1,5 +1,6 @@
 package net.fabricmc.notnotmelonclient;
 
+import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -19,13 +20,10 @@ import net.fabricmc.notnotmelonclient.util.Scheduler;
 import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryAccess;
-
-import java.nio.file.Path;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mojang.brigadier.CommandDispatcher;
+import java.nio.file.Path;
 
 public class Main implements ClientModInitializer {
 	public static final MinecraftClient client = MinecraftClient.getInstance();

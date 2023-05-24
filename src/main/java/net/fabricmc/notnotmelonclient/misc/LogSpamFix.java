@@ -1,11 +1,8 @@
 package net.fabricmc.notnotmelonclient.misc;
 
-import java.io.PrintStream;
-import java.util.HashSet;
-import java.util.logging.Filter;
-import java.util.logging.LogRecord;
-import java.util.regex.Pattern;
-
+import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
+import net.fabricmc.notnotmelonclient.config.Config;
+import net.fabricmc.notnotmelonclient.util.Util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -13,9 +10,11 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.filter.AbstractFilter;
 import org.jetbrains.annotations.NotNull;
 
-import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
-import net.fabricmc.notnotmelonclient.config.Config;
-import net.fabricmc.notnotmelonclient.util.Util;
+import java.io.PrintStream;
+import java.util.HashSet;
+import java.util.logging.Filter;
+import java.util.logging.LogRecord;
+import java.util.regex.Pattern;
 
 // https://modrinth.com/mod/log-begone
 // https://github.com/AzureDoom/Log-Begone/blob/1.19Fabric/src/main/java/mod/azure/logbegone/LogBegoneMod.java
@@ -48,7 +47,7 @@ public class LogSpamFix implements PreLaunchEntrypoint {
 		return false;
 	}
 
-	private final class FilteredPrintStream extends PrintStream {
+	private static final class FilteredPrintStream extends PrintStream {
 		public FilteredPrintStream(PrintStream stream) {
 			super(stream);
 		}
@@ -66,7 +65,7 @@ public class LogSpamFix implements PreLaunchEntrypoint {
 		}
 	}
 
-	private final class LogFilter extends AbstractFilter implements Filter {
+	private static final class LogFilter extends AbstractFilter implements Filter {
 		public boolean isLoggable(@NotNull LogRecord record) {
 			return !shouldFilterMessage(record.getMessage());
 		}

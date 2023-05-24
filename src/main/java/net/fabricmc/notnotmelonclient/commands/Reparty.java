@@ -1,5 +1,6 @@
 package net.fabricmc.notnotmelonclient.commands;
 
+import com.mojang.brigadier.Command;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.notnotmelonclient.config.Config;
@@ -9,10 +10,9 @@ import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.mojang.brigadier.Command;
 
 public class Reparty implements ChatTrigger {
     private static final MinecraftClient client = MinecraftClient.getInstance();

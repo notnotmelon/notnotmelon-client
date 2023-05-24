@@ -1,8 +1,5 @@
 package net.fabricmc.notnotmelonclient.dungeons;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.notnotmelonclient.Main;
 import net.fabricmc.notnotmelonclient.util.RenderUtil;
@@ -18,7 +15,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.map.MapState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.List;
 
 // The AI can only start in the corner or center.
 // The AI is X. We are O
@@ -37,11 +36,10 @@ public class TicTacToeSolver {
 		List<ItemFrameEntity> itemFrames = new ArrayList<ItemFrameEntity>();
 		Iterable<Entity> entities = world.getEntities();
 		for (Entity entity : entities) {
-			if (entity instanceof ItemFrameEntity && Dungeons.getRoomBounds().contains(entity.getPos())) {
-				ItemFrameEntity itemFrame = (ItemFrameEntity) entity;
+			if (entity instanceof ItemFrameEntity itemFrame && Dungeons.getRoomBounds().contains(entity.getPos())) {
 				ItemStack stack = itemFrame.getHeldItemStack();
 				if (stack != null && stack.getItem() instanceof FilledMapItem)
-				itemFrames.add(itemFrame);
+					itemFrames.add(itemFrame);
 			}
 		}
 
@@ -87,7 +85,8 @@ public class TicTacToeSolver {
 			if (itemFrame.facing == Direction.EAST || itemFrame.facing == Direction.NORTH)
 				column = 2 - column;
 
-			MapState mapState = FilledMapItem.getMapState(itemFrame.getHeldItemStack(), (World) world);
+			MapState mapState = FilledMapItem.getMapState(itemFrame.getHeldItemStack(), world);
+			if (mapState == null) continue;
 			board[row][column] = getTeam(mapState);
 
 			if (topLeft == null) {
@@ -161,12 +160,12 @@ public class TicTacToeSolver {
 		if (evaluation == 10 || evaluation == -10) return evaluation;
 
 		if (max) {
-			int bestScore = -Integer.MIN_VALUE;
+			int bestScore = Integer.MIN_VALUE;
 			for (int row = 0; row < 3; row++) {
 				for (int col = 0; col < 3; col++) {
 					if (board[row][col] == ' ') {
 						board[row][col] = 'O';
-						bestScore = Math.max(bestScore, miniMax(board, !max, emptySquares + 1));
+						bestScore = Math.max(bestScore, miniMax(board, false, emptySquares + 1));
 						board[row][col] = ' ';
 					}
 				}
@@ -178,7 +177,7 @@ public class TicTacToeSolver {
 				for (int col = 0; col < 3; col++) {
 					if (board[row][col] == ' ') {
 						board[row][col] = 'X';
-						bestScore = Math.min(bestScore, miniMax(board, !max, emptySquares + 1));
+						bestScore = Math.min(bestScore, miniMax(board, true, emptySquares + 1));
 						board[row][col] = ' ';
 					}
 				}

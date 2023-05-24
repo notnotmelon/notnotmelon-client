@@ -1,7 +1,6 @@
 package net.fabricmc.notnotmelonclient.misc;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-
 import dev.isxander.yacl.config.ConfigEntry;
 import dev.isxander.yacl.config.GsonConfigInstance;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -24,14 +23,13 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import org.lwjgl.glfw.GLFW;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.lwjgl.glfw.GLFW;
-import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 public class FavoriteItem {
     public static GsonConfigInstance<FavoriteItem> jsonInterface;
@@ -42,7 +40,7 @@ public class FavoriteItem {
         jsonInterface.load();
     }
 
-    @ConfigEntry public Set<String> itemsToProtect = new HashSet<String>();
+    @ConfigEntry public final Set<String> itemsToProtect = new HashSet<String>();
     private static Set<String> itemsToProtect() {
         return jsonInterface.getConfig().itemsToProtect;
     }
@@ -93,10 +91,7 @@ public class FavoriteItem {
                 return true;
 
         String itemId = ItemUtil.getSkyBlockItemID(stack);
-        if (itemId != null && itemsToProtect().contains(itemId))
-            return true;
-            
-        return false;
+        return itemId != null && itemsToProtect().contains(itemId);
     }
 
     public static void printProtectMessage(ItemStack stack, Text action) {
@@ -108,7 +103,7 @@ public class FavoriteItem {
         NbtCompound extraAttributes = ItemUtil.getExtraAttributes(stack);
         if (extraAttributes == null) return;
 
-        String protectionString = null;
+        String protectionString;
         if (extraAttributes.contains("uuid")) {
             protectionString = extraAttributes.getString("uuid");
         } else {
@@ -133,9 +128,8 @@ public class FavoriteItem {
             ItemStack stack = slot.getStack();
             FavoriteItem.toggleFavorited(stack);
             ci.cancel();
-            return;
-        } else if (invSlot == -999 && actionType == SlotActionType.PICKUP) { // -999 is the slotid for clicking outside your inv
-            ItemStack stack = ((ScreenHandler) handler).getCursorStack();
+        } else if (invSlot == -999 && actionType == SlotActionType.PICKUP) { // -999 is the slot id for clicking outside your inv
+            ItemStack stack = handler.getCursorStack();
             protect(stack, Text.literal("dropping"), ci);
         } else if (slot != null && slot.hasStack() && actionType == SlotActionType.THROW) { // This handles pressing Q while hovering over an item
             protect(slot.getStack(), Text.literal("dropping"), ci);

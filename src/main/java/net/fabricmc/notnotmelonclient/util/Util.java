@@ -1,11 +1,5 @@
 package net.fabricmc.notnotmelonclient.util;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.lwjgl.glfw.GLFW;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -18,6 +12,11 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.lwjgl.glfw.GLFW;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Util {
 	public static void print(MutableText t) {
@@ -37,13 +36,11 @@ public class Util {
 	public static String getLocation() {
         String location = null;
         List<String> sidebarLines = getSidebar();
-		if(sidebarLines != null) {
-			for (String sidebarLine : sidebarLines) {
-				if (sidebarLine.contains("⏣")) location = sidebarLine;
-			}
-			if (location == null) location = "Unknown";
-			location = location.replace('⏣', ' ').strip();
-		}
+        for (String sidebarLine : sidebarLines) {
+            if (sidebarLine.contains("⏣")) location = sidebarLine;
+        }
+        if (location == null) location = "Unknown";
+        location = location.replace('⏣', ' ').strip();
         return location;
     }
 
@@ -80,14 +77,14 @@ public class Util {
     public static boolean isDungeons = false;
     public static void locationTracker() {
         MinecraftClient client = MinecraftClient.getInstance();
-        List<String> sidebar;
 
-        if (client.world == null || client.isInSingleplayer() || (sidebar = getSidebar()) == null) {
+        if (client.world == null || client.isInSingleplayer()) {
             isSkyblock = false;
             isDungeons = false;
             return;
         }
 
+        List<String> sidebar = getSidebar();
         if (sidebar.isEmpty()) return;
         String objective = sidebar.get(0);
         if (objective.equals("SKYBLOCK") || objective.equals("SKIBLOCK")) {
@@ -104,15 +101,15 @@ public class Util {
         TextRenderer textRenderer = client.textRenderer;
         int alpha = color>>24<<24;
 		for (int i : offsets) {
-			textRenderer.draw(matrices, text, (float) (x + i), (float) y, alpha);
-			textRenderer.draw(matrices, text, (float) x, (float) (y + i), alpha);
+			textRenderer.draw(matrices, text, x + i, y, alpha);
+			textRenderer.draw(matrices, text, x, y + i, alpha);
 		}
-		textRenderer.draw(matrices, text, (float) x, (float) y, color);
+		textRenderer.draw(matrices, text, x, y, color);
 	}
 
     public static void drawCenteredText(MatrixStack matrices, MinecraftClient client, float x, float y, Text text, int color) {
         TextRenderer textRenderer = client.textRenderer;
-        x -= textRenderer.getWidth(text) / 2;
+        x -= (float) textRenderer.getWidth(text) / 2;
         drawText(matrices, client, x, y, text, color);
 	}
 

@@ -1,10 +1,6 @@
 package net.fabricmc.notnotmelonclient.misc;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.fabricmc.notnotmelonclient.Main;
 import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.client.MinecraftClient;
@@ -13,6 +9,9 @@ import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 // this class renders stat bars for health, mana, and xp
 // it uses the overlay message sent by Hypixel
@@ -41,8 +40,8 @@ public class StatusBars {
 	public static String parseOverlayMessage(String message) {
 		Matcher healthMatcher = HEALTH_PATTERN.matcher(message);
 		if (healthMatcher.find()) {
-			playerHealth = Integer.valueOf(healthMatcher.group(1).replace(",", ""));
-			playerMaxHealth = Integer.valueOf(healthMatcher.group(3).replace(",", ""));
+			playerHealth = Integer.parseInt(healthMatcher.group(1).replace(",", ""));
+			playerMaxHealth = Integer.parseInt(healthMatcher.group(3).replace(",", ""));
 			message = healthMatcher.replaceAll("");
 		}
 
@@ -60,9 +59,9 @@ public class StatusBars {
 		if (outOfManaMatcher.find()) {
 			playerMana = 0;
 		} else if (manaMatcher.find()) {
-			int overflowMana = Integer.valueOf(manaMatcher.group(5).replace(",", ""));
-			playerMana = Integer.valueOf(manaMatcher.group(1).replace(",", "")) + overflowMana;
-			playerMaxMana = Integer.valueOf(manaMatcher.group(3).replace(",", ""));
+			int overflowMana = Integer.parseInt(manaMatcher.group(5).replace(",", ""));
+			playerMana = Integer.parseInt(manaMatcher.group(1).replace(",", "")) + overflowMana;
+			playerMaxMana = Integer.parseInt(manaMatcher.group(3).replace(",", ""));
 			message = manaMatcher.replaceAll("");
 		}
 		
@@ -106,7 +105,7 @@ public class StatusBars {
 	private static void drawOrb(MatrixStack matrices, MinecraftClient client, int x, int y) {
 		int level = client.player.experienceLevel;
 		float progress = client.player.experienceProgress;
-		String experience = String.valueOf(level) + "." + (int) (progress * 10);
+		String experience = level + "." + (int) (progress * 10);
 
 		RenderSystem.setShaderTexture(0, ORB);
 		DrawableHelper.drawTexture(matrices, x, y, 0, 0, 13, 13, 13, 13);

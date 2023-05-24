@@ -1,10 +1,10 @@
 package net.fabricmc.notnotmelonclient.misc;
-import org.lwjgl.glfw.GLFW;
 
 import net.fabricmc.notnotmelonclient.config.Config;
 import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import org.lwjgl.glfw.GLFW;
 
 public class CursorResetFix {
     private static final MinecraftClient client = MinecraftClient.getInstance();
