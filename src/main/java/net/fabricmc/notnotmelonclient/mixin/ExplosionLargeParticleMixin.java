@@ -16,7 +16,7 @@ public class ExplosionLargeParticleMixin {
 		if (!Util.isSkyblock || !Config.getConfig().witherImpactHider) return;
 		
 		if (!((Object) this instanceof ExplosionLargeParticle particle)) return;
-		if (!WitherImpactHider.initalParticleFilter(particle)) return;
+		if (!WitherImpactHider.initialParticleFilter(particle)) return;
 		
 		WitherImpactHider.registerExplosionCreation(particle);
 	}

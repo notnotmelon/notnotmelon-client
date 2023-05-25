@@ -39,7 +39,7 @@ public class WitherImpactHider {
 	}
 
 	// attribute-based filters to check for hyperion particles
-	public static Boolean initalParticleFilter(ExplosionLargeParticle particle) {
+	public static Boolean initialParticleFilter(ExplosionLargeParticle particle) {
 		// The particle max lifespan is between 6 and 9 ticks (randomized)
 		if (particle.getMaxAge() < 6 || particle.getMaxAge() > 9) return false;
 

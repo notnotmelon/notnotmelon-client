@@ -17,7 +17,7 @@ public abstract class BillboardParticleMixin {
 		if (!Util.isSkyblock) return;
 		if (!((Object) this instanceof ExplosionLargeParticle particle)) return;
 		if (!Config.getConfig().witherImpactHider) return;
-		if (!WitherImpactHider.initalParticleFilter(particle)) return;
+		if (!WitherImpactHider.initialParticleFilter(particle)) return;
 		
 		if (WitherImpactHider.isWitherImpactParticle(particle)) {
 			particle.markDead();
