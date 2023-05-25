@@ -107,6 +107,7 @@ public class Fishing implements ChatTrigger {
         new Triplet<>("Hide no longer, a Great White Shark has tracked your scent and thirsts for your blood!", "Great White Shark!", Formatting.DARK_RED)
     };
     @Override public ActionResult onMessage(Text message, String asString) {
+        if (message.getString().contains("meow")) Util.getTablist();
         if (!Config.getConfig().legendaryCatchWarning) return ActionResult.PASS;
         String messageString = message.getString();
         for (Triplet<String, String, Formatting> triplet : rareCreatures) {

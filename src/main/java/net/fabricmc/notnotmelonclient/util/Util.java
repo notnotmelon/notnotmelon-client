@@ -1,7 +1,9 @@
 package net.fabricmc.notnotmelonclient.util;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.hud.PlayerListHud;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.scoreboard.ScoreboardPlayerScore;
@@ -52,10 +54,24 @@ public class Util {
                 Team team = scoreboard.getPlayerTeam(score.getPlayerName());
                 String line = team.getPrefix().getString() + team.getSuffix().getString();
                 line = Formatting.strip(line.trim());
-                if (line.length() > 0) result.add(line);
+                if (!line.isEmpty()) result.add(line);
             }
             result.add(objective.getDisplayName().getString());
             Collections.reverse(result);
+            return result;
+        } catch (NullPointerException e) {
+            return new ArrayList<>();
+        }
+    }
+
+    public static List<String> getTablist() {
+        try {
+            List<String> result = new ArrayList<>();
+            PlayerListHud hud = MinecraftClient.getInstance().inGameHud.getPlayerListHud();
+            for (PlayerListEntry playerEntry : hud.collectPlayerEntries()) {
+                String playerName = hud.getPlayerName(playerEntry).getString();
+                if (!playerName.isEmpty()) result.add(playerName);
+            }
             return result;
         } catch (NullPointerException e) {
             return new ArrayList<>();
