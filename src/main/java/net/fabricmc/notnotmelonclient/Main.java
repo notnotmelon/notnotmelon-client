@@ -19,6 +19,7 @@ import net.fabricmc.notnotmelonclient.misc.FavoriteItem;
 import net.fabricmc.notnotmelonclient.misc.ItemPriceTooltip;
 import net.fabricmc.notnotmelonclient.util.ChatTrigger;
 import net.fabricmc.notnotmelonclient.util.Scheduler;
+import net.fabricmc.notnotmelonclient.util.SoundEvent;
 import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandRegistryAccess;
@@ -72,6 +73,7 @@ public class Main implements ClientModInitializer {
 		Dungeons.registerEvents();
 		ClientTickEvents.END_CLIENT_TICK.register(Dungeons::tick);
 		UseItemCallback.EVENT.register(Fishing::castRod);
+		SoundEvent.EVENT.register(Fishing::onSound);
 	}
 
 	private void registerChatTriggers() {
