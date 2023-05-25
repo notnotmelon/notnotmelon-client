@@ -1,4 +1,4 @@
-package net.fabricmc.notnotmelonclient.util;
+package net.fabricmc.notnotmelonclient.events;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;

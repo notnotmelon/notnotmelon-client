@@ -1,6 +1,6 @@
 package net.fabricmc.notnotmelonclient.mixin;
 
-import net.fabricmc.notnotmelonclient.util.ChatTrigger;
+import net.fabricmc.notnotmelonclient.events.ChatTrigger;
 import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.client.gui.hud.MessageIndicator;

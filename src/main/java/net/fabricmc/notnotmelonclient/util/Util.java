@@ -19,34 +19,23 @@ import java.util.Collections;
 import java.util.List;
 
 public class Util {
-	public static void print(MutableText t) {
-        MutableText prefixed = Text.of("§d[nnc]§r ").append(t);
+	public static void print(Text t) {
+        MutableText prefixed = Text.literal("§d[nnc]§r ").append(t);
 		ClientPlayerEntity player = MinecraftClient.getInstance().player;
         if (player != null) player.sendMessage(prefixed);
 	}
 
 	public static void print(String s) {
-		print(Text.of(s));
+		print(Text.literal(s));
 	}
 
 	public static void print(char c) {
-		print(Text.of(String.valueOf(c)));
+		print(Text.literal(String.valueOf(c)));
 	}
 
 	public static void print(Object o) {
 		print(o.toString());
 	}
-
-	public static String getLocation() {
-        String location = null;
-        List<String> sidebarLines = getSidebar();
-        for (String sidebarLine : sidebarLines) {
-            if (sidebarLine.contains("⏣")) location = sidebarLine;
-        }
-        if (location == null) location = "Unknown";
-        location = location.replace('⏣', ' ').strip();
-        return location;
-    }
 
 	public static List<String> getSidebar() {
         try {
@@ -68,18 +57,31 @@ public class Util {
         }
     }
 
+    private static String location;
     public static List<String> getTablist() {
+        if (!isSkyblock) return new ArrayList<>();
         try {
             List<String> result = new ArrayList<>();
             PlayerListHud hud = MinecraftClient.getInstance().inGameHud.getPlayerListHud();
             for (PlayerListEntry playerEntry : hud.collectPlayerEntries()) {
-                String playerName = hud.getPlayerName(playerEntry).getString();
-                if (!playerName.isEmpty()) result.add(playerName);
+                String playerName = hud.getPlayerName(playerEntry).getString().trim();
+                if (!playerName.isEmpty()) {
+                    result.add(playerName);
+                    if (location == null && playerName.startsWith("Area: "))
+                        location = playerName.replaceFirst("Area: ", "");
+                }
             }
+            Util.print(location);
             return result;
         } catch (NullPointerException e) {
             return new ArrayList<>();
         }
+    }
+
+    public static String getLocation() {
+        if (!isSkyblock) return null;
+        if (location == null) getTablist();
+        return location;
     }
 
     public static boolean isSkyblock = false;

@@ -1,5 +1,7 @@
 package net.fabricmc.notnotmelonclient.dungeons;
 
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.notnotmelonclient.Main;
@@ -57,6 +59,8 @@ public class Dungeons {
 	}
 
 	public static void registerEvents() {
+		ClientTickEvents.END_CLIENT_TICK.register(Dungeons::tick);
+		WorldRenderEvents.END.register(TicTacToeSolver::render);
 		ChangeRoomEvent.EVENT.register(TicTacToeSolver::onChangeRoom);
 	}
 }

@@ -1,7 +1,9 @@
 package net.fabricmc.notnotmelonclient.fishing;
 
+import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.notnotmelonclient.config.Config;
-import net.fabricmc.notnotmelonclient.util.ChatTrigger;
+import net.fabricmc.notnotmelonclient.events.ChatTrigger;
+import net.fabricmc.notnotmelonclient.events.SoundEvent;
 import net.fabricmc.notnotmelonclient.util.MathUtil;
 import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.client.MinecraftClient;
@@ -20,7 +22,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import oshi.util.tuples.Triplet;
 
-public class Fishing implements ChatTrigger {
+public class Fishing {
     private static final MinecraftClient client = MinecraftClient.getInstance();
     private static long castTime = -1;
     private static Vec3d yawVector;
@@ -30,6 +32,12 @@ public class Fishing implements ChatTrigger {
         Text.literal("...").formatted(Formatting.YELLOW).formatted(Formatting.BOLD)
     };
     private static final Text catchText = Text.literal("!!!").formatted(Formatting.RED).formatted(Formatting.BOLD);
+
+    public static void registerEvents() {
+        UseItemCallback.EVENT.register(Fishing::castRod);
+        SoundEvent.EVENT.register(Fishing::onSound);
+        ChatTrigger.EVENT.register(Fishing::onMessage);
+    }
 
     public static TypedActionResult<ItemStack> castRod(PlayerEntity player, World world, Hand hand) {
         ItemStack stack = player.getStackInHand(hand);
@@ -106,7 +114,7 @@ public class Fishing implements ChatTrigger {
         new Triplet<>("A Reindrake forms from the depths.", "Reindrake!", Formatting.DARK_PURPLE),
         new Triplet<>("Hide no longer, a Great White Shark has tracked your scent and thirsts for your blood!", "Great White Shark!", Formatting.DARK_RED)
     };
-    @Override public ActionResult onMessage(Text message, String asString) {
+    public static ActionResult onMessage(Text message, String asString) {
         if (message.getString().contains("meow")) Util.getTablist();
         if (!Config.getConfig().legendaryCatchWarning) return ActionResult.PASS;
         String messageString = message.getString();

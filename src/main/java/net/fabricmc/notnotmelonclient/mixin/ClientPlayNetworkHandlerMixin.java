@@ -1,6 +1,6 @@
 package net.fabricmc.notnotmelonclient.mixin;
 
-import net.fabricmc.notnotmelonclient.util.SoundEvent;
+import net.fabricmc.notnotmelonclient.events.SoundEvent;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
 import org.spongepowered.asm.mixin.Mixin;
