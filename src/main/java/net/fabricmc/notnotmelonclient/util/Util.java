@@ -87,7 +87,7 @@ public class Util {
         List<String> sidebar = getSidebar();
         if (sidebar.isEmpty()) return;
         String objective = sidebar.get(0);
-        if (objective.equals("SKYBLOCK") || objective.equals("SKIBLOCK")) {
+        if (objective.startsWith("SKYBLOCK") || objective.startsWith("SKIBLOCK")) {
             isSkyblock = true;
             isDungeons = sidebar.toString().contains("The Catacombs");
         } else if (isSkyblock) {
