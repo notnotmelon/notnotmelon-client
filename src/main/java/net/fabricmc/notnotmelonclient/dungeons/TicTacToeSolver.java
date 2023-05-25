@@ -33,7 +33,7 @@ public class TicTacToeSolver {
 
 	public static void onChangeRoom() {
 		ClientWorld world = client.world;
-		List<ItemFrameEntity> itemFrames = new ArrayList<ItemFrameEntity>();
+		List<ItemFrameEntity> itemFrames = new ArrayList<>();
 		Iterable<Entity> entities = world.getEntities();
 		for (Entity entity : entities) {
 			if (entity instanceof ItemFrameEntity itemFrame && Dungeons.getRoomBounds().contains(entity.getPos())) {

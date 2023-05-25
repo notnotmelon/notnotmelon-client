@@ -3,9 +3,11 @@ package net.fabricmc.notnotmelonclient.util;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.notnotmelonclient.Main;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.*;
 
 import java.awt.*;
@@ -67,13 +69,13 @@ public class RenderUtil {
         drawBoxOutline(blockPos, lineWidth, color, color);
     }
 
-    public static PointList<Integer> boxedPoints = new PointList<Integer>();
+    public static PointList<Integer> boxedPoints = new PointList<>();
     public static long lastBoxedTick;
     public static void drawBoxOutline(BlockPos blockPos, float lineWidth, Color color1, Color color2) {
         long tick = Util.getGametick();
         if (lastBoxedTick != tick) {
             lastBoxedTick = tick;
-            boxedPoints = new PointList<Integer>();
+            boxedPoints = new PointList<>();
         }
         
         boxedPoints.add(blockPos.getX(), blockPos.getY(), blockPos.getZ());
@@ -116,5 +118,22 @@ public class RenderUtil {
 			position.y - MathHelper.lerp(tickDelta, e.lastRenderY, position.y),
 			position.z - MathHelper.lerp(tickDelta, e.lastRenderZ, position.z)
 		);
+    }
+
+    static final int[] offsets = new int[]{-1, 1};
+    public static void drawText(MatrixStack matrices, MinecraftClient client, float x, float y, Text text, int color) {
+        TextRenderer textRenderer = client.textRenderer;
+        int alpha = color>>24<<24;
+        for (int i : offsets) {
+            textRenderer.draw(matrices, text, x + i, y, alpha);
+            textRenderer.draw(matrices, text, x, y + i, alpha);
+        }
+        textRenderer.draw(matrices, text, x, y, color);
+    }
+
+    public static void drawCenteredText(MatrixStack matrices, MinecraftClient client, float x, float y, Text text, int color) {
+        TextRenderer textRenderer = client.textRenderer;
+        x -= (float) textRenderer.getWidth(text) / 2;
+        drawText(matrices, client, x, y, text, color);
     }
 }

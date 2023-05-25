@@ -1,9 +1,7 @@
 package net.fabricmc.notnotmelonclient.util;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.scoreboard.ScoreboardPlayerScore;
@@ -44,32 +42,23 @@ public class Util {
         return location;
     }
 
-	// Source: https://github.com/SkyblockerMod/Skyblocker/blob/master/src/main/java/me/xmrvizzy/skyblocker/utils/Utils.java
 	public static List<String> getSidebar() {
         try {
+            List<String> result = new ArrayList<>();
             ClientPlayerEntity player = MinecraftClient.getInstance().player;
-            if (player == null) return new ArrayList<String>();
             Scoreboard scoreboard = player.getScoreboard();
             ScoreboardObjective objective = scoreboard.getObjectiveForSlot(1);
-            List<String> lines = new ArrayList<String>();
             for (ScoreboardPlayerScore score : scoreboard.getAllPlayerScores(objective)) {
                 Team team = scoreboard.getPlayerTeam(score.getPlayerName());
-                if (team != null) {
-                    String line = team.getPrefix().getString() + team.getSuffix().getString();
-                    if (line.trim().length() > 0) {
-                        String formatted = Formatting.strip(line);
-                        lines.add(formatted);
-                    }
-                }
+                String line = team.getPrefix().getString() + team.getSuffix().getString();
+                line = Formatting.strip(line.trim());
+                if (line.length() > 0) result.add(line);
             }
-
-            if (objective != null) {
-                lines.add(objective.getDisplayName().getString());
-                Collections.reverse(lines);
-            }
-            return lines;
+            result.add(objective.getDisplayName().getString());
+            Collections.reverse(result);
+            return result;
         } catch (NullPointerException e) {
-            return new ArrayList<String>();
+            return new ArrayList<>();
         }
     }
 
@@ -95,23 +84,6 @@ public class Util {
             isDungeons = false;
         }
     }
-
-    static final int[] offsets = new int[]{-1, 1};
-    public static void drawText(MatrixStack matrices, MinecraftClient client, float x, float y, Text text, int color) {
-        TextRenderer textRenderer = client.textRenderer;
-        int alpha = color>>24<<24;
-		for (int i : offsets) {
-			textRenderer.draw(matrices, text, x + i, y, alpha);
-			textRenderer.draw(matrices, text, x, y + i, alpha);
-		}
-		textRenderer.draw(matrices, text, x, y, color);
-	}
-
-    public static void drawCenteredText(MatrixStack matrices, MinecraftClient client, float x, float y, Text text, int color) {
-        TextRenderer textRenderer = client.textRenderer;
-        x -= (float) textRenderer.getWidth(text) / 2;
-        drawText(matrices, client, x, y, text, color);
-	}
 
     public static String orderedTextAsString(OrderedText orderedText) {
         StringBuilder sb = new StringBuilder();

@@ -2,7 +2,7 @@ package net.fabricmc.notnotmelonclient.misc;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.notnotmelonclient.Main;
-import net.fabricmc.notnotmelonclient.util.Util;
+import net.fabricmc.notnotmelonclient.util.RenderUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.Window;
@@ -99,7 +99,7 @@ public class StatusBars {
 			value -= maxValue;
 		}
 
-		Util.drawCenteredText(matrices, client, x + 50, y - 3, text, color);
+		RenderUtil.drawCenteredText(matrices, client, x + 50, y - 3, text, color);
 	}
 
 	private static void drawOrb(MatrixStack matrices, MinecraftClient client, int x, int y) {
@@ -109,6 +109,6 @@ public class StatusBars {
 
 		RenderSystem.setShaderTexture(0, ORB);
 		DrawableHelper.drawTexture(matrices, x, y, 0, 0, 13, 13, 13, 13);
-		Util.drawText(matrices, client, x + 7, y + 6, Text.literal(experience), 0xFFC8FF8F);
+		RenderUtil.drawText(matrices, client, x + 7, y + 6, Text.literal(experience), 0xFFC8FF8F);
 	}
 }

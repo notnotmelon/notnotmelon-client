@@ -31,7 +31,7 @@ public class LogSpamFix implements PreLaunchEntrypoint {
 		java.util.logging.Logger.getLogger("").setFilter(logFilter);
 		((org.apache.logging.log4j.core.Logger) LogManager.getRootLogger()).addFilter(logFilter);
 		LoggerContext logContext = (LoggerContext) LogManager.getContext(false);
-		HashSet<LoggerConfig> existingLoggers = new HashSet<LoggerConfig>(logContext.getConfiguration().getLoggers().values());
+		HashSet<LoggerConfig> existingLoggers = new HashSet<>(logContext.getConfiguration().getLoggers().values());
 		for (LoggerConfig logger : existingLoggers)
 			logger.addFilter(logFilter);
 	}

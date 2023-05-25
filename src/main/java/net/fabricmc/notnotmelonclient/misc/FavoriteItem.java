@@ -36,11 +36,11 @@ public class FavoriteItem {
     public static Path configDir;
     public static void loadConfig() {
         configDir = FabricLoader.getInstance().getConfigDir().resolve("notnotmelonclient/favoriteditems.properties");
-        jsonInterface = new GsonConfigInstance<FavoriteItem>(FavoriteItem.class, configDir);
+        jsonInterface = new GsonConfigInstance<>(FavoriteItem.class, configDir);
         jsonInterface.load();
     }
 
-    @ConfigEntry public final Set<String> itemsToProtect = new HashSet<String>();
+    @ConfigEntry public final Set<String> itemsToProtect = new HashSet<>();
     private static Set<String> itemsToProtect() {
         return jsonInterface.getConfig().itemsToProtect;
     }

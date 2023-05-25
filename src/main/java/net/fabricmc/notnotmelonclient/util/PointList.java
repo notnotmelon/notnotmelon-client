@@ -3,14 +3,14 @@ package net.fabricmc.notnotmelonclient.util;
 import java.util.HashMap;
 
 public class PointList<T extends Number> {
-	private final HashMap<T, HashMap<T, HashMap<T, Integer>>> points = new HashMap<T, HashMap<T, HashMap<T, Integer>>>();
+	private final HashMap<T, HashMap<T, HashMap<T, Integer>>> points = new HashMap<>();
 	
 	public void add(T x, T y, T z, int amount) {
 		if (!points.containsKey(x))
-			points.put(x, new HashMap<T, HashMap<T, Integer>>());
+			points.put(x, new HashMap<>());
 
 		if (!points.get(x).containsKey(y))
-			points.get(x).put(y, new HashMap<T, Integer>());
+			points.get(x).put(y, new HashMap<>());
 
 		if (!points.get(x).get(y).containsKey(z))
 			points.get(x).get(y).put(z, 0);

@@ -19,7 +19,7 @@ public class JsonLoader {
             Main.LOGGER.error("Failed to create config dir", e);
         }
 
-        jsonInterface = new GsonConfigInstance<Config>(Config.class, configDir);
+        jsonInterface = new GsonConfigInstance<>(Config.class, configDir);
         jsonInterface.load();
     }
 }
