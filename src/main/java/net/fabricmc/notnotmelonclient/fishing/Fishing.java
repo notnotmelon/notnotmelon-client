@@ -3,9 +3,11 @@ package net.fabricmc.notnotmelonclient.fishing;
 import net.fabricmc.notnotmelonclient.config.Config;
 import net.fabricmc.notnotmelonclient.util.ChatTrigger;
 import net.fabricmc.notnotmelonclient.util.MathUtil;
+import net.fabricmc.notnotmelonclient.util.SoundEvent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.item.FishingRodItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
@@ -18,7 +20,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import oshi.util.tuples.Triplet;
 
-public class Fishing implements ChatTrigger {
+public class Fishing implements ChatTrigger, SoundEvent {
     private static final MinecraftClient client = MinecraftClient.getInstance();
     private static long castTime = -1;
     private static Vec3d yawVector;
@@ -49,9 +51,8 @@ public class Fishing implements ChatTrigger {
     private static void reset() {
         castTime = -1;
     }
-    public static void onSound(PlaySoundS2CPacket packet) {
-        String path = packet.getSound().value().getId().getPath();
-        if (!"entity.player.splash".equals(path) && !"entity.generic.splash".equals(path)) return;
+    @Override public void onSound(PlaySoundS2CPacket packet, String soundName) {
+        if (!soundName.equals("entity.player.splash") && !soundName.equals("entity.generic.splash")) return;
 
         // we are assuming that you will never reel 1sec after casting.
         if (castTime == -1 || System.currentTimeMillis() < castTime + 1000) return;
@@ -75,6 +76,18 @@ public class Fishing implements ChatTrigger {
         client.inGameHud.setTitleTicks(0, 10, 5);
         client.inGameHud.setTitle(catchText);
         reset();
+    }
+
+    public static boolean isMyBobber(FishingBobberEntity bobber, PlaySoundS2CPacket packet) {
+        Vec3d soundOffset = bobber.getPos().subtract(packet.getX(), 0, packet.getZ());
+
+        // Calculate the angle between rod cast and sound position
+        // Return if the angle is outside our "field of view"
+        double angle = Math.abs(yawVector.x * soundOffset.z - yawVector.z * soundOffset.x);
+        if (angle > 0.2) return false;
+
+        // Finally, we should also check if the sound is coming from the same direction as the bobber
+        return Math.abs(yawVector.dotProduct(soundOffset)) < 0.2;
     }
 
     public static final Triplet<String, String, Formatting>[] rareCreatures = new Triplet[]{

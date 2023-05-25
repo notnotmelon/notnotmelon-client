@@ -1,6 +1,6 @@
 package net.fabricmc.notnotmelonclient.mixin;
 
-import net.fabricmc.notnotmelonclient.fishing.Fishing;
+import net.fabricmc.notnotmelonclient.util.SoundEvent;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
 import org.spongepowered.asm.mixin.Mixin;
@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class ClientPlayNetworkHandlerMixin {
     @Inject(method = "onPlaySound", at = @At("RETURN"))
     private void onPlaySound(PlaySoundS2CPacket packet, CallbackInfo ci) {
-        Fishing.onSound(packet);
+        String soundName = packet.getSound().value().getId().getPath();
+        SoundEvent.EVENT.invoker().onSound(packet, soundName);
     }
 }
