@@ -3,19 +3,34 @@ package net.fabricmc.notnotmelonclient.util;
 import java.util.HashMap;
 
 public class PointList<T extends Number> {
-	private final HashMap<T, HashMap<T, HashMap<T, Boolean>>> points = new HashMap<T, HashMap<T, HashMap<T, Boolean>>>();
+	private final HashMap<T, HashMap<T, HashMap<T, Integer>>> points = new HashMap<T, HashMap<T, HashMap<T, Integer>>>();
 	
-	public void add(T x, T y, T z) {
+	public void add(T x, T y, T z, int amount) {
 		if (!points.containsKey(x))
-			points.put(x, new HashMap<T, HashMap<T, Boolean>>());
+			points.put(x, new HashMap<T, HashMap<T, Integer>>());
 
 		if (!points.get(x).containsKey(y))
-			points.get(x).put(y, new HashMap<T, Boolean>());
+			points.get(x).put(y, new HashMap<T, Integer>());
 
-		points.get(x).get(y).put(z, true);
+		if (!points.get(x).get(y).containsKey(z))
+			points.get(x).get(y).put(z, 0);
+
+		int newAmount = get(x, y, z) + amount;
+		if (newAmount == 0)
+			points.get(x).get(y).put(z, null);
+		else
+			points.get(x).get(y).put(z, newAmount);
+	}
+
+	public void add(T x, T y, T z) {
+		add(x, y, z, 1);
 	}
 
 	public boolean contains(T x, T y, T z) {
 		return points.containsKey(x) && points.get(x).containsKey(y) && points.get(x).get(y).containsKey(z);
+	}
+
+	public Integer get(T x, T y, T z) {
+		return contains(x, y, z) ? points.get(x).get(y).get(z) : null;
 	}
 }

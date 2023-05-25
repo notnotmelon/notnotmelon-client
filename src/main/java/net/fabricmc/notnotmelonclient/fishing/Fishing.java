@@ -67,10 +67,10 @@ public class Fishing implements ChatTrigger {
         // Calculate the angle between rod cast and sound position
         // Return if the angle is outside our "field of view"
         double angle = Math.abs(yawVector.x * soundOffset.z - yawVector.z * soundOffset.x);
-        if (angle > 0.1) return;
+        if (angle > 0.2) return;
 
         // Finally, we should also check if the sound is coming from the same direction as the bobber
-        if (Math.abs(yawVector.dotProduct(soundOffset)) > 4) return;
+        if (Math.abs(yawVector.dotProduct(soundOffset)) > 0.2) return;
 
         client.inGameHud.setTitleTicks(0, 10, 5);
         client.inGameHud.setTitle(catchText);
@@ -78,7 +78,18 @@ public class Fishing implements ChatTrigger {
     }
 
     public static final Triplet<String, String, Formatting>[] rareCreatures = new Triplet[]{
-        new Triplet<>("", "", Formatting.AQUA)
+        new Triplet<>("You spot a Golden Fish surface from beneath the lava!", "Golden Fish!", Formatting.GOLD),
+        new Triplet<>("The Water Hydra has come to test your strength.", "Water Hydra!", Formatting.BLUE),
+        new Triplet<>("The Sea Emperor arises from the depths.", "Sea Emperor!", Formatting.YELLOW),
+        new Triplet<>("A Zombie miner surfaces!", "Zombie Miner!", Formatting.GREEN),
+        new Triplet<>("You hear a massive rumble as Thunder emerges.", "Thunder!", Formatting.LIGHT_PURPLE),
+        new Triplet<>("You have angered a legendary creature... Lord Jawbus has arrived", "Lord Jawbus!", Formatting.RED),
+        new Triplet<>("WOAH! A Plhlegblast appeared.", "Plhlegblast!", Formatting.DARK_GRAY),
+        new Triplet<>("The spirit of a long lost Phantom Fisherman has come to haunt you.", "Phantom Fisherman!", Formatting.AQUA),
+        new Triplet<>("This can't be! The manifestation of death himself!", "Grim Reaper!", Formatting.BLACK),
+        new Triplet<>("What is this creature!?", "Yeti!", Formatting.WHITE),
+        new Triplet<>("A Reindrake forms from the depths.", "Reindrake!", Formatting.DARK_PURPLE),
+        new Triplet<>("Hide no longer, a Great White Shark has tracked your scent and thirsts for your blood!", "Great White Shark!", Formatting.DARK_RED)
     };
     @Override public ActionResult onMessage(Text message, String asString) {
         if (!Config.getConfig().legendaryCatchWarning) return ActionResult.PASS;

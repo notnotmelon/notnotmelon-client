@@ -1,11 +1,10 @@
 package net.fabricmc.notnotmelonclient.misc;
 
 import net.fabricmc.notnotmelonclient.util.MathUtil;
+import net.fabricmc.notnotmelonclient.util.PointList;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.particle.ExplosionLargeParticle;
 import net.minecraft.entity.player.PlayerEntity;
-
-import java.util.HashMap;
 
 public class WitherImpactHider {
 	private static final MinecraftClient client = MinecraftClient.getInstance();
@@ -15,37 +14,28 @@ public class WitherImpactHider {
 		Double y = particle.y;
 		Double z = particle.z;
 
-		if (!particleCanidatesPerTile.containsKey(x)) return false;
-		if (!particleCanidatesPerTile.get(x).containsKey(y)) return false;
-		if (!particleCanidatesPerTile.get(x).get(y).containsKey(z)) return false;
+		if (!particleCandidatesPerTile.contains(x, y, z)) return false;
 
 		// wither impact always creates 8 explosions on the same tile.
-		return particleCanidatesPerTile.get(x).get(y).get(z) >= 8;
+		return particleCandidatesPerTile.get(x, y, z) >= 8;
 	}
 
-	private static HashMap<Double, HashMap<Double, HashMap<Double, Integer>>> particleCanidatesPerTile = new HashMap<Double, HashMap<Double, HashMap<Double, Integer>>>();
-	private static long ageOfParticleCanidatesPerTile = -1; // particleCanidatesPerTile is cleared if the gametick changes
+	private static PointList<Double> particleCandidatesPerTile = new PointList<>();
+	private static long ageOfParticleCandidatesPerTile = -1; // particleCandidatesPerTile is cleared if the gametick changes
 	public static void registerExplosionCreation(ExplosionLargeParticle particle) {
+		if (client.world == null) return;
+
 		long currentTick = client.world.getTime();
-		if (ageOfParticleCanidatesPerTile != currentTick) {
-			ageOfParticleCanidatesPerTile = currentTick;
-			particleCanidatesPerTile = new HashMap<Double, HashMap<Double, HashMap<Double, Integer>>>();
+		if (ageOfParticleCandidatesPerTile != currentTick) {
+			ageOfParticleCandidatesPerTile = currentTick;
+			particleCandidatesPerTile = new PointList<>();
 		}
 
 		Double x = particle.x;
 		Double y = particle.y;
 		Double z = particle.z;
 
-		if (!particleCanidatesPerTile.containsKey(x))
-			particleCanidatesPerTile.put(x, new HashMap<Double, HashMap<Double, Integer>>());
-
-		if (!particleCanidatesPerTile.get(x).containsKey(y))
-			particleCanidatesPerTile.get(x).put(y, new HashMap<Double, Integer>());
-
-		if (!particleCanidatesPerTile.get(x).get(y).containsKey(z))
-			particleCanidatesPerTile.get(x).get(y).put(z, 0);
-			
-		particleCanidatesPerTile.get(x).get(y).put(z, particleCanidatesPerTile.get(x).get(y).get(z) + 1);
+		particleCandidatesPerTile.add(x, y, z);
 	}
 
 	// attribute-based filters to check for hyperion particles

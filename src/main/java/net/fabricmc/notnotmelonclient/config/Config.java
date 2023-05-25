@@ -370,7 +370,7 @@ public class Config {
 	public Option<?> legendaryCatchWarning() {
 		return Option.createBuilder(boolean.class)
 				.name(Text.of("Legendary Catch Warning"))
-				.tooltip(Text.of("Shows a warning whenever you catch a legendary fish or plhlegblast."))
+				.tooltip(Text.of("Shows a warning whenever you catch a legendary fish. Also works for golden fish and plhlegblast."))
 				.binding(
 						getDefaults().legendaryCatchWarning,
 						() -> getConfig().legendaryCatchWarning,
