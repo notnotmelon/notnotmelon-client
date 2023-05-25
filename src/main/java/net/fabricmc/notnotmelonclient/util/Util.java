@@ -20,13 +20,17 @@ import java.util.List;
 
 public class Util {
 	public static void print(MutableText t) {
-        MutableText prefixed = Text.literal("§d[nnc]§r ").append(t);
+        MutableText prefixed = Text.of("§d[nnc]§r ").append(t);
 		ClientPlayerEntity player = MinecraftClient.getInstance().player;
         if (player != null) player.sendMessage(prefixed);
 	}
 
 	public static void print(String s) {
-		print(Text.literal(s));
+		print(Text.of(s));
+	}
+
+	public static void print(char c) {
+		print(Text.of(String.valueOf(c)));
 	}
 
 	public static void print(Object o) {
