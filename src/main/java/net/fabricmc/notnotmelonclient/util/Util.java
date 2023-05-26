@@ -20,13 +20,14 @@ import java.util.List;
 
 public class Util {
 	public static void print(Text t) {
+        t = t == null ? Text.of("null") : t;
         MutableText prefixed = Text.literal("§d[nnc]§r ").append(t);
 		ClientPlayerEntity player = MinecraftClient.getInstance().player;
         if (player != null) player.sendMessage(prefixed);
 	}
 
 	public static void print(String s) {
-		print(Text.literal(s));
+		print(Text.literal(s == null ? "null" : s));
 	}
 
 	public static void print(char c) {
@@ -34,7 +35,7 @@ public class Util {
 	}
 
 	public static void print(Object o) {
-		print(o.toString());
+		print(Text.literal(o == null ? "null" : o.toString()));
 	}
 
 	public static List<String> getSidebar() {
@@ -57,7 +58,7 @@ public class Util {
         }
     }
 
-    private static String location;
+    public static String location;
     public static List<String> getTablist() {
         if (!isSkyblock) return new ArrayList<>();
         try {
@@ -71,7 +72,6 @@ public class Util {
                         location = playerName.replaceFirst("Area: ", "");
                 }
             }
-            Util.print(location);
             return result;
         } catch (NullPointerException e) {
             return new ArrayList<>();
@@ -82,6 +82,11 @@ public class Util {
         if (!isSkyblock) return null;
         if (location == null) getTablist();
         return location;
+    }
+
+    public static void onChangeLobby() {
+        location = null;
+        Scheduler.getInstance().schedule(Util::getLocation, 100);
     }
 
     public static boolean isSkyblock = false;

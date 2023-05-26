@@ -5,11 +5,13 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.notnotmelonclient.api.ApiRequests;
 import net.fabricmc.notnotmelonclient.commands.ConfigCommand;
 import net.fabricmc.notnotmelonclient.commands.Reparty;
 import net.fabricmc.notnotmelonclient.config.JsonLoader;
 import net.fabricmc.notnotmelonclient.dungeons.Dungeons;
+import net.fabricmc.notnotmelonclient.events.ChangeLobby;
 import net.fabricmc.notnotmelonclient.events.ChatTrigger;
 import net.fabricmc.notnotmelonclient.fishing.Fishing;
 import net.fabricmc.notnotmelonclient.misc.FavoriteItem;
@@ -50,7 +52,6 @@ public class Main implements ClientModInitializer {
 	}
 
 	private void registerCyclic() {
-		scheduler.scheduleCyclic(Util::locationTracker, 23);
 		ApiRequests.init();
 	}
 
@@ -66,6 +67,8 @@ public class Main implements ClientModInitializer {
 		ItemTooltipCallback.EVENT.register(ItemPriceTooltip::onInjectTooltip);
 		Dungeons.registerEvents();
 		Fishing.registerEvents();
+		ClientPlayConnectionEvents.JOIN.register(ChangeLobby::onServerJoin);
+		ChangeLobby.EVENT.register(Util::onChangeLobby);
 	}
 
 	private void registerChatTriggers() {
