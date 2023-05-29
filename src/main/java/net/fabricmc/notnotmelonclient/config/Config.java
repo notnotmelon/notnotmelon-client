@@ -123,6 +123,7 @@ public class Config {
 						.option(showWhenToReel())
 						.option(hideOtherPlayersFishing())
 						.option(legendaryCatchWarning())
+						.option(goldenFishTimer())
 						.build())
 
 				.build();
@@ -389,6 +390,20 @@ public class Config {
 						getDefaults().hideOtherPlayersFishing,
 						() -> getConfig().hideOtherPlayersFishing,
 						v -> getConfig().hideOtherPlayersFishing = v
+				)
+				.controller(TickBoxController::new)
+				.build();
+	}
+
+	@ConfigEntry public boolean goldenFishTimer = false;
+	public Option<?> goldenFishTimer() {
+		return Option.createBuilder(boolean.class)
+				.name(Text.of("Golden Fish Timer"))
+				.tooltip(Text.of("Shows a 15 minute timer until the Golden Fish can appear on the Crimson Isle. After 15 minutes, shows the probability of catching the Golden Fish."))
+				.binding(
+						getDefaults().goldenFishTimer,
+						() -> getConfig().goldenFishTimer,
+						v -> getConfig().goldenFishTimer = v
 				)
 				.controller(TickBoxController::new)
 				.build();

@@ -58,7 +58,7 @@ public class Util {
         }
     }
 
-    public static String location;
+    private static String location;
     public static List<String> getTablist() {
         if (!isSkyblock) return new ArrayList<>();
         try {
@@ -86,7 +86,6 @@ public class Util {
 
     public static void onChangeLobby() {
         location = null;
-        Scheduler.getInstance().schedule(Util::getLocation, 100);
     }
 
     public static boolean isSkyblock = false;

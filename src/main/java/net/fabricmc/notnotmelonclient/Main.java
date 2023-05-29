@@ -16,6 +16,7 @@ import net.fabricmc.notnotmelonclient.events.ChatTrigger;
 import net.fabricmc.notnotmelonclient.fishing.Fishing;
 import net.fabricmc.notnotmelonclient.misc.FavoriteItem;
 import net.fabricmc.notnotmelonclient.misc.ItemPriceTooltip;
+import net.fabricmc.notnotmelonclient.misc.Timers;
 import net.fabricmc.notnotmelonclient.util.Scheduler;
 import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.client.MinecraftClient;
@@ -67,6 +68,7 @@ public class Main implements ClientModInitializer {
 		ItemTooltipCallback.EVENT.register(ItemPriceTooltip::onInjectTooltip);
 		Dungeons.registerEvents();
 		Fishing.registerEvents();
+		Timers.registerEvents();
 		ClientPlayConnectionEvents.JOIN.register(ChangeLobby::onServerJoin);
 		ChangeLobby.EVENT.register(Util::onChangeLobby);
 	}

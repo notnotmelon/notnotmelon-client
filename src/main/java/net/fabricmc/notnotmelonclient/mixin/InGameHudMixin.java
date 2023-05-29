@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.notnotmelonclient.config.Config;
 import net.fabricmc.notnotmelonclient.dungeons.DungeonMap;
 import net.fabricmc.notnotmelonclient.misc.StatusBars;
+import net.fabricmc.notnotmelonclient.misc.Timers;
 import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.InGameHud;
@@ -35,13 +36,18 @@ public class InGameHudMixin {
 
 	@Inject(method = "renderStatusBars", at = @At("HEAD"), cancellable = true)
     private void renderStatusBars(MatrixStack matrices, CallbackInfo ci) {
-        if (!Util.isSkyblock || !Config.getConfig().fancyBars) return;
+        if (!Util.isSkyblock) return;
 
 		if (Util.isDungeons && Config.getConfig().dungeonMap)
             DungeonMap.render(matrices);
 
-		StatusBars.draw(matrices);
-		RenderSystem.setShaderTexture(0, DrawableHelper.GUI_ICONS_TEXTURE);
-		ci.cancel();
+        if (true)
+            Timers.render(matrices);
+
+        if (Config.getConfig().fancyBars) {
+            StatusBars.draw(matrices);
+            RenderSystem.setShaderTexture(0, DrawableHelper.GUI_ICONS_TEXTURE);
+            ci.cancel();
+        }
 	}
 }

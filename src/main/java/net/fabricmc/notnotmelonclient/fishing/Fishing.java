@@ -9,7 +9,6 @@ import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.item.FishingRodItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
@@ -24,7 +23,8 @@ import oshi.util.tuples.Triplet;
 
 public class Fishing {
     private static final MinecraftClient client = MinecraftClient.getInstance();
-    private static long castTime = -1;
+    public static long castTime = -1;
+    public static long goldfishStreak = 0;
     private static Vec3d yawVector;
     private static final Text[] approachText = new Text[]{
         Text.literal(".  ").formatted(Formatting.YELLOW).formatted(Formatting.BOLD),
@@ -32,7 +32,7 @@ public class Fishing {
         Text.literal("...").formatted(Formatting.YELLOW).formatted(Formatting.BOLD)
     };
     private static final Text catchText = Text.literal("!!!").formatted(Formatting.RED).formatted(Formatting.BOLD);
-
+    public static long goldenFishTimer = -1;
     public static void registerEvents() {
         UseItemCallback.EVENT.register(Fishing::castRod);
         SoundEvent.EVENT.register(Fishing::onSound);
@@ -44,16 +44,27 @@ public class Fishing {
         if (stack.getItem() instanceof FishingRodItem) {
             if (player.fishHook == null) {
                 castTime = System.currentTimeMillis();
+                goldfishStreak = castTime;
 
                 // calculate a vector based on the player's look direction @ time of cast
                 // this is our "field of view" that the bobber should land in
                 double yaw = Math.toRadians(player.getYaw());
                 yawVector = MathUtil.normalize(yaw);
+
+                updateGoldenFishTimer(castTime);
             } else {
                 reset();
             }
         }
         return TypedActionResult.pass(stack);
+    }
+
+    private static void updateGoldenFishTimer(long castTime) {
+        if (!Config.getConfig().goldenFishTimer) return;
+        if (!"Crimson Isle".equals(Util.getLocation())) return;
+
+        if (goldenFishTimer == -1)
+            goldenFishTimer = castTime;
     }
 
     private static void reset() {
@@ -76,7 +87,6 @@ public class Fishing {
         // Calculate the angle between rod cast and sound position
         // Return if the angle is outside our "field of view"
         double angle = Math.abs(yawVector.x * soundOffset.z - yawVector.z * soundOffset.x);
-        Util.print(angle);
         if (angle > 0.2) return;
 
         // Finally, we should also check if the sound is coming from the same direction as the bobber
@@ -86,18 +96,6 @@ public class Fishing {
         client.inGameHud.setTitleTicks(0, 10, 5);
         client.inGameHud.setTitle(catchText);
         reset();
-    }
-
-    public static boolean isMyBobber(FishingBobberEntity bobber, PlaySoundS2CPacket packet) {
-        Vec3d soundOffset = bobber.getPos().subtract(packet.getX(), 0, packet.getZ());
-
-        // Calculate the angle between rod cast and sound position
-        // Return if the angle is outside our "field of view"
-        double angle = Math.abs(yawVector.x * soundOffset.z - yawVector.z * soundOffset.x);
-        if (angle > 0.2) return false;
-
-        // Finally, we should also check if the sound is coming from the same direction as the bobber
-        return Math.abs(yawVector.dotProduct(soundOffset)) < 0.2;
     }
 
     public static final Triplet<String, String, Formatting>[] rareCreatures = new Triplet[]{
@@ -115,8 +113,8 @@ public class Fishing {
         new Triplet<>("Hide no longer, a Great White Shark has tracked your scent and thirsts for your blood!", "Great White Shark!", Formatting.DARK_RED)
     };
     public static ActionResult onMessage(Text message, String asString) {
-        if (message.getString().contains("meow")) Util.getTablist();
         if (!Config.getConfig().legendaryCatchWarning) return ActionResult.PASS;
+
         String messageString = message.getString();
         for (Triplet<String, String, Formatting> triplet : rareCreatures) {
             String rareCreatureMessage = triplet.getA();
