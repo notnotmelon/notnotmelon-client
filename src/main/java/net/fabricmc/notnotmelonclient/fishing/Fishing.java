@@ -90,7 +90,6 @@ public class Fishing {
         if (angle > 0.2) return;
 
         // Finally, we should also check if the sound is coming from the same direction as the bobber
-        Util.print(Math.abs(yawVector.dotProduct(soundOffset)) > 0.2);
         if (Math.abs(yawVector.dotProduct(soundOffset)) > 0.2) return;
 
         client.inGameHud.setTitleTicks(0, 10, 5);

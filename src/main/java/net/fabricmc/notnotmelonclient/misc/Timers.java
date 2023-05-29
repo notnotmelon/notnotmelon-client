@@ -31,9 +31,13 @@ public class Timers {
         if (!Util.isSkyblock) return;
 
         if (Config.getConfig().goldenFishTimer && Fishing.goldenFishTimer != -1) {
-            if (Fishing.goldfishStreak + threeMinutes >= System.currentTimeMillis())
+            Util.print(Fishing.goldfishStreak);
+            Util.print(System.currentTimeMillis());
+            if (Fishing.goldfishStreak + threeMinutes >= System.currentTimeMillis()) {
+                Util.print("q");
                 Fishing.goldenFishTimer = -1;
-            else {
+            } else {
+                Util.print("g");
                 Text text;
                 long seconds = Fishing.goldenFishTimer / 1000;
                 long minutes = seconds / 60;
@@ -41,7 +45,7 @@ public class Timers {
                     long chance = Math.min(100, 100 * (seconds - 60 * 15) / (60 * 20));
                     text = Text.of(chance + "%");
                 } else {
-                    text = Text.of(new SimpleDateFormat("mm:ss").format(date));
+                    text = Text.of(String.format("%d:%02d", minutes, seconds));
                 }
 
                 renderables.add(new RenderableTimer(
@@ -53,7 +57,7 @@ public class Timers {
         }
     }
 
-    private static ArrayList<RenderableTimer> renderables = new ArrayList<>();
+    private static final ArrayList<RenderableTimer> renderables = new ArrayList<>();
     public static void render(MatrixStack matrices) {
         if (renderables.size() == 0 || !Util.isSkyblock) return;
 
