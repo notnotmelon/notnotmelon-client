@@ -32,7 +32,7 @@ public class Timers {
 
         if (Config.getConfig().goldenFishTimer && Fishing.goldenFishTimer != -1) {
             Util.print(Fishing.goldfishStreak);
-            Util.print(System.currentTimeMillis());
+            Util.print(System.currentTimeMillis());m
             if (Fishing.goldfishStreak + threeMinutes >= System.currentTimeMillis()) {
                 Util.print("q");
                 Fishing.goldenFishTimer = -1;
