@@ -60,6 +60,7 @@ public class Config {
 			.group(OptionGroup.createBuilder()
 				.name(Text.literal("Temp"))
 				.option(fixCursorReset())
+				.option(darkAuctionTimer())
 				.build())
 
 			.build();

@@ -35,9 +35,12 @@ public class Timers {
         if (Config.getConfig().darkAuctionTimer) {
             long milliseconds = currentTime % hour;
             if (milliseconds > minute * 55)
-                milliseconds -= hour;
+                milliseconds -= minute * 55;
+            else
+                milliseconds += minute * 5;
+
             renderables.add(new RenderableTimer(
-                Text.of(formatTimer(milliseconds)),
+                Text.of(formatTimer(hour - milliseconds)),
                 0,
                 0xFFFFFFFF
             ));
