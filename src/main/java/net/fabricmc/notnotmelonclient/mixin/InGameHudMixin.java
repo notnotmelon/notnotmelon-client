@@ -41,8 +41,10 @@ public class InGameHudMixin {
 		if (Util.isDungeons && Config.getConfig().dungeonMap)
             DungeonMap.render(matrices);
 
-        if (true)
+        if (true) {
             Timers.render(matrices);
+            RenderSystem.setShaderTexture(0, DrawableHelper.GUI_ICONS_TEXTURE);
+        }
 
         if (Config.getConfig().fancyBars) {
             StatusBars.draw(matrices);

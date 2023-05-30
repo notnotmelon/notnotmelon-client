@@ -395,7 +395,7 @@ public class Config {
 				.build();
 	}
 
-	@ConfigEntry public boolean goldenFishTimer = false;
+	@ConfigEntry public boolean goldenFishTimer = true;
 	public Option<?> goldenFishTimer() {
 		return Option.createBuilder(boolean.class)
 				.name(Text.of("Golden Fish Timer"))
@@ -404,6 +404,20 @@ public class Config {
 						getDefaults().goldenFishTimer,
 						() -> getConfig().goldenFishTimer,
 						v -> getConfig().goldenFishTimer = v
+				)
+				.controller(TickBoxController::new)
+				.build();
+	}
+
+	@ConfigEntry public boolean darkAuctionTimer = false;
+	public Option<?> darkAuctionTimer() {
+		return Option.createBuilder(boolean.class)
+				.name(Text.of("Dark Auction Timer"))
+				.tooltip(Text.of("Shows the remaining time until the next Dark Auction. Dark Auctions always happen on the 55th minute of every hour."))
+				.binding(
+						getDefaults().darkAuctionTimer,
+						() -> getConfig().darkAuctionTimer,
+						v -> getConfig().darkAuctionTimer = v
 				)
 				.controller(TickBoxController::new)
 				.build();
