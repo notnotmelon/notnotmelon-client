@@ -54,8 +54,8 @@ public class Timers {
                 Text text;
                 long milliseconds = (minute * 15) - (currentTime - Fishing.goldenFishTimer);
                 if (milliseconds <= 0) {
-                    double chance = Math.min(1, -milliseconds / (minute * 5)) * 100;
-                    text = Text.of(String.format("%.1f%%", chance));
+                    double chance = Math.min(1, -milliseconds / (minute * 5d)) * 100;
+                    text = Text.of(String.format("%.0f%%", chance));
                 } else {
                     text = Text.of(formatTimer(milliseconds));
                 }
@@ -85,16 +85,18 @@ public class Timers {
         int x = scaledWidth / 2 - 91;
         int y = 2;
 
-        RenderSystem.setShaderTexture(0, ICONS);
+
         for (RenderableTimer timer : renderables) {
+            RenderSystem.enableBlend();
+            RenderSystem.setShaderTexture(0, ICONS);
             timer.render(matrices, x, y);
-            y -= 33;
+            y += 18;
         }
     }
 
     private record RenderableTimer(Text text, int iconOffset, int color) {
         public void render(MatrixStack matrices, int x, int y) {
-            DrawableHelper.drawTexture(matrices, x, y, iconOffset / 4f, 0, 16, 16, 128 / 4, 64 / 4);
+            DrawableHelper.drawTexture(matrices, x, y, iconOffset / 4, 0, 16, 16, 128 / 4, 64 / 4);
             x += 18;
             y += 5;
             RenderUtil.drawText(matrices, client, x, y, text, color);

@@ -2,6 +2,7 @@ package net.fabricmc.notnotmelonclient.fishing;
 
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.notnotmelonclient.config.Config;
+import net.fabricmc.notnotmelonclient.events.ChangeLobby;
 import net.fabricmc.notnotmelonclient.events.ChatTrigger;
 import net.fabricmc.notnotmelonclient.events.SoundEvent;
 import net.fabricmc.notnotmelonclient.util.MathUtil;
@@ -24,7 +25,7 @@ import oshi.util.tuples.Triplet;
 public class Fishing {
     private static final MinecraftClient client = MinecraftClient.getInstance();
     public static long castTime = -1;
-    public static long goldfishStreak = 0;
+    public static long goldfishStreak = -1;
     private static Vec3d yawVector;
     private static final Text[] approachText = new Text[]{
         Text.literal(".  ").formatted(Formatting.YELLOW).formatted(Formatting.BOLD),
@@ -37,6 +38,8 @@ public class Fishing {
         UseItemCallback.EVENT.register(Fishing::castRod);
         SoundEvent.EVENT.register(Fishing::onSound);
         ChatTrigger.EVENT.register(Fishing::onMessage);
+        ChangeLobby.EVENT.register(Fishing::resetGoldfish);
+        ChangeLobby.EVENT.register(Fishing::reset);
     }
 
     public static TypedActionResult<ItemStack> castRod(PlayerEntity player, World world, Hand hand) {
@@ -44,14 +47,10 @@ public class Fishing {
         if (stack.getItem() instanceof FishingRodItem) {
             if (player.fishHook == null) {
                 castTime = System.currentTimeMillis();
-                goldfishStreak = castTime;
-
                 // calculate a vector based on the player's look direction @ time of cast
                 // this is our "field of view" that the bobber should land in
                 double yaw = Math.toRadians(player.getYaw());
                 yawVector = MathUtil.normalize(yaw);
-
-                updateGoldenFishTimer(castTime);
             } else {
                 reset();
             }
@@ -59,12 +58,13 @@ public class Fishing {
         return TypedActionResult.pass(stack);
     }
 
-    private static void updateGoldenFishTimer(long castTime) {
-        if (!Config.getConfig().goldenFishTimer) return;
+    private static void updateGoldenFishTimer() {
         if (!"Crimson Isle".equals(Util.getLocation())) return;
 
+        long time = System.currentTimeMillis();
+        goldfishStreak = time;
         if (goldenFishTimer == -1)
-            goldenFishTimer = castTime;
+            goldenFishTimer = time;
     }
 
     private static void reset() {
@@ -92,8 +92,15 @@ public class Fishing {
         // Finally, we should also check if the sound is coming from the same direction as the bobber
         if (Math.abs(yawVector.dotProduct(soundOffset)) > 0.2) return;
 
-        client.inGameHud.setTitleTicks(0, 10, 5);
-        client.inGameHud.setTitle(catchText);
+        if (Config.getConfig().showWhenToReel) {
+            client.inGameHud.setTitleTicks(0, 10, 5);
+            client.inGameHud.setTitle(catchText);
+        }
+
+        if (Config.getConfig().goldenFishTimer) {
+            updateGoldenFishTimer();
+        }
+
         reset();
     }
 
@@ -133,7 +140,7 @@ public class Fishing {
     }
 
     public static void resetGoldfish() {
-        goldfishStreak = 0;
+        goldfishStreak = -1;
         goldenFishTimer = -1;
     }
 }
