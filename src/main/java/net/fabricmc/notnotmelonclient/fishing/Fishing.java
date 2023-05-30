@@ -124,8 +124,16 @@ public class Fishing {
 
             client.inGameHud.setTitleTicks(0, 20, 5);
             client.inGameHud.setTitle(title);
+
+            if (creatureName.equals("Golden Fish!")) resetGoldfish();
+
             break;
         }
         return ActionResult.PASS;
+    }
+
+    public static void resetGoldfish() {
+        goldfishStreak = 0;
+        goldenFishTimer = -1;
     }
 }

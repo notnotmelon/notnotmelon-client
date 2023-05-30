@@ -25,36 +25,51 @@ public class Timers {
         Scheduler.getInstance().scheduleCyclic(Timers::tick, 20);
     }
 
-    private static int threeMinutes = 1000 * 60 * 3;
+    private static final int minute = 1000 * 60;
+    private static final int hour = 1000 * 60 * 60;
     public static void tick() {
         renderables.clear();
         if (!Util.isSkyblock) return;
+        long currentTime = System.currentTimeMillis();
+
+        if (Config.getConfig().darkAuctionTimer) {
+            long milliseconds = currentTime % hour;
+            if (milliseconds > minute * 55)
+                milliseconds -= hour;
+            renderables.add(new RenderableTimer(
+                Text.of(formatTimer(milliseconds)),
+                0,
+                0xFFFFFFFF
+            ));
+        }
 
         if (Config.getConfig().goldenFishTimer && Fishing.goldenFishTimer != -1) {
-            Util.print(Fishing.goldfishStreak);
-            Util.print(System.currentTimeMillis());m
-            if (Fishing.goldfishStreak + threeMinutes >= System.currentTimeMillis()) {
-                Util.print("q");
-                Fishing.goldenFishTimer = -1;
+            if (Fishing.goldfishStreak + (minute * 3) < currentTime) {
+                Util.print("Your Golden Fish timer was reset after 3 minutes of inactivity!");
+                Fishing.resetGoldfish();
             } else {
-                Util.print("g");
                 Text text;
-                long seconds = Fishing.goldenFishTimer / 1000;
-                long minutes = seconds / 60;
-                if (minutes >= 15) {
-                    long chance = Math.min(100, 100 * (seconds - 60 * 15) / (60 * 20));
-                    text = Text.of(chance + "%");
+                long milliseconds = (minute * 15) - (currentTime - Fishing.goldenFishTimer);
+                if (milliseconds <= 0) {
+                    double chance = Math.min(1, -milliseconds / (minute * 5)) * 100;
+                    text = Text.of(String.format("%.1f%%", chance));
                 } else {
-                    text = Text.of(String.format("%d:%02d", minutes, seconds));
+                    text = Text.of(formatTimer(milliseconds));
                 }
 
                 renderables.add(new RenderableTimer(
-                        text,
-                        64,
-                        0xFFFFFFFF
+                    text,
+                    64,
+                    0xFFFFFFFF
                 ));
             }
         }
+    }
+
+    public static String formatTimer(long milliseconds) {
+        long seconds = milliseconds / 1000;
+        long minutes = seconds / 60;
+        return String.format("%d:%02d", minutes, seconds % 60);
     }
 
     private static final ArrayList<RenderableTimer> renderables = new ArrayList<>();
@@ -65,7 +80,7 @@ public class Timers {
         int scaledWidth = window.getScaledWidth();
         int scaledHeight = window.getScaledHeight();
         int x = scaledWidth / 2 - 91;
-        int y = scaledHeight - 33;
+        int y = 2;
 
         RenderSystem.setShaderTexture(0, ICONS);
         for (RenderableTimer timer : renderables) {
@@ -74,20 +89,11 @@ public class Timers {
         }
     }
 
-    private static class RenderableTimer {
-        private final Text text;
-        private final int iconOffset;
-        private final int color;
-
-        public RenderableTimer(Text text, int iconOffset, int color) {
-            this.text = text;
-            this.iconOffset = iconOffset;
-            this.color = color;
-        }
-
+    private record RenderableTimer(Text text, int iconOffset, int color) {
         public void render(MatrixStack matrices, int x, int y) {
-            DrawableHelper.drawTexture(matrices, x, y, 0, iconOffset, 64, 64, 64, 64);
-            x += 32;
+            DrawableHelper.drawTexture(matrices, x, y, iconOffset / 4f, 0, 16, 16, 128 / 4, 64 / 4);
+            x += 18;
+            y += 5;
             RenderUtil.drawText(matrices, client, x, y, text, color);
         }
     }

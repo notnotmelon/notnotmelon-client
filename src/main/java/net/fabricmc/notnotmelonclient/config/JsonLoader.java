@@ -13,12 +13,6 @@ public class JsonLoader {
     public static Path configDir;
     public static void load() {
         configDir = FabricLoader.getInstance().getConfigDir().resolve("notnotmelonclient/config.properties");
-        try {
-            Files.createDirectories(configDir);
-        } catch (IOException e) {
-            Main.LOGGER.error("Failed to create config dir", e);
-        }
-
         jsonInterface = new GsonConfigInstance<>(Config.class, configDir);
         jsonInterface.load();
     }
