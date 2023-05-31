@@ -1,83 +1,76 @@
-/*
- * This code is reused from
- * Source: https://github.com/SkyblockerMod/Skyblocker/blob/master/src/main/java/me/xmrvizzy/skyblocker/utils/Scheduler.java
- * 
- * Modifications: 
- * 1. ontick system is now event-based instead of mixin based
- * 2. switched logger to reuse logger from entrypoint
- * 
- * GNU Lesser General Public License v3.0
- */
-
 package net.fabricmc.notnotmelonclient.util;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.notnotmelonclient.Main;
+import net.minecraft.client.MinecraftClient;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.PriorityQueue;
 
 public class Scheduler {
-    private static Scheduler instance;
-    private int currentTick;
-    private final PriorityQueue<ScheduledTask> tasks;
+    private static long tick = 0;
+    private static final PriorityQueue<ScheduledTask> tasks = new PriorityQueue<>();
 
-    public Scheduler() {
-        currentTick = 0;
-        tasks = new PriorityQueue<>();
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            currentTick += 1;
-            ScheduledTask task;
-            while ((task = tasks.peek()) != null && task.schedule <= currentTick) {
-                tasks.poll();
-                task.run();
-            }
-        });
-        instance = this;
+    public static void tick(MinecraftClient client) {
+        tick += 1;
+        ScheduledTask task;
+        while ((task = tasks.peek()) != null && task.schedule <= tick) {
+            tasks.poll();
+            task.run();
+            if (task instanceof CyclicTask) tasks.add(task);
+        }
     }
 
-    public static Scheduler getInstance() {
-        return instance;
+    public static void schedule(Runnable task, int delay) {
+        tasks.add(new ScheduledTask(task, tick + delay, false));
     }
 
-    public void schedule(Runnable task, int delay) {
-        if (delay < 0)
-            Main.LOGGER.warn("Scheduled a task with negative delay");
-        ScheduledTask tmp = new ScheduledTask(currentTick + delay, task);
-        tasks.add(tmp);
+    public static void scheduleThreaded(Runnable task, int delay) {
+        tasks.add(new ScheduledTask(task, tick + delay, true));
     }
 
-    public void scheduleCyclic(Runnable task, int period) {
-        if (period <= 0)
-            Main.LOGGER.error("Attempted to schedule a cyclic task with period lower than 1");
-        else
-            new CyclicTask(task, period).run();
+    public static void scheduleCyclic(Runnable task, int period) {
+        tasks.add(new CyclicTask(task, period, false));
     }
 
-    private class CyclicTask implements Runnable {
-        private final Runnable inner;
-        private final int period;
+    public static void scheduleCyclicThreaded(Runnable task, int period) {
+        tasks.add(new CyclicTask(task, period, true));
+    }
 
-        public CyclicTask(Runnable task, int period) {
-            this.inner = task;
+    private static class ScheduledTask implements Comparable<ScheduledTask> {
+        public final Runnable inner;
+        public long schedule;
+        public final boolean threaded;
+
+        private ScheduledTask(Runnable inner, long schedule, boolean threaded) {
+            this.inner = inner;
+            this.schedule = schedule;
+            this.threaded = threaded;
+        }
+
+        public void run() {
+            if (threaded)
+                new Thread(inner).start();
+            else
+                inner.run();
+        }
+
+        @Override public int compareTo(@NotNull Scheduler.ScheduledTask that) {
+            return (int) (this.schedule - that.schedule);
+        }
+    }
+
+    private static class CyclicTask extends ScheduledTask {
+        public final int period;
+
+        private CyclicTask(Runnable inner, int period, boolean threaded) {
+            super(inner, tick, threaded);
             this.period = period;
         }
 
-        @Override
-        public void run() {
-            schedule(this, period);
-            inner.run();
-        }
-    }
-
-    private record ScheduledTask(int schedule, Runnable inner) implements Comparable<ScheduledTask>, Runnable {
-        @Override
-        public int compareTo(ScheduledTask o) {
-            return schedule - o.schedule;
-        }
-
-        @Override
-        public void run() {
-            inner.run();
+        @Override public void run() {
+            super.run();
+            schedule += period;
         }
     }
 }

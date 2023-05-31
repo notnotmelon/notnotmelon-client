@@ -90,7 +90,7 @@ public class Reparty implements ChatTrigger {
         Matcher disband = DISBAND.matcher(asString);
         if (disband.matches()) {
             previousPartyLeader = disband.group(2);
-            Scheduler.getInstance().schedule(() -> this.previousPartyLeader = null, 20 * 10);
+            Scheduler.schedule(() -> this.previousPartyLeader = null, 20 * 10);
             return true;
         }
 
@@ -104,7 +104,7 @@ public class Reparty implements ChatTrigger {
             delay += 5;
             Util.sendDelayedCommand("p invite " + player, delay);
         }
-        Scheduler.getInstance().schedule(this::reset, delay + 20);
+        Scheduler.schedule(this::reset, delay + 20);
     }
 
     private void reset() {

@@ -29,7 +29,7 @@ public class CyclicApiRequest extends ApiRequest {
 		this.cooldown = cooldown;
 		this.decypherer = decypherer;
 
-		Scheduler.getInstance().scheduleCyclic(this::run, cooldown);
+		Scheduler.scheduleCyclicThreaded(this::run, cooldown);
 	}
 
 	@Override protected void run(int index) {

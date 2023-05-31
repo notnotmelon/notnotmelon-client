@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.notnotmelonclient.api.ApiRequests;
@@ -65,6 +66,7 @@ public class Main implements ClientModInitializer {
     }
 
 	private void registerEvents() {
+		ClientTickEvents.END_CLIENT_TICK.register(Scheduler::tick);
 		ItemTooltipCallback.EVENT.register(ItemPriceTooltip::onInjectTooltip);
 		Dungeons.registerEvents();
 		Fishing.registerEvents();

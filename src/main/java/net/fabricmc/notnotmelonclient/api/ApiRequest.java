@@ -40,7 +40,7 @@ public class ApiRequest {
 		this.endpoints = endpoints;
 		this.cooldown = cooldown;
 		this.decypherer = decypherer;
-		this.run();
+		new Thread(this::run).start();
 	}
 
 	@Nullable public JsonObject getJSON() {
@@ -53,7 +53,7 @@ public class ApiRequest {
 
 	protected void run(int index) {
 		if (index == endpoints.length) {
-			Scheduler.getInstance().schedule(this::run, cooldown);
+			Scheduler.scheduleThreaded(this::run, cooldown);
 			return;
 		}
 		URL url = endpoints[index];

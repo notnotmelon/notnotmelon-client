@@ -22,7 +22,7 @@ public class Timers {
     private static final Identifier ICONS = new Identifier(Main.NAMESPACE, "textures/gui/timers.png");
 
     public static void registerEvents() {
-        Scheduler.getInstance().scheduleCyclic(Timers::tick, 20);
+        Scheduler.scheduleCyclic(Timers::tick, 20);
     }
 
     private static final int minute = 1000 * 60;
