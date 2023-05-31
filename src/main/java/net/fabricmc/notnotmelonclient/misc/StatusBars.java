@@ -95,7 +95,7 @@ public class StatusBars {
 				double fill = (float) value / maxValue;
 				DrawableHelper.drawTexture(matrices, x, y, 0, v, 11 + (int) Math.ceil(fill * 78), 9, 90, 27);
 			}
-			v += 9; // used for overflow bars. each overflow sprite is 9px lower on the spritesheet
+			v += 9; // used for overflow bars. each overflow sprite is 9px lower on the sprite sheet
 			value -= maxValue;
 		}
 
