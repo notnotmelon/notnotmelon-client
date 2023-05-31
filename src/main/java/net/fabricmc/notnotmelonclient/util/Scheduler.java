@@ -1,10 +1,8 @@
 package net.fabricmc.notnotmelonclient.util;
 
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
 import java.util.PriorityQueue;
 
 public class Scheduler {
