@@ -26,7 +26,7 @@ public class Dungeons {
 	private static int lastZ;
 	public static void tick(MinecraftClient c) {
 		if (client.player == null) return;
-		if (!Util.isDungeons) return;
+		if (!Util.isDungeons()) return;
 		int[] roomCoords = getRoomCoords();
 		int roomX = roomCoords[0];
 		int roomZ = roomCoords[1];

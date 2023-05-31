@@ -4,6 +4,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.PlayerListHud;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.scoreboard.ScoreboardPlayerScore;
@@ -68,8 +69,11 @@ public class Util {
                 String playerName = hud.getPlayerName(playerEntry).getString().trim();
                 if (!playerName.isEmpty()) {
                     result.add(playerName);
-                    if (location == null && playerName.startsWith("Area: "))
-                        location = playerName.replaceFirst("Area: ", "");
+                    if (location == null)
+                        if (playerName.startsWith("Area: "))
+                            location = playerName.replaceFirst("Area: ", "");
+                        else if(playerName.startsWith("Dungeon: "))
+                            location = playerName.replaceFirst("Dungeon: ", "");
                 }
             }
             return result;
@@ -89,7 +93,8 @@ public class Util {
     }
 
     public static boolean isSkyblock = false;
-    public static boolean isDungeons = false;
+    private static boolean isDungeons = false;
+
     public static void locationTracker() {
         MinecraftClient client = MinecraftClient.getInstance();
 
@@ -109,6 +114,10 @@ public class Util {
             isSkyblock = false;
             isDungeons = false;
         }
+    }
+
+    public static boolean isDungeons() {
+        return isDungeons || "Catacombs".equals(getLocation());
     }
 
     public static String orderedTextAsString(OrderedText orderedText) {
@@ -141,10 +150,7 @@ public class Util {
     }
 
     public static long getGametick() {
-        try {
-            return MinecraftClient.getInstance().world.getTime();
-        } catch(NullPointerException e) {
-            return -1;
-        }
+        ClientWorld world = MinecraftClient.getInstance().world;
+        return world == null ? -1 : world.getTime();
     }
 }

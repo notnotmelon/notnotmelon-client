@@ -41,7 +41,7 @@ public class ApiRequests {
 			}
 		}
 
-		@Blocking static JsonObject moulberry(URL url) throws IOException {
+		@Blocking public static JsonObject moulberry(URL url) throws IOException {
 			try (InputStream stream = url.openStream()) {
 				try (GZIPInputStream gzip = new GZIPInputStream(stream)) {
 					try (InputStreamReader reader = new InputStreamReader(gzip)) {

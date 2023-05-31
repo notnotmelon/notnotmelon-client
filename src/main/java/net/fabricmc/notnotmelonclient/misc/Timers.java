@@ -77,7 +77,7 @@ public class Timers {
 
     private static final ArrayList<RenderableTimer> renderables = new ArrayList<>();
     public static void render(MatrixStack matrices) {
-        if (renderables.size() == 0 || !Util.isSkyblock) return;
+        if (renderables.size() == 0) return;
 
         Window window = client.getWindow();
         int scaledWidth = window.getScaledWidth();

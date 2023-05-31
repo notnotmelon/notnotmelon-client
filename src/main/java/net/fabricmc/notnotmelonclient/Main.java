@@ -60,8 +60,8 @@ public class Main implements ClientModInitializer {
 	}
 
 	private void registerCommands(CommandDispatcher<FabricClientCommandSource> dispatcher, CommandRegistryAccess registryAccess) {
-        ConfigCommand.register(dispatcher);
-    }
+	    ConfigCommand.register(dispatcher);
+	}
 
 	private void registerEvents() {
 		ClientTickEvents.END_CLIENT_TICK.register(Scheduler::tick);

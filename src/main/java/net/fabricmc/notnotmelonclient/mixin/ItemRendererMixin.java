@@ -19,7 +19,7 @@ public class ItemRendererMixin {
     private void renderGuiItemModelHead(MatrixStack matrices, ItemStack stack, int x, int y, BakedModel model, CallbackInfo ci) {
 		if (!Util.isSkyblock) return;
 
-        // don't render the skyblock menu if it's in the cursorstack
+        // don't render the skyblock menu if it's in the cursor stack
         if (ItemUtil.isSkyblockMenu(stack)) {
             ItemStack cursorStack = ItemUtil.getCursorStack();
             if (cursorStack != null && cursorStack.equals(stack)) ci.cancel();

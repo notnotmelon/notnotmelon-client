@@ -38,18 +38,16 @@ public class InGameHudMixin {
     private void renderStatusBars(MatrixStack matrices, CallbackInfo ci) {
         if (!Util.isSkyblock) return;
 
-		if (Util.isDungeons && Config.getConfig().dungeonMap)
+		if (Util.isDungeons() && Config.getConfig().dungeonMap)
             DungeonMap.render(matrices);
-
-        if (true) {
-            Timers.render(matrices);
-            RenderSystem.setShaderTexture(0, DrawableHelper.GUI_ICONS_TEXTURE);
-        }
+        
+        Timers.render(matrices);
 
         if (Config.getConfig().fancyBars) {
             StatusBars.draw(matrices);
-            RenderSystem.setShaderTexture(0, DrawableHelper.GUI_ICONS_TEXTURE);
             ci.cancel();
         }
+
+        RenderSystem.setShaderTexture(0, DrawableHelper.GUI_ICONS_TEXTURE);
 	}
 }
