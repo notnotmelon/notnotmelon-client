@@ -64,6 +64,7 @@ public class Scheduler {
         private CyclicTask(Runnable inner, int period, boolean threaded) {
             super(inner, tick, threaded);
             this.period = period;
+            run();
         }
 
         @Override public void run() {
