@@ -27,7 +27,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
     @Shadow @Nullable protected Slot focusedSlot;
     @Final @Shadow protected Text playerInventoryTitle;
 
-    // misleading method name. this also triggers on keypress
+    // misleading method name. this also triggers on key press
     @Inject(at = @At("HEAD"), method = "onMouseClick(Lnet/minecraft/screen/slot/Slot;IILnet/minecraft/screen/slot/SlotActionType;)V", cancellable = true)
     private void onMouseClick(Slot slot, int invSlot, int button, SlotActionType actionType, CallbackInfo ci) {
 		if (!Util.isSkyblock) return;

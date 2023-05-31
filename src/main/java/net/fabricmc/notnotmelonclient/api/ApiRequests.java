@@ -2,6 +2,7 @@ package net.fabricmc.notnotmelonclient.api;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import org.jetbrains.annotations.Blocking;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,7 +33,7 @@ public class ApiRequests {
 	}
 
 	public static class ApiDecypherer {
-		public static JsonObject json(URL url) throws IOException {
+		@Blocking public static JsonObject json(URL url) throws IOException {
 			try (InputStream stream = url.openStream()) {
 				try (InputStreamReader reader = new InputStreamReader(stream)) {
 					return new Gson().fromJson(reader, JsonObject.class);
@@ -40,7 +41,7 @@ public class ApiRequests {
 			}
 		}
 
-		public static JsonObject moulberry(URL url) throws IOException {
+		@Blocking static JsonObject moulberry(URL url) throws IOException {
 			try (InputStream stream = url.openStream()) {
 				try (GZIPInputStream gzip = new GZIPInputStream(stream)) {
 					try (InputStreamReader reader = new InputStreamReader(gzip)) {

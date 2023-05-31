@@ -11,13 +11,13 @@ import java.net.URL;
 
 /**
  * Used to periodically run API calls until a successful response.
- * Useful for static resorces such as NPC prices.
+ * Useful for static resources such as NPC prices.
  * See: ApiDecypherer.java
  */
 public class ApiRequest {
 	protected static final Logger LOGGER = Main.LOGGER;
 	public static final int DEFAULT_COOLDOWN = 30 * 60 * 10; // 10 minutes
-	protected URL[] endpoints; // incase the api has mirrors, we can call all of them until there is a response. sorted by priority
+	protected URL[] endpoints; // in case the api has mirrors, we can call all of them until there is a response. sorted by priority
 	protected int cooldown;
 	protected Method decypherer;
 	protected JsonObject result;

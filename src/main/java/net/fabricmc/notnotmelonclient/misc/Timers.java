@@ -96,7 +96,7 @@ public class Timers {
 
     private record RenderableTimer(Text text, int iconOffset, int color) {
         public void render(MatrixStack matrices, int x, int y) {
-            DrawableHelper.drawTexture(matrices, x, y, iconOffset / 4, 0, 16, 16, 128 / 4, 64 / 4);
+            DrawableHelper.drawTexture(matrices, x, y, iconOffset / 4f, 0, 16, 16, 128 / 4, 64 / 4);
             x += 18;
             y += 5;
             RenderUtil.drawText(matrices, client, x, y, text, color);

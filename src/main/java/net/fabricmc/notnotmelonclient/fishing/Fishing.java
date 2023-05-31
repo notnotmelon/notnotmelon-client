@@ -20,7 +20,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import oshi.util.tuples.Triplet;
 
 public class Fishing {
     private static final MinecraftClient client = MinecraftClient.getInstance();
@@ -104,36 +103,34 @@ public class Fishing {
         reset();
     }
 
-    public static final Triplet<String, String, Formatting>[] rareCreatures = new Triplet[]{
-        new Triplet<>("You spot a Golden Fish surface from beneath the lava!", "Golden Fish!", Formatting.GOLD),
-        new Triplet<>("The Water Hydra has come to test your strength.", "Water Hydra!", Formatting.BLUE),
-        new Triplet<>("The Sea Emperor arises from the depths.", "Sea Emperor!", Formatting.YELLOW),
-        new Triplet<>("A Zombie miner surfaces!", "Zombie Miner!", Formatting.GREEN),
-        new Triplet<>("You hear a massive rumble as Thunder emerges.", "Thunder!", Formatting.LIGHT_PURPLE),
-        new Triplet<>("You have angered a legendary creature... Lord Jawbus has arrived", "Lord Jawbus!", Formatting.RED),
-        new Triplet<>("WOAH! A Plhlegblast appeared.", "Plhlegblast!", Formatting.DARK_GRAY),
-        new Triplet<>("The spirit of a long lost Phantom Fisherman has come to haunt you.", "Phantom Fisherman!", Formatting.AQUA),
-        new Triplet<>("This can't be! The manifestation of death himself!", "Grim Reaper!", Formatting.BLACK),
-        new Triplet<>("What is this creature!?", "Yeti!", Formatting.WHITE),
-        new Triplet<>("A Reindrake forms from the depths.", "Reindrake!", Formatting.DARK_PURPLE),
-        new Triplet<>("Hide no longer, a Great White Shark has tracked your scent and thirsts for your blood!", "Great White Shark!", Formatting.DARK_RED)
+    private record RareCreature(String spawnMessage, String creatureName, Formatting formatting) {}
+    public static final RareCreature[] rareCreatures = new RareCreature[]{
+        new RareCreature("You spot a Golden Fish surface from beneath the lava!", "Golden Fish!", Formatting.GOLD),
+        new RareCreature("The Water Hydra has come to test your strength.", "Water Hydra!", Formatting.BLUE),
+        new RareCreature("The Sea Emperor arises from the depths.", "Sea Emperor!", Formatting.YELLOW),
+        new RareCreature("A Zombie miner surfaces!", "Zombie Miner!", Formatting.GREEN),
+        new RareCreature("You hear a massive rumble as Thunder emerges.", "Thunder!", Formatting.LIGHT_PURPLE),
+        new RareCreature("You have angered a legendary creature... Lord Jawbus has arrived", "Lord Jawbus!", Formatting.RED),
+        new RareCreature("WOAH! A Plhlegblast appeared.", "Plhlegblast!", Formatting.DARK_GRAY),
+        new RareCreature("The spirit of a long lost Phantom Fisherman has come to haunt you.", "Phantom Fisherman!", Formatting.AQUA),
+        new RareCreature("This can't be! The manifestation of death himself!", "Grim Reaper!", Formatting.BLACK),
+        new RareCreature("What is this creature!?", "Yeti!", Formatting.WHITE),
+        new RareCreature("A Reindrake forms from the depths.", "Reindrake!", Formatting.DARK_PURPLE),
+        new RareCreature("Hide no longer, a Great White Shark has tracked your scent and thirsts for your blood!", "Great White Shark!", Formatting.DARK_RED)
     };
     public static ActionResult onMessage(Text message, String asString) {
         if (!Config.getConfig().legendaryCatchWarning) return ActionResult.PASS;
 
         String messageString = message.getString();
-        for (Triplet<String, String, Formatting> triplet : rareCreatures) {
-            String rareCreatureMessage = triplet.getA();
-            if (!messageString.equals(rareCreatureMessage)) continue;
-            String creatureName = triplet.getB();
-            Formatting formatting = triplet.getC();
-            Text title = Text.literal(creatureName).formatted(Formatting.BOLD, formatting);
+        for (RareCreature creature : rareCreatures) {
+            if (!messageString.equals(creature.spawnMessage)) continue;
+            String creatureName = creature.creatureName;
+            Text title = Text.literal(creatureName).formatted(Formatting.BOLD, creature.formatting);
 
             client.inGameHud.setTitleTicks(0, 20, 5);
             client.inGameHud.setTitle(title);
 
             if (creatureName.equals("Golden Fish!")) resetGoldfish();
-
             break;
         }
         return ActionResult.PASS;

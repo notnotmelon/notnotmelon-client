@@ -31,8 +31,6 @@ public class Main implements ClientModInitializer {
 	public static final MinecraftClient client = MinecraftClient.getInstance();
 	public static final Logger LOGGER = LoggerFactory.getLogger("notnotmelonclient");
 	public static final String NAMESPACE = "notnotmelonclient";
-	public static Path configDir;
-	public final Scheduler scheduler = new Scheduler();
 
 	@Override
 	public void onInitializeClient() {
