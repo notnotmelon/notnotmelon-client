@@ -9,6 +9,10 @@ import dev.isxander.yacl.config.GsonConfigInstance;
 import dev.isxander.yacl.gui.controllers.TickBoxController;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Config {
 	public static final Config instance = new Config();
 	public static Config getConfig() {
@@ -30,6 +34,7 @@ public class Config {
 			.category(removals())
 			.category(dungeons())
 			.category(fishing())
+			.category(CommandKeybinds.category())
 			.build();
 	}
 
@@ -423,4 +428,6 @@ public class Config {
 				.controller(TickBoxController::new)
 				.build();
 	}
+
+	@ConfigEntry public List<CommandKeybinds.CommandKeybind> commandKeybinds = new ArrayList<>();
 }
