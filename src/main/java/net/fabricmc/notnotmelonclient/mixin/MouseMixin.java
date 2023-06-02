@@ -1,5 +1,6 @@
 package net.fabricmc.notnotmelonclient.mixin;
 
+import net.fabricmc.notnotmelonclient.config.categories.CommandKeybinds;
 import net.fabricmc.notnotmelonclient.misc.ScrollableTooltips;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
@@ -20,4 +21,9 @@ public class MouseMixin {
         else
             ScrollableTooltips.scrollVertical(vertical);
     }
+
+	@Inject(method = "onMouseButton", at = @At("TAIL"))
+	public void onMouseButton(long window, int button, int action, int mods, CallbackInfo ci) {
+		CommandKeybinds.onKeyPress(button, action);
+	}
 }

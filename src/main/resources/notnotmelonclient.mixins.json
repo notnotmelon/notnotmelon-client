@@ -17,6 +17,7 @@
     "InGameHudMixin",
     "InGameOverlayRendererMixin",
     "ItemRendererMixin",
+    "KeyboardMixin",
     "MouseMixin",
     "ScreenMixin",
     "TextFieldWidgetMixin"

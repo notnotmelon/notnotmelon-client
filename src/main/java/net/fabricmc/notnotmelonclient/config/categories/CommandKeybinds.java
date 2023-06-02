@@ -14,8 +14,8 @@ import org.lwjgl.glfw.GLFW;
 
 import java.lang.reflect.Type;
 import java.util.Objects;
-import java.util.function.UnaryOperator;
 
+import static net.fabricmc.notnotmelonclient.Main.client;
 import static net.fabricmc.notnotmelonclient.config.Config.getConfig;
 import static net.fabricmc.notnotmelonclient.config.Config.getDefaults;
 
@@ -39,6 +39,16 @@ public class CommandKeybinds {
 			.build();
 	}
 
+	public static void onKeyPress(int keyCode, int action) {
+		if (action != GLFW.GLFW_PRESS) return;
+		if (client.currentScreen != null) return;
+		if (client.player == null) return;
+
+		for (CommandKeybind commandKeybind : getConfig().commandKeybinds)
+			if (commandKeybind.keyBind == keyCode)
+				client.player.networkHandler.sendCommand(commandKeybind.command);
+	}
+
 	public static class CommandKeybindSerializer implements JsonSerializer<CommandKeybind>, JsonDeserializer<CommandKeybind> {
 		@Override
 		public CommandKeybind deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
@@ -57,7 +67,7 @@ public class CommandKeybinds {
 			return array;
 		}
 
-		public static final UnaryOperator<GsonBuilder> serializer = builder -> builder.registerTypeHierarchyAdapter(CommandKeybind.class, new CommandKeybindSerializer());
+		//public static final UnaryOperator<GsonBuilder> serializer = builder -> builder.registerTypeHierarchyAdapter(CommandKeybind.class, new CommandKeybindSerializer());
 	}
 
 	public record CommandKeybind(String command, int keyBind) {
