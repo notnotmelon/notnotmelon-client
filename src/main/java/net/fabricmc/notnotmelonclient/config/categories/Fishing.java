@@ -65,8 +65,8 @@ public class Fishing {
 
 	public static Option<?> bobberTimer() {
 		return Option.createBuilder(boolean.class)
-			.name(Text.of("Hide Other Players Fishing"))
-			.tooltip(Text.of("Hides other player's fishing lines and bobbers."))
+			.name(Text.of("Bobber Timer"))
+			.tooltip(Text.of("Displays a timer above your bobber. Can help with slugfishing."))
 			.binding(
 				getDefaults().bobberTimer,
 				() -> getConfig().bobberTimer,

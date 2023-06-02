@@ -13,6 +13,8 @@ import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
 import java.lang.reflect.Type;
+import java.util.Objects;
+import java.util.function.UnaryOperator;
 
 import static net.fabricmc.notnotmelonclient.config.Config.getConfig;
 import static net.fabricmc.notnotmelonclient.config.Config.getDefaults;
@@ -37,11 +39,14 @@ public class CommandKeybinds {
 			.build();
 	}
 
-	public record CommandKeybind(String command, int keyBind) implements JsonSerializer<CommandKeybind>, JsonDeserializer<CommandKeybind>  {
+	public static class CommandKeybindSerializer implements JsonSerializer<CommandKeybind>, JsonDeserializer<CommandKeybind> {
 		@Override
 		public CommandKeybind deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-			JsonArray array = jsonElement.getAsJsonArray();
-			return new CommandKeybind(array.get(0).getAsString(), array.get(1).getAsInt());
+			if (jsonElement.isJsonArray()) {
+				JsonArray array = jsonElement.getAsJsonArray();
+				return new CommandKeybind(array.get(0).getAsString(), array.get(1).getAsInt());
+			}
+			return new CommandKeybind("", GLFW.GLFW_KEY_UNKNOWN);
 		}
 
 		@Override
@@ -50,6 +55,16 @@ public class CommandKeybinds {
 			array.add(commandKeybind.command);
 			array.add(commandKeybind.keyBind);
 			return array;
+		}
+
+		public static final UnaryOperator<GsonBuilder> serializer = builder -> builder.registerTypeHierarchyAdapter(CommandKeybind.class, new CommandKeybindSerializer());
+	}
+
+	public record CommandKeybind(String command, int keyBind) {
+		@Override
+		public boolean equals(Object o) {
+			if (!(o instanceof CommandKeybind that)) return false;
+			return Objects.equals(this.command, that.command) && this.keyBind == that.keyBind;
 		}
 	}
 
@@ -70,9 +85,24 @@ public class CommandKeybinds {
 		}
 
 		public void setCommand(String command) {
+			CommandKeybind previous = option.pendingValue();
+			if (Objects.equals(previous.command, command)) return;
 			option.requestSet(new CommandKeybind(
 				command,
-				option.pendingValue().keyBind
+				previous.keyBind
+			));
+		}
+
+		public int getKeyBind() {
+			return option().pendingValue().keyBind;
+		}
+
+		public void setKeyBind(int keyBind) {
+			CommandKeybind previous = option.pendingValue();
+			if (previous.keyBind == keyBind) return;
+			option.requestSet(new CommandKeybind(
+				previous.command,
+				keyBind
 			));
 		}
 	}

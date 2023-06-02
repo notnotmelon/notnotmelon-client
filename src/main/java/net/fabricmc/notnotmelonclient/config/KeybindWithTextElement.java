@@ -10,8 +10,10 @@ import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.function.Consumer;
 
@@ -20,81 +22,115 @@ import java.util.function.Consumer;
 public class KeybindWithTextElement extends ControllerWidget<CommandKeybinds.KeybindController> {
 	public KeybindWithTextElement(CommandKeybinds.KeybindController control, YACLScreen screen, Dimension<Integer> dim) {
 		super(control, screen, dim);
-		//this.instantApply = instantApply;
 		inputField = control.getCommand();
-		inputFieldFocused = false;
-		selectionLength = 0;
-		emptyText = Text.literal("/").formatted(Formatting.GRAY);
 		control.option().addListener((opt, val) -> inputField = control.getCommand());
 		setDimension(dim);
 	}
 
 	protected boolean instantApply;
 	protected String inputField;
-	protected Dimension<Integer> inputFieldBounds;
-	protected boolean inputFieldFocused;
-	protected int caretPos;
-	protected int selectionLength;
+	protected int selectionLength = 0;
 	protected int renderOffset;
 	protected float ticks;
-	private final Text emptyText;
-	private final int buttonWidth = 40;
+	private final Text emptyText = Text.literal("/command...").formatted(Formatting.GRAY);
+
+	private final int buttonWidth = 80;
+	protected Dimension<Integer> buttonBounds;
+	private boolean buttonHovered;
+	private boolean buttonFocused;
+
+	protected int caretPos;
+	private boolean textFieldHovered;
+	protected boolean textFieldFocused = false;
+	protected Dimension<Integer> textFieldBounds;
 
 	@Override
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-		hovered = isMouseOver(mouseX, mouseY);
+		textFieldHovered = isMouseOver(mouseX, mouseY);
+		buttonHovered = buttonBounds.isPointInside(mouseX, mouseY);
 
 		Text name = control.option().changed() ? modifiedOptionName : control.option().name();
 		Text shortenedName = Text.literal(GuiUtils.shortenString(name.getString(), textRenderer, getDimension().width() - getControlWidth() - getXPadding() - 7, "...")).setStyle(name.getStyle());
 
-		drawButtonRect(matrices, getDimension().x(), getDimension().y(), getDimension().xLimit() - buttonWidth, getDimension().yLimit(), isHovered(), isAvailable());
+		drawButtonRect(matrices, getDimension().x(), getDimension().y(), getDimension().xLimit() - buttonWidth, getDimension().yLimit(), isTextFieldHovered(), isAvailable());
 		matrices.push();
 		matrices.translate(getDimension().x() + getXPadding(), getTextY(), 0);
 		textRenderer.drawWithShadow(matrices, shortenedName, 0, 0, getValueColor());
 		matrices.pop();
-		drawButtonRect(matrices, getDimension().xLimit() - buttonWidth, getDimension().y(), getDimension().xLimit(), getDimension().yLimit(), isHovered(), isAvailable());
 
 		drawValueText(matrices, mouseX, mouseY, delta);
-		if (isHovered()) {
+		if (isTextFieldHovered()) {
 			drawHoveredControl(matrices, mouseX, mouseY, delta);
 		}
+
+		drawButton(matrices);
+	}
+
+	private static final MutableText notBound = Text.literal("Not Bound").formatted(Formatting.GRAY);
+	protected void drawButton(MatrixStack matrices) {
+		drawButtonRect(matrices, getDimension().xLimit() - buttonWidth, getDimension().y(), getDimension().xLimit(), getDimension().yLimit(), isButtonHovered(), isAvailable());
+		Text text = buttonText();
+		int width = textRenderer.getWidth(text);
+		float x = buttonBounds.centerX() - width / 2f;
+
+		if (buttonFocused) {
+			matrices.push();
+			matrices.translate(x, textFieldBounds.yLimit(), 0);
+			DrawableHelper.fill(matrices, 0, 0, width, 1, -1);
+			DrawableHelper.fill(matrices, 1, 1, width + 1, 2, 0xFF404040);
+			matrices.pop();
+		}
+
+		matrices.push();
+		matrices.translate(x, getTextY(), 0);
+		textRenderer.drawWithShadow(matrices, text, 0, 0, 0xFFFFFFFF);
+		matrices.pop();
+	}
+
+	protected Text buttonText() {
+		int keyBind = control.getKeyBind();
+		if (keyBind == GLFW.GLFW_KEY_UNKNOWN)
+			return notBound;
+
+		InputUtil.Type inputType = keyBind > 7 ? InputUtil.Type.KEYSYM : InputUtil.Type.MOUSE;
+		return inputType.createFromCode(keyBind).getLocalizedText();
 	}
 
 	@Override
 	protected void drawValueText(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		Text valueText = getValueText();
-		if (!isHovered()) valueText = Text.literal(GuiUtils.shortenString(valueText.getString(), textRenderer, getMaxUnwrapLength(), "...")).setStyle(valueText.getStyle());
+		if (!isTextFieldHovered()) valueText = Text.literal(GuiUtils.shortenString(valueText.getString(), textRenderer, getMaxUnwrapLength(), "...")).setStyle(valueText.getStyle());
 
 		matrices.push();
 		int textX = getDimension().xLimit() - textRenderer.getWidth(valueText) + renderOffset - getXPadding() - buttonWidth;
 		matrices.translate(textX, getTextY(), 0);
-		GuiUtils.enableScissor(inputFieldBounds.x(), inputFieldBounds.y() - 2, inputFieldBounds.width() + 1, inputFieldBounds.height() + 4);
+		GuiUtils.enableScissor(textFieldBounds.x(), textFieldBounds.y() - 2, textFieldBounds.width() + 1, textFieldBounds.height() + 4);
 		textRenderer.drawWithShadow(matrices, valueText, 0, 0, getValueColor());
 		matrices.pop();
 
-		if (isHovered()) {
+		if (isTextFieldHovered()) {
 			ticks += delta;
 
 			String text = getValueText().getString();
 
-			DrawableHelper.fill(matrices, inputFieldBounds.x(), inputFieldBounds.yLimit(), inputFieldBounds.xLimit(), inputFieldBounds.yLimit() + 1, -1);
-			DrawableHelper.fill(matrices, inputFieldBounds.x() + 1, inputFieldBounds.yLimit() + 1, inputFieldBounds.xLimit() + 1, inputFieldBounds.yLimit() + 2, 0xFF404040);
+			DrawableHelper.fill(matrices, textFieldBounds.x(), textFieldBounds.yLimit(), textFieldBounds.xLimit(), textFieldBounds.yLimit() + 1, -1);
+			DrawableHelper.fill(matrices, textFieldBounds.x() + 1, textFieldBounds.yLimit() + 1, textFieldBounds.xLimit() + 1, textFieldBounds.yLimit() + 2, 0xFF404040);
 
-			if (inputFieldFocused || focused) {
+			if (textFieldFocused || focused) {
 				if (caretPos > text.length())
 					caretPos = text.length();
 
 				int caretX = textX + textRenderer.getWidth(text.substring(0, caretPos)) - 1;
 				if (text.isEmpty())
-					caretX = inputFieldBounds.x() + inputFieldBounds.width() / 2;
+					caretX = textFieldBounds.x() + textFieldBounds.width() / 2;
 
 				if (ticks % 20 <= 10) {
-					DrawableHelper.fill(matrices, caretX, inputFieldBounds.y(), caretX + 1, inputFieldBounds.yLimit(), -1);
+					DrawableHelper.fill(matrices, caretX, textFieldBounds.y(), caretX + 1, textFieldBounds.yLimit(), -1);
 				}
 
 				if (selectionLength != 0) {
 					int selectionX = textX + textRenderer.getWidth(text.substring(0, caretPos + selectionLength));
-					DrawableHelper.fill(matrices, caretX, inputFieldBounds.y() - 1, selectionX, inputFieldBounds.yLimit(), 0x803030FF);
+					DrawableHelper.fill(matrices, caretX, textFieldBounds.y() - 1, selectionX, textFieldBounds.yLimit(), 0x803030FF);
 				}
 			}
 		}
@@ -102,38 +138,55 @@ public class KeybindWithTextElement extends ControllerWidget<CommandKeybinds.Key
 	}
 
 	@Override
+	public boolean isMouseOver(double mouseX, double mouseY) {
+		Dimension<Integer> dim = getDimension();
+		if (dim == null) return false;
+		return dim.withWidth(dim.width() - buttonWidth).isPointInside((int) mouseX, (int) mouseY);
+	}
+
+	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		if (isAvailable() && getDimension().isPointInside((int) mouseX, (int) mouseY)) {
-			inputFieldFocused = true;
+		if (!isAvailable()) return false;
+		boolean wasFocused = buttonFocused;
+		textFieldFocused = textFieldHovered;
+		buttonFocused = buttonHovered;
 
-			if (!inputFieldBounds.isPointInside((int) mouseX, (int) mouseY)) {
-				caretPos = getDefaultCaretPos();
-			} else {
-				// gets the appropriate caret position for where you click
-				int textX = (int) mouseX - (inputFieldBounds.xLimit() - textRenderer.getWidth(getValueText()));
-				int pos = -1;
-				int currentWidth = 0;
-				for (char ch : inputField.toCharArray()) {
-					pos++;
-					int charLength = textRenderer.getWidth(String.valueOf(ch));
-					if (currentWidth + charLength / 2 > textX) { // if more than halfway past the characters select in front of that char
-						caretPos = pos;
-						break;
-					} else if (pos == inputField.length() - 1) {
-						// if we have reached the end and no matches, it must be the second half of the char so the last position
-						caretPos = pos + 1;
-					}
-					currentWidth += charLength;
-				}
-
-				selectionLength = 0;
-			}
+		if (textFieldFocused) {
+			clickTextField(mouseX, mouseY);
 			return true;
-		} else {
-			inputFieldFocused = false;
 		}
 
-		return false;
+		if (buttonFocused && wasFocused) {
+			keyPressedButtonInput(button);
+			return true;
+		}
+
+		return buttonFocused;
+	}
+
+	public void clickTextField(double mouseX, double mouseY) {
+		if (!textFieldBounds.isPointInside((int) mouseX, (int) mouseY)) {
+			caretPos = getDefaultCaretPos();
+		} else {
+			// gets the appropriate caret position for where you click
+			int textX = (int) mouseX - (textFieldBounds.xLimit() - textRenderer.getWidth(getValueText()));
+			int pos = -1;
+			int currentWidth = 0;
+			for (char ch : inputField.toCharArray()) {
+				pos++;
+				int charLength = textRenderer.getWidth(String.valueOf(ch));
+				if (currentWidth + charLength / 2 > textX) { // if more than halfway past the characters select in front of that char
+					caretPos = pos;
+					break;
+				} else if (pos == inputField.length() - 1) {
+					// if we have reached the end and no matches, it must be the second half of the char so the last position
+					caretPos = pos + 1;
+				}
+				currentWidth += charLength;
+			}
+
+			selectionLength = 0;
+		}
 	}
 
 	protected int getDefaultCaretPos() {
@@ -142,9 +195,23 @@ public class KeybindWithTextElement extends ControllerWidget<CommandKeybinds.Key
 
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if (!inputFieldFocused)
-			return false;
+		if (textFieldFocused)
+			return keyPressedTextInput(keyCode);
+		if (buttonFocused)
+			return keyPressedButtonInput(keyCode);
 
+		return false;
+	}
+
+	private boolean keyPressedButtonInput(int keyCode) {
+		if (keyCode == GLFW.GLFW_KEY_ESCAPE)
+			keyCode = GLFW.GLFW_KEY_UNKNOWN;
+		control.setKeyBind(keyCode);
+		unfocus();
+		return true;
+	}
+
+	private boolean keyPressedTextInput(int keyCode) {
 		switch (keyCode) {
 			case InputUtil.GLFW_KEY_ESCAPE, InputUtil.GLFW_KEY_ENTER -> {
 				unfocus();
@@ -211,7 +278,7 @@ public class KeybindWithTextElement extends ControllerWidget<CommandKeybinds.Key
 		if (Screen.isPaste(keyCode)) {
 			return doPaste();
 		} else if (Screen.isCopy(keyCode)) {
-			return  doCopy();
+			return doCopy();
 		} else if (Screen.isCut(keyCode)) {
 			return doCut();
 		} else if (Screen.isSelectAll(keyCode)) {
@@ -271,7 +338,7 @@ public class KeybindWithTextElement extends ControllerWidget<CommandKeybinds.Key
 
 	@Override
 	public boolean charTyped(char chr, int modifiers) {
-		if (!inputFieldFocused)
+		if (!textFieldFocused)
 			return false;
 
 		write(Character.toString(chr));
@@ -367,13 +434,13 @@ public class KeybindWithTextElement extends ControllerWidget<CommandKeybinds.Key
 	@Override
 	public void setFocused(boolean focused) {
 		super.setFocused(focused);
-		inputFieldFocused = focused;
 	}
 
 	@Override
 	public void unfocus() {
 		super.unfocus();
-		inputFieldFocused = false;
+		textFieldFocused = false;
+		buttonFocused = false;
 		renderOffset = 0;
 		if (!instantApply) updateControl();
 	}
@@ -383,12 +450,16 @@ public class KeybindWithTextElement extends ControllerWidget<CommandKeybinds.Key
 		super.setDimension(dim);
 
 		int width = Math.max(6, Math.min(textRenderer.getWidth(getValueText()), getUnshiftedLength()));
-		inputFieldBounds = Dimension.ofInt(dim.xLimit() - getXPadding() - width - buttonWidth, dim.centerY() - textRenderer.fontHeight / 2, width, textRenderer.fontHeight);
+		textFieldBounds = Dimension.ofInt(dim.xLimit() - getXPadding() - width - buttonWidth, dim.centerY() - textRenderer.fontHeight / 2, width, textRenderer.fontHeight);
+		buttonBounds = Dimension.ofInt(dim.xLimit() - buttonWidth + 1, dim.y(), buttonWidth - 2, dim.height());
 	}
 
-	@Override
-	public boolean isHovered() {
-		return super.isHovered() || inputFieldFocused;
+	public boolean isTextFieldHovered() {
+		return textFieldFocused || textFieldHovered;
+	}
+
+	public boolean isButtonHovered() {
+		return buttonFocused || buttonHovered;
 	}
 
 	protected void updateControl() {
@@ -397,7 +468,7 @@ public class KeybindWithTextElement extends ControllerWidget<CommandKeybinds.Key
 
 	@Override
 	protected int getUnhoveredControlWidth() {
-		return !isHovered() ? Math.min(getHoveredControlWidth(), getMaxUnwrapLength()) : getHoveredControlWidth();
+		return !isTextFieldHovered() ? Math.min(getHoveredControlWidth(), getMaxUnwrapLength()) : getHoveredControlWidth();
 	}
 
 	@Override
@@ -407,9 +478,9 @@ public class KeybindWithTextElement extends ControllerWidget<CommandKeybinds.Key
 
 	@Override
 	protected Text getValueText() {
-		if (!inputFieldFocused && inputField.isEmpty())
+		if (!textFieldFocused && inputField.isEmpty())
 			return emptyText;
 
-		return instantApply || !inputFieldFocused ? control.formatValue() : Text.literal(inputField);
+		return instantApply || !textFieldFocused ? control.formatValue() : Text.literal(inputField);
 	}
 }

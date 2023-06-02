@@ -48,7 +48,7 @@ public class Timers {
 	public static Option<?> orbTimer() {
 		return Option.createBuilder(boolean.class)
 			.name(Text.of("Orb Timer"))
-			.tooltip(Text.of("Shows the amount of time remaining on nearby deployables. Always lists the "))
+			.tooltip(Text.of("Shows the amount of time remaining on nearby deployables. Always lists the highest priority deployable."))
 			.binding(
 				getDefaults().orbTimer,
 				() -> getConfig().orbTimer,
