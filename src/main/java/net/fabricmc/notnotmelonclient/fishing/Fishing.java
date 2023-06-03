@@ -9,6 +9,7 @@ import net.fabricmc.notnotmelonclient.events.ChatTrigger;
 import net.fabricmc.notnotmelonclient.events.SoundEvent;
 import net.fabricmc.notnotmelonclient.util.MathUtil;
 import net.fabricmc.notnotmelonclient.util.RenderUtil;
+import net.fabricmc.notnotmelonclient.util.Scheduler;
 import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -38,11 +39,6 @@ public class Fishing {
     public static long castTime = -1;
     public static long goldfishStreak = -1;
     private static Vec3d yawVector;
-    private static final Text[] approachText = new Text[]{
-        Text.literal(".  ").formatted(Formatting.YELLOW).formatted(Formatting.BOLD),
-        Text.literal(".. ").formatted(Formatting.YELLOW).formatted(Formatting.BOLD),
-        Text.literal("...").formatted(Formatting.YELLOW).formatted(Formatting.BOLD)
-    };
     private static final Text catchText = Text.literal("!!!").formatted(Formatting.RED).formatted(Formatting.BOLD);
     public static long goldenFishTimer = -1;
     public static void registerEvents() {
@@ -52,6 +48,25 @@ public class Fishing {
         ChangeLobby.EVENT.register(Fishing::resetGoldfish);
         ChangeLobby.EVENT.register(Fishing::reset);
         WorldRenderEvents.BEFORE_ENTITIES.register(Fishing::render);
+        Scheduler.scheduleCyclic(Fishing::updateBobberTimer, 2);
+    }
+
+    private static Text bobberTimer;
+    private static float bobberTimerOffset;
+    private static void updateBobberTimer() {
+        ClientPlayerEntity player = client.player;
+        if (!Util.isSkyblock
+            || !Config.getConfig().bobberTimer
+            || player == null
+            || player.fishHook == null
+        ) {
+            bobberTimer = null;
+            return;
+        }
+        float age = player.fishHook.age / 20f;
+        Formatting color = age < 20 ? Formatting.YELLOW : Formatting.RED;
+        bobberTimer = Text.literal(String.format("%.1f", age)).formatted(Formatting.BOLD).formatted(color);
+        bobberTimerOffset = -client.textRenderer.getWidth(bobberTimer) / 2f;
     }
 
     public static TypedActionResult<ItemStack> castRod(PlayerEntity player, World world, Hand hand) {
@@ -109,9 +124,8 @@ public class Fishing {
             client.inGameHud.setTitle(catchText);
         }
 
-        if (Config.getConfig().goldenFishTimer) {
+        if (Config.getConfig().goldenFishTimer)
             updateGoldenFishTimer();
-        }
 
         reset();
     }
@@ -155,29 +169,22 @@ public class Fishing {
     }
 
     private static void render(WorldRenderContext worldRenderContext) {
-        if (!Util.isSkyblock || !Config.getConfig().bobberTimer) return;
+        if (bobberTimer == null || client.player == null || client.player.fishHook == null) return;
         ClientPlayerEntity player = client.player;
-        if (player == null || player.fishHook == null) return;
         FishingBobberEntity fishHook = player.fishHook;
-        float age = fishHook.age / 20f;
-        Formatting color = age < 20 ? Formatting.YELLOW : Formatting.RED;
-        Text text = Text.literal(String.format("%.1f", age)).formatted(Formatting.BOLD).formatted(color);
-        MatrixStack matrices = worldRenderContext.matrixStack();
         TextRenderer textRenderer = client.textRenderer;
+        MatrixStack matrices = worldRenderContext.matrixStack();
         VertexConsumerProvider vertexConsumers = worldRenderContext.consumers();
         EntityRenderDispatcher dispatcher = client.getEntityRenderDispatcher();
         Vec3d cameraPos = dispatcher.camera.getPos();
         Vec3d interpolationVector = RenderUtil.interpolationVector(fishHook);
 
-        double d = dispatcher.getSquaredDistanceToCamera(fishHook);
-        if (d > 4096.0) return;
         matrices.push();
         matrices.translate(interpolationVector.x - cameraPos.x, waterLevel(fishHook, interpolationVector.y) - cameraPos.y + 0.6, interpolationVector.z - cameraPos.z);
         matrices.multiply(dispatcher.getRotation());
         matrices.scale(-0.035f, -0.035f, 0.035f);
         Matrix4f matrix4f = matrices.peek().getPositionMatrix();
-        float h = -textRenderer.getWidth(text) / 2f;
-        textRenderer.draw(text, h, 0, -1, false, matrix4f, vertexConsumers, TextRenderer.TextLayerType.SEE_THROUGH, 0, 255);
+        textRenderer.draw(bobberTimer, bobberTimerOffset, 0, -1, false, matrix4f, vertexConsumers, TextRenderer.TextLayerType.SEE_THROUGH, 0, 255);
         matrices.pop();
     }
 

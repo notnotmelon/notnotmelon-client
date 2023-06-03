@@ -25,8 +25,6 @@ import net.minecraft.command.CommandRegistryAccess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.file.Path;
-
 public class Main implements ClientModInitializer {
 	public static final MinecraftClient client = MinecraftClient.getInstance();
 	public static final Logger LOGGER = LoggerFactory.getLogger("notnotmelonclient");
@@ -53,6 +51,7 @@ public class Main implements ClientModInitializer {
 
 	private void registerCyclic() {
 		ApiRequests.init();
+		Scheduler.scheduleCyclic(Util::locationTracker, 20 * 45);
 	}
 
 	private void registerCommands() {
