@@ -1,5 +1,7 @@
 package net.fabricmc.notnotmelonclient.fishing;
 
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.notnotmelonclient.config.Config;
 import net.fabricmc.notnotmelonclient.events.ChangeLobby;
@@ -8,8 +10,14 @@ import net.fabricmc.notnotmelonclient.events.SoundEvent;
 import net.fabricmc.notnotmelonclient.util.MathUtil;
 import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.FishingBobberEntity;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.item.FishingRodItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
@@ -18,8 +26,10 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.joml.Matrix4f;
 
 public class Fishing {
     private static final MinecraftClient client = MinecraftClient.getInstance();
@@ -39,6 +49,7 @@ public class Fishing {
         ChatTrigger.EVENT.register(Fishing::onMessage);
         ChangeLobby.EVENT.register(Fishing::resetGoldfish);
         ChangeLobby.EVENT.register(Fishing::reset);
+        WorldRenderEvents.BEFORE_ENTITIES.register(Fishing::render);
     }
 
     public static TypedActionResult<ItemStack> castRod(PlayerEntity player, World world, Hand hand) {
@@ -139,5 +150,38 @@ public class Fishing {
     public static void resetGoldfish() {
         goldfishStreak = -1;
         goldenFishTimer = -1;
+    }
+
+    private static void render(WorldRenderContext worldRenderContext) {
+        ClientPlayerEntity player = client.player;
+        if (player == null || player.fishHook == null) return;
+        FishingBobberEntity fishHook = player.fishHook;
+        float age = fishHook.age / 20f;
+        Formatting color = age < 20 ? Formatting.YELLOW : Formatting.RED;
+        Text text = Text.literal(String.format("%.1f", age)).formatted(Formatting.BOLD).formatted(color);
+        MatrixStack matrices = worldRenderContext.matrixStack();
+        TextRenderer textRenderer = client.textRenderer;
+        VertexConsumerProvider vertexConsumers = worldRenderContext.consumers();
+        EntityRenderDispatcher dispatcher = client.getEntityRenderDispatcher();
+        Vec3d cameraPos = dispatcher.camera.getPos();
+
+        double d = dispatcher.getSquaredDistanceToCamera(fishHook);
+        if (d > 4096.0) return;
+        matrices.push();
+        matrices.translate(fishHook.lastRenderX - cameraPos.x, waterLevel(fishHook) - cameraPos.y + 0.6, fishHook.lastRenderZ - cameraPos.z);
+        matrices.multiply(dispatcher.getRotation());
+        matrices.scale(-0.035f, -0.035f, 0.035f);
+        Matrix4f matrix4f = matrices.peek().getPositionMatrix();
+        float h = -textRenderer.getWidth(text) / 2f;
+        textRenderer.draw(text, h, 0, -1, false, matrix4f, vertexConsumers, TextRenderer.TextLayerType.NORMAL, 0, 255);
+        matrices.pop();
+    }
+
+    public static double waterLevel(FishingBobberEntity fishHook) {
+        BlockPos blockPos = fishHook.getBlockPos();
+        FluidState fluidState = fishHook.world.getFluidState(blockPos);
+        if (!fluidState.isEmpty())
+            return fluidState.getHeight(fishHook.world, blockPos) + blockPos.getY();
+        return fishHook.lastRenderY;
     }
 }
