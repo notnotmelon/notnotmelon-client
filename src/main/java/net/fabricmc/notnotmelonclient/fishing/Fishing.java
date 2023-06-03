@@ -177,7 +177,7 @@ public class Fishing {
         matrices.scale(-0.035f, -0.035f, 0.035f);
         Matrix4f matrix4f = matrices.peek().getPositionMatrix();
         float h = -textRenderer.getWidth(text) / 2f;
-        textRenderer.draw(text, h, 0, -1, false, matrix4f, vertexConsumers, TextRenderer.TextLayerType.NORMAL, 0, 255);
+        textRenderer.draw(text, h, 0, -1, false, matrix4f, vertexConsumers, TextRenderer.TextLayerType.SEE_THROUGH, 0, 255);
         matrices.pop();
     }
 
