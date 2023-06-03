@@ -114,9 +114,9 @@ public class RenderUtil {
         Vec3d position = e.getPos();
         double tickDelta = client.getTickDelta();
         return new Vec3d(
-			position.x - MathHelper.lerp(tickDelta, e.lastRenderX, position.x),
-			position.y - MathHelper.lerp(tickDelta, e.lastRenderY, position.y),
-			position.z - MathHelper.lerp(tickDelta, e.lastRenderZ, position.z)
+			MathHelper.lerp(tickDelta, e.lastRenderX, position.x),
+			MathHelper.lerp(tickDelta, e.lastRenderY, position.y),
+			MathHelper.lerp(tickDelta, e.lastRenderZ, position.z)
 		);
     }
 

@@ -74,5 +74,5 @@ public class Config {
 	@ConfigEntry public boolean visitorGenerator = false;
 	@ConfigEntry public boolean visitorProfit = false;
 	@ConfigEntry public boolean orbTimer = false;
-	@ConfigEntry public boolean bobberTimer = false;
+	@ConfigEntry public boolean bobberTimer = true;
 }

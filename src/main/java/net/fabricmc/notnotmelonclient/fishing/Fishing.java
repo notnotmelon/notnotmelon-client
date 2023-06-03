@@ -8,6 +8,7 @@ import net.fabricmc.notnotmelonclient.events.ChangeLobby;
 import net.fabricmc.notnotmelonclient.events.ChatTrigger;
 import net.fabricmc.notnotmelonclient.events.SoundEvent;
 import net.fabricmc.notnotmelonclient.util.MathUtil;
+import net.fabricmc.notnotmelonclient.util.RenderUtil;
 import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -165,11 +166,12 @@ public class Fishing {
         VertexConsumerProvider vertexConsumers = worldRenderContext.consumers();
         EntityRenderDispatcher dispatcher = client.getEntityRenderDispatcher();
         Vec3d cameraPos = dispatcher.camera.getPos();
+        Vec3d interpolationVector = RenderUtil.interpolationVector(fishHook);
 
         double d = dispatcher.getSquaredDistanceToCamera(fishHook);
         if (d > 4096.0) return;
         matrices.push();
-        matrices.translate(fishHook.lastRenderX - cameraPos.x, waterLevel(fishHook) - cameraPos.y + 0.6, fishHook.lastRenderZ - cameraPos.z);
+        matrices.translate(interpolationVector.x - cameraPos.x, waterLevel(fishHook, interpolationVector.y) - cameraPos.y + 0.6, interpolationVector.z - cameraPos.z);
         matrices.multiply(dispatcher.getRotation());
         matrices.scale(-0.035f, -0.035f, 0.035f);
         Matrix4f matrix4f = matrices.peek().getPositionMatrix();
@@ -178,11 +180,11 @@ public class Fishing {
         matrices.pop();
     }
 
-    public static double waterLevel(FishingBobberEntity fishHook) {
+    public static double waterLevel(FishingBobberEntity fishHook, double fallback) {
         BlockPos blockPos = fishHook.getBlockPos();
         FluidState fluidState = fishHook.world.getFluidState(blockPos);
         if (!fluidState.isEmpty())
             return fluidState.getHeight(fishHook.world, blockPos) + blockPos.getY();
-        return fishHook.lastRenderY;
+        return fallback;
     }
 }
