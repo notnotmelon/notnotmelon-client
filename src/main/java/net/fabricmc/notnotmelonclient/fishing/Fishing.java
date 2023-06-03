@@ -153,6 +153,7 @@ public class Fishing {
     }
 
     private static void render(WorldRenderContext worldRenderContext) {
+        if (!Config.getConfig().bobberTimer || !Util.isSkyblock) return;
         ClientPlayerEntity player = client.player;
         if (player == null || player.fishHook == null) return;
         FishingBobberEntity fishHook = player.fishHook;
