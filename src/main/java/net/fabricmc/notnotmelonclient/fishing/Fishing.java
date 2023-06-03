@@ -16,6 +16,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.fluid.FluidState;
@@ -154,7 +155,7 @@ public class Fishing {
     }
 
     private static void render(WorldRenderContext worldRenderContext) {
-        if (!Config.getConfig().bobberTimer || !Util.isSkyblock) return;
+        if (!Util.isSkyblock || !Config.getConfig().bobberTimer) return;
         ClientPlayerEntity player = client.player;
         if (player == null || player.fishHook == null) return;
         FishingBobberEntity fishHook = player.fishHook;
@@ -182,9 +183,10 @@ public class Fishing {
 
     public static double waterLevel(FishingBobberEntity fishHook, double fallback) {
         BlockPos blockPos = fishHook.getBlockPos();
-        FluidState fluidState = fishHook.world.getFluidState(blockPos);
+        ClientWorld world = (ClientWorld) fishHook.world;
+        FluidState fluidState = world.getFluidState(blockPos);
         if (!fluidState.isEmpty())
-            return fluidState.getHeight(fishHook.world, blockPos) + blockPos.getY();
+            return fluidState.getHeight(world, blockPos) + blockPos.getY();
         return fallback;
     }
 }
