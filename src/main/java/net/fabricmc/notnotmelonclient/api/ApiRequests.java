@@ -2,21 +2,24 @@ package net.fabricmc.notnotmelonclient.api;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import net.fabricmc.loader.api.FabricLoader;
 import org.jetbrains.annotations.Blocking;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.zip.GZIPInputStream;
+
+import static net.fabricmc.notnotmelonclient.Main.LOGGER;
 
 public class ApiRequests {
 	public static ApiRequest npcPrices;
 	public static ApiRequest lowestBins;
 	public static ApiRequest bazaarPrices;
 	public static ApiRequest averageBins;
+	public static ApiRequest neuRepo;
 
 	public static void init() {
 		try {
@@ -27,8 +30,9 @@ public class ApiRequests {
 			lowestBins = new CyclicApiRequest(new URL[]{new URL("https://lb.tricked.pro/lowestbins"), new URL("https://lb2.tricked.pro/lowestbins")}, jsonDecypherer);
 			bazaarPrices = new CyclicApiRequest(new URL("https://hysky.de/api/bazaar"), jsonDecypherer);
 			averageBins = new CyclicApiRequest(new URL("https://moulberry.codes/auction_averages_lbin/3day.json.gz"), moulberryDecypherer);
-		} catch(MalformedURLException | NoSuchMethodException ignored) {
-
+			neuRepo = new RepoRequest(new URL("https://github.com/KonaeAkira/NotEnoughUpdates-REPO.git"), FabricLoader.getInstance().getConfigDir().resolve("notnotmelonclient/item-repo"));
+		} catch(Exception e) {
+			LOGGER.error("API Error!", e);
 		}
 	}
 

@@ -1,13 +1,13 @@
 package net.fabricmc.notnotmelonclient.api;
 
 import com.google.gson.JsonObject;
-import net.fabricmc.notnotmelonclient.Main;
 import net.fabricmc.notnotmelonclient.util.Scheduler;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
 
 import java.lang.reflect.Method;
 import java.net.URL;
+
+import static net.fabricmc.notnotmelonclient.Main.LOGGER;
 
 /**
  * Used to periodically run API calls until a successful response.
@@ -15,7 +15,6 @@ import java.net.URL;
  * See: ApiDecypherer.java
  */
 public class ApiRequest {
-	protected static final Logger LOGGER = Main.LOGGER;
 	public static final int DEFAULT_COOLDOWN = 30 * 60 * 10; // 10 minutes
 	protected URL[] endpoints; // in case the api has mirrors, we can call all of them until there is a response. sorted by priority
 	protected int cooldown;

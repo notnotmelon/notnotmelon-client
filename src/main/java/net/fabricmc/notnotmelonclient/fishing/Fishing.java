@@ -98,6 +98,7 @@ public class Fishing {
         castTime = -1;
     }
     public static void onSound(PlaySoundS2CPacket packet, String soundName) {
+        if (!Util.isSkyblock) return;
         if (!soundName.equals("entity.player.splash") && !soundName.equals("entity.generic.splash")) return;
 
         // we are assuming that you will never reel 1sec after casting.
@@ -172,7 +173,6 @@ public class Fishing {
         if (bobberTimer == null || client.player == null || client.player.fishHook == null) return;
         ClientPlayerEntity player = client.player;
         FishingBobberEntity fishHook = player.fishHook;
-        TextRenderer textRenderer = client.textRenderer;
         MatrixStack matrices = worldRenderContext.matrixStack();
         VertexConsumerProvider vertexConsumers = worldRenderContext.consumers();
         EntityRenderDispatcher dispatcher = client.getEntityRenderDispatcher();
@@ -184,7 +184,7 @@ public class Fishing {
         matrices.multiply(dispatcher.getRotation());
         matrices.scale(-0.035f, -0.035f, 0.035f);
         Matrix4f matrix4f = matrices.peek().getPositionMatrix();
-        textRenderer.draw(bobberTimer, bobberTimerOffset, 0, -1, false, matrix4f, vertexConsumers, TextRenderer.TextLayerType.SEE_THROUGH, 0, 255);
+        client.textRenderer.draw(bobberTimer, bobberTimerOffset, 0, -1, false, matrix4f, vertexConsumers, TextRenderer.TextLayerType.SEE_THROUGH, 0, 255);
         matrices.pop();
     }
 
