@@ -32,7 +32,7 @@ public class ApiRequests {
 			averageBins = new CyclicApiRequest(new URL("https://moulberry.codes/auction_averages_lbin/3day.json.gz"), moulberryDecypherer);
 			neuRepo = new RepoRequest(new URL("https://github.com/KonaeAkira/NotEnoughUpdates-REPO.git"), FabricLoader.getInstance().getConfigDir().resolve("notnotmelonclient/item-repo"));
 		} catch(Exception e) {
-			LOGGER.error("API Error!", e);
+			LOGGER.error("[nnc] API Error!", e);
 		}
 	}
 

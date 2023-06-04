@@ -57,11 +57,15 @@ public class ApiRequest {
 		}
 		URL url = endpoints[index];
 		try {
-			LOGGER.info("[nnc] Attempting API request. Endpoint: " + url.toString());
-			result = (JsonObject) decypherer.invoke(null, new Object[]{url});
+			doRequest(url);
 		} catch (Exception e) {
 			LOGGER.warn("[nnc] API request failed. Endpoint: " + url.toString(), e);
 			run(index + 1);
 		}
+	}
+
+	protected void doRequest(URL url) throws Exception {
+		LOGGER.info("[nnc] Attempting API request. Endpoint: " + url.toString());
+		result = (JsonObject) decypherer.invoke(null, new Object[]{url});
 	}
 }

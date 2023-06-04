@@ -15,6 +15,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.lwjgl.glfw.GLFW;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -152,5 +153,13 @@ public class Util {
     public static long getGametick() {
         ClientWorld world = MinecraftClient.getInstance().world;
         return world == null ? -1 : world.getTime();
+    }
+
+    public static boolean deleteFile(File file) {
+        File[] subFiles = file.listFiles();
+        if (subFiles != null)
+            for (File subFile : subFiles)
+                deleteFile(subFile);
+        return file.delete();
     }
 }

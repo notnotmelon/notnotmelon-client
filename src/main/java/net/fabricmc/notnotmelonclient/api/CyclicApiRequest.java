@@ -7,6 +7,8 @@ import net.fabricmc.notnotmelonclient.util.Util;
 import java.lang.reflect.Method;
 import java.net.URL;
 
+import static net.fabricmc.notnotmelonclient.Main.LOGGER;
+
 /**
  * Used to keep up-to-date rest API data. For example lowest BIN text on items.
  * Runs every "cooldown" ticks
@@ -37,11 +39,15 @@ public class CyclicApiRequest extends ApiRequest {
 		if (index == endpoints.length) return;
 		URL url = endpoints[index];
 		try {
-			LOGGER.info("[nnc] Attempting cyclic API request. Endpoint: " + url.toString());
-			result = (JsonObject) decypherer.invoke(null, new Object[]{url});
+			doRequest(url);
 		} catch (Exception e) {
 			LOGGER.warn("[nnc] API request failed. Endpoint: " + url.toString(), e);
 			run(index + 1);
 		}
+	}
+
+	@Override protected void doRequest(URL url) throws Exception {
+		LOGGER.info("[nnc] Attempting cyclic API request. Endpoint: " + url.toString());
+		result = (JsonObject) decypherer.invoke(null, new Object[]{url});
 	}
 }
