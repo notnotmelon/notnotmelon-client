@@ -29,9 +29,7 @@ public class ScrollableTooltips {
     }
 
 	public static void changeHoveredSlot(Slot slot) {
-		if (slot == null) {
-			reset();
-		} else if (slot.id != currentSlot) {
+		if (slot != null && slot.id != currentSlot) {
 			reset();
 			currentSlot = slot.id;
 		}

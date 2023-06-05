@@ -30,3 +30,7 @@ accessible field net/minecraft/client/render/WorldRenderer frustum Lnet/minecraf
 accessible field net/minecraft/entity/decoration/AbstractDecorationEntity facing Lnet/minecraft/util/math/Direction;
 
 accessible method net/minecraft/client/gui/hud/PlayerListHud collectPlayerEntries ()Ljava/util/List;
+
+accessible field net/minecraft/client/gui/screen/ingame/HandledScreen backgroundWidth I
+accessible field net/minecraft/client/gui/screen/ingame/HandledScreen x I
+accessible field net/minecraft/client/gui/screen/ingame/HandledScreen y I

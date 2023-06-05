@@ -3,6 +3,7 @@ package net.fabricmc.notnotmelonclient.api;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.notnotmelonclient.itemlist.RepoParser;
 import org.jetbrains.annotations.Blocking;
 
 import java.io.IOException;
@@ -16,10 +17,10 @@ import static net.fabricmc.notnotmelonclient.Main.LOGGER;
 
 public class ApiRequests {
 	public static ApiRequest npcPrices;
-	public static ApiRequest lowestBins;
-	public static ApiRequest bazaarPrices;
-	public static ApiRequest averageBins;
-	public static ApiRequest neuRepo;
+	public static CyclicApiRequest lowestBins;
+	public static CyclicApiRequest bazaarPrices;
+	public static CyclicApiRequest averageBins;
+	public static RepoRequest neuRepo;
 
 	public static void init() {
 		try {
@@ -30,7 +31,7 @@ public class ApiRequests {
 			lowestBins = new CyclicApiRequest(new URL[]{new URL("https://lb.tricked.pro/lowestbins"), new URL("https://lb2.tricked.pro/lowestbins")}, jsonDecypherer);
 			bazaarPrices = new CyclicApiRequest(new URL("https://hysky.de/api/bazaar"), jsonDecypherer);
 			averageBins = new CyclicApiRequest(new URL("https://moulberry.codes/auction_averages_lbin/3day.json.gz"), moulberryDecypherer);
-			neuRepo = new RepoRequest(new URL("https://github.com/KonaeAkira/NotEnoughUpdates-REPO.git"), FabricLoader.getInstance().getConfigDir().resolve("notnotmelonclient/item-repo"));
+			neuRepo = new RepoRequest(new URL("https://github.com/KonaeAkira/NotEnoughUpdates-REPO.git"), FabricLoader.getInstance().getConfigDir().resolve("notnotmelonclient/item-repo"), RepoParser::afterDownload);
 		} catch(Exception e) {
 			LOGGER.error("[nnc] API Error!", e);
 		}

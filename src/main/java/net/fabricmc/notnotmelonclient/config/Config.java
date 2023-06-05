@@ -3,13 +3,7 @@ package net.fabricmc.notnotmelonclient.config;
 import dev.isxander.yacl.api.YetAnotherConfigLib;
 import dev.isxander.yacl.config.ConfigEntry;
 import dev.isxander.yacl.config.GsonConfigInstance;
-import net.fabricmc.notnotmelonclient.config.categories.CommandKeybinds;
-import net.fabricmc.notnotmelonclient.config.categories.Fishing;
-import net.fabricmc.notnotmelonclient.config.categories.Dungeons;
-import net.fabricmc.notnotmelonclient.config.categories.Timers;
-import net.fabricmc.notnotmelonclient.config.categories.Removals;
-import net.fabricmc.notnotmelonclient.config.categories.Farming;
-import net.fabricmc.notnotmelonclient.config.categories.Qol;
+import net.fabricmc.notnotmelonclient.config.categories.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
@@ -35,6 +29,7 @@ public class Config {
 			.title(Text.literal("Notnotmelon Client Config Options"))
 			.save(JsonLoader.jsonInterface::save)
 			.category(Qol.category())
+			.category(ItemList.category())
 			.category(Removals.category())
 			.category(Dungeons.category())
 			.category(Fishing.category())
@@ -75,4 +70,7 @@ public class Config {
 	@ConfigEntry public boolean visitorProfit = false;
 	@ConfigEntry public boolean orbTimer = false;
 	@ConfigEntry public boolean bobberTimer = true;
+	@ConfigEntry public boolean itemList = true;
+	@ConfigEntry public int itemListWidth = 10;
+	@ConfigEntry public boolean includeEntities = false;
 }
