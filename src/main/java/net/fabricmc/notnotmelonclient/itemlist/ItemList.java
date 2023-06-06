@@ -16,7 +16,8 @@ import java.util.List;
 import static net.fabricmc.notnotmelonclient.Main.client;
 
 public class ItemList {
-	public static final int xOffset = 5;
+	public static int xOffset = 0;
+	public static int yOffset = 18;
 	public static int lastMouseX = -1;
 	public static int lastMouseY = -1;
 	public static int pageNumber = 2;
@@ -26,20 +27,21 @@ public class ItemList {
 	public static int startIndex;
 	public static int endIndex;
 	public static Text pageNumberText;
+	public static int textRenderX;
 
 	public static void render(HandledScreen<?> screen, MatrixStack matrices, int mouseX, int mouseY) {
 		if (cachedIcons == null) return;
 		ItemRenderer itemRenderer = client.getItemRenderer();
 		mouseX -= xOffset;
-		int targetMouseX = mouseX - mouseX % step + xOffset;
-		int targetMouseY = mouseY - mouseY % step;
+		int targetMouseX = mouseX - Math.abs(mouseX) % step + xOffset;
+		int targetMouseY = mouseY - Math.abs(mouseY) % step;
 		boolean renderedTooltip = false;
 
 		for (int i = startIndex; i < endIndex; i++) {
 			ItemListIcon icon = cachedIcons.get(i);
 			itemRenderer.renderInGui(matrices, icon.stack, icon.x, icon.y);
 			if (!renderedTooltip && targetMouseX == icon.x && targetMouseY == icon.y) {
-				screen.renderTooltip(matrices, screen.getTooltipFromItem(icon.stack), icon.stack.getTooltipData(), mouseX, mouseY);
+				screen.renderTooltip(matrices, screen.getTooltipFromItem(icon.stack), icon.stack.getTooltipData(), mouseX + xOffset, mouseY);
 				renderedTooltip = true;
 			}
 		}
@@ -48,7 +50,7 @@ public class ItemList {
 		lastMouseX = targetMouseX;
 		lastMouseY = targetMouseY;
 
-		RenderUtil.drawCenteredText(matrices, client, client.getWindow().getScaledWidth() / 6f, client.getWindow().getScaledHeight() - 10, pageNumberText, -1);
+		RenderUtil.drawCenteredText(matrices, client, textRenderX, 7, pageNumberText, -1);
 	}
 
 	public static void onOpenScreen(HandledScreen<?> screen) {
@@ -64,7 +66,8 @@ public class ItemList {
 		int maxX = Config.getConfig().itemListWidth * step;
 		int maxY = client.getWindow().getScaledHeight() - step;
 		int x = 0;
-		int y = 0;
+		int y = yOffset;
+		xOffset = Math.max(0, (screen.x - maxX) / 2);
 
 		boolean freezePageSize = false;
 		pageSize = 0;
@@ -80,7 +83,7 @@ public class ItemList {
 				y += step;
 				if (y >= maxY) {
 					freezePageSize = true;
-					y = 0;
+					y = yOffset;
 				}
 			}
 		}
@@ -88,5 +91,6 @@ public class ItemList {
 		startIndex = pageSize * pageNumber;
 		endIndex = Math.min(pageSize * (pageNumber + 1), cachedIcons.size());
 		pageNumberText = Text.of(pageNumber + "/" + (cachedIcons.size() / pageSize));
+		textRenderX = Math.min(maxX / 2 + xOffset, screen.x);
 	}
 }

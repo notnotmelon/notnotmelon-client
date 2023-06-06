@@ -71,6 +71,6 @@ public class Config {
 	@ConfigEntry public boolean orbTimer = false;
 	@ConfigEntry public boolean bobberTimer = true;
 	@ConfigEntry public boolean itemList = true;
-	@ConfigEntry public int itemListWidth = 10;
+	@ConfigEntry public int itemListWidth = 8;
 	@ConfigEntry public boolean includeEntities = false;
 }
