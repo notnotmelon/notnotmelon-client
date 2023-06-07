@@ -91,5 +91,7 @@ public class NeuRepo {
 					icon.setChildren(childrenStacks.get(itemName));
 			}
 		}
+
+		ItemList.sort();
 	}
 }

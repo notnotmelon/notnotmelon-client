@@ -1,5 +1,6 @@
 package net.fabricmc.notnotmelonclient.itemlist;
 
+import net.fabricmc.notnotmelonclient.util.ItemUtil;
 import net.minecraft.item.ItemStack;
 
 import java.util.List;
@@ -9,10 +10,12 @@ public class ItemListIcon {
 	public int y = -1;
 	public ItemStack stack;
 	public List<ItemStack> children;
+	public String skyblockID;
 	public String searchableText;
 
 	public ItemListIcon(ItemStack stack) {
 		this.stack = stack;
+		skyblockID = ItemUtil.getFullItemID(stack);
 		calculateSearchableText();
 	}
 

@@ -4,7 +4,9 @@ import dev.isxander.yacl.api.ConfigCategory;
 import dev.isxander.yacl.api.Option;
 import dev.isxander.yacl.api.OptionGroup;
 import dev.isxander.yacl.gui.controllers.TickBoxController;
-import dev.isxander.yacl.gui.controllers.string.number.IntegerFieldController;
+import dev.isxander.yacl.gui.controllers.cycling.EnumController;
+import dev.isxander.yacl.gui.controllers.slider.IntegerSliderController;
+import net.fabricmc.notnotmelonclient.itemlist.SortStrategies;
 import net.minecraft.text.Text;
 
 import static net.fabricmc.notnotmelonclient.config.Config.getConfig;
@@ -47,7 +49,7 @@ public class ItemList {
 				() -> getConfig().itemListWidth,
 				v -> getConfig().itemListWidth = v
 			)
-			.controller(IntegerFieldController::new)
+			.controller(opt -> new IntegerSliderController(opt, 1, 32, 1))
 			.build();
 	}
 
@@ -61,6 +63,19 @@ public class ItemList {
 				v -> getConfig().includeEntities = v
 			)
 			.controller(TickBoxController::new)
+			.build();
+	}
+
+	public static Option<?> sortStrategy() {
+		return Option.createBuilder(SortStrategies.class)
+			.name(Text.of("Sorting Strategy"))
+			.tooltip(Text.of("How should the item list be sorted?"))
+			.binding(
+				getDefaults().sortStrategy,
+				() -> getConfig().sortStrategy,
+				v -> getConfig().sortStrategy = v
+			)
+			.controller(EnumController::new)
 			.build();
 	}
 }

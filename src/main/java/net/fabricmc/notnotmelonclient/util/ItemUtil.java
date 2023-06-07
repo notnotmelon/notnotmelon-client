@@ -11,6 +11,7 @@ import net.minecraft.screen.ScreenHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
+import java.util.NoSuchElementException;
 
 public class ItemUtil {
 	private static final MinecraftClient client = MinecraftClient.getInstance();
@@ -97,7 +98,7 @@ public class ItemUtil {
                     return base;
                 }
             }
-        } catch (NullPointerException e) {
+        } catch (NullPointerException | NoSuchElementException e) {
             return base;
         }
         

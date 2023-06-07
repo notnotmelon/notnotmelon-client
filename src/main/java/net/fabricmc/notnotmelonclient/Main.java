@@ -14,7 +14,9 @@ import net.fabricmc.notnotmelonclient.config.JsonLoader;
 import net.fabricmc.notnotmelonclient.dungeons.Dungeons;
 import net.fabricmc.notnotmelonclient.events.ChangeLobby;
 import net.fabricmc.notnotmelonclient.events.ChatTrigger;
+import net.fabricmc.notnotmelonclient.events.MouseClick;
 import net.fabricmc.notnotmelonclient.fishing.Fishing;
+import net.fabricmc.notnotmelonclient.itemlist.ItemList;
 import net.fabricmc.notnotmelonclient.misc.FavoriteItem;
 import net.fabricmc.notnotmelonclient.misc.ItemPriceTooltip;
 import net.fabricmc.notnotmelonclient.misc.Timers;
@@ -70,6 +72,7 @@ public class Main implements ClientModInitializer {
 		Timers.registerEvents();
 		ClientPlayConnectionEvents.JOIN.register(ChangeLobby::onServerJoin);
 		ChangeLobby.EVENT.register(Util::onChangeLobby);
+		MouseClick.EVENT.register(ItemList::onClick);
 	}
 
 	private void registerChatTriggers() {

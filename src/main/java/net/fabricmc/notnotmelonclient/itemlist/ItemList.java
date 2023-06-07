@@ -6,11 +6,13 @@ import net.fabricmc.notnotmelonclient.config.Config;
 import net.fabricmc.notnotmelonclient.misc.ScrollableTooltips;
 import net.fabricmc.notnotmelonclient.util.RenderUtil;
 import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
 import java.util.List;
@@ -23,8 +25,9 @@ public class ItemList {
 	public static int yOffset = 18;
 	public static int lastMouseX = -1;
 	public static int lastMouseY = -1;
-	public static int pageNumber = 2;
-	public static final int step = 18;
+	public static int pageNumber;
+	public static int maxPageNumber;
+	public static final int STEP = 18;
 	public static int pageSize;
 	public static int startIndex;
 	public static int endIndex;
@@ -32,12 +35,11 @@ public class ItemList {
 	public static int textRenderX;
 
 	public static void render(HandledScreen<?> screen, MatrixStack matrices, int mouseX, int mouseY) {
-		pageNumber = 1;
 		if (!NeuRepo.isDownloaded) return;
 		ItemRenderer itemRenderer = client.getItemRenderer();
 		int offsetMouseX = mouseX - xOffset;
-		int targetMouseX = offsetMouseX - Math.abs(offsetMouseX) % step + xOffset;
-		int targetMouseY = mouseY - Math.abs(mouseY) % step;
+		int targetMouseX = offsetMouseX - Math.abs(offsetMouseX) % STEP + xOffset;
+		int targetMouseY = mouseY - Math.abs(mouseY) % STEP;
 		boolean renderedTooltip = false;
 
 		for (int i = startIndex; i < endIndex; i++) {
@@ -49,7 +51,7 @@ public class ItemList {
 				matrices.push();
 				matrices.translate(0, 0, 200);
 				RenderSystem.setShaderTexture(0, ITEMLIST);
-				DrawableHelper.drawTexture(matrices, x + 12, y + 4, 0, 0, 7, 11, 54, 40);
+				DrawableHelper.drawTexture(matrices, x + 12, y + 4, 0, 0, 7, 11, 14, 22);
 				matrices.pop();
 			}
 			if (!renderedTooltip && targetMouseX == x && targetMouseY == y) {
@@ -64,20 +66,52 @@ public class ItemList {
 
 		RenderUtil.drawCenteredText(matrices, client, textRenderX, 7, pageNumberText, -1);
 		RenderSystem.setShaderTexture(0, ITEMLIST);
-		drawArrows(matrices, mouseX, mouseY);
+		Arrow.draw(matrices, mouseX, mouseY);
 	}
 
-	public static void drawArrows(MatrixStack matrices, int mouseX, int mouseY) {
-		int width = 7;
-		int height = 11;
-		int x = textRenderX - 21 - width;
-		int xx = textRenderX + 20;
-		int y = 5;
-		int v = x <= mouseX && mouseX <= x + width && y <= mouseY && mouseY <= y + height ? height : 0;
-		int vv = xx <= mouseX && mouseX <= xx + width && y <= mouseY && mouseY <= y + height ? height : 0;
+	public static class Arrow {
+		public static final int WIDTH = 7;
+		public static final int HEIGHT = 11;
+		public static final int Y = 5;
+		public static int leftX;
+		public static int rightX;
 
-		DrawableHelper.drawTexture(matrices, x, y, 0, v, width, height, 54, 40);
-		DrawableHelper.drawTexture(matrices, xx, y, width, vv, width, height, 54, 40);
+		public static void draw(MatrixStack matrices, int mouseX, int mouseY) {
+			int v = hoveredLeft(mouseX, mouseY) ? HEIGHT : 0;
+			int vv = hoveredRight(mouseX, mouseY) ? HEIGHT : 0;
+			DrawableHelper.drawTexture(matrices, leftX, Y, 0, v, WIDTH, HEIGHT, 14, 22);
+			DrawableHelper.drawTexture(matrices, rightX, Y, WIDTH, vv, WIDTH, HEIGHT, 14, 22);
+		}
+
+		public static boolean hoveredLeft(int mouseX, int mouseY) {
+			leftX = textRenderX - 22 - WIDTH;
+			return leftX <= mouseX + 2 && mouseX - 2 < leftX + WIDTH && Y <= mouseY && mouseY <= Y + HEIGHT;
+		}
+
+		public static boolean hoveredRight(int mouseX, int mouseY) {
+			rightX = textRenderX + 20;
+			return rightX <= mouseX + 2 && mouseX - 2 < rightX + WIDTH && Y <= mouseY && mouseY <= Y + HEIGHT;
+		}
+	}
+
+	public static void onClick(int button, double mouseXD, double mouseYD) {
+		if (button != GLFW.GLFW_MOUSE_BUTTON_1) return;
+		Screen screen = client.currentScreen;
+		if (!(screen instanceof HandledScreen<?>)) return;
+		int mouseY = (int) mouseYD;
+		if (mouseY > Arrow.Y + Arrow.HEIGHT) return;
+		int mouseX = (int) mouseXD;
+		if (Arrow.hoveredLeft(mouseX, mouseY)) {
+			if (pageNumber != 0) {
+				pageNumber--;
+				cacheItemList((HandledScreen<?>) screen);
+			}
+		} else if (Arrow.hoveredRight(mouseX, mouseY)) {
+			if (pageNumber != maxPageNumber) {
+				pageNumber++;
+				cacheItemList((HandledScreen<?>) screen);
+			}
+		}
 	}
 
 	public static void onOpenScreen(HandledScreen<?> screen) {
@@ -88,9 +122,9 @@ public class ItemList {
 		if (!NeuRepo.isDownloaded) return;
 		List<ItemListIcon> icons = NeuRepo.itemListIcons;
 
-		Rectangle rectangle = new Rectangle(screen.x - step, screen.y - step, screen.backgroundWidth + step, screen.backgroundWidth + step);
-		int maxX = Config.getConfig().itemListWidth * step;
-		int maxY = client.getWindow().getScaledHeight() - step;
+		Rectangle rectangle = new Rectangle(screen.x - STEP, screen.y - STEP, screen.backgroundWidth + STEP, screen.backgroundWidth + STEP);
+		int maxX = Config.getConfig().itemListWidth * STEP;
+		int maxY = client.getWindow().getScaledHeight() - STEP;
 		int x = 0;
 		int y = yOffset;
 		xOffset = Math.max(0, (screen.x - maxX) / 2);
@@ -103,10 +137,10 @@ public class ItemList {
 				icons.get(i).setLocation(x + xOffset, y);
 				i++;
 			}
-			x += step;
+			x += STEP;
 			if (x >= maxX) {
 				x = 0;
-				y += step;
+				y += STEP;
 				if (y >= maxY) {
 					freezePageSize = true;
 					y = yOffset;
@@ -114,9 +148,18 @@ public class ItemList {
 			}
 		}
 
+		maxPageNumber = icons.size() / pageSize;
+		pageNumber = Math.min(maxPageNumber, pageNumber);
 		startIndex = pageSize * pageNumber;
 		endIndex = Math.min(pageSize * (pageNumber + 1), icons.size());
-		pageNumberText = Text.of(pageNumber + "/" + (icons.size() / pageSize));
+		pageNumberText = Text.of((pageNumber + 1) + "/" + (maxPageNumber + 1));
 		textRenderX = Math.min(maxX / 2 + xOffset, screen.x);
+	}
+
+	public static void sort() {
+		if (!NeuRepo.isDownloaded) return;
+		NeuRepo.itemListIcons.sort(Config.getConfig().sortStrategy.sortFunction);
+		if (client.currentScreen instanceof HandledScreen<?>)
+			cacheItemList((HandledScreen<?>) client.currentScreen);
 	}
 }
