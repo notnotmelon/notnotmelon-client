@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.fabricmc.notnotmelonclient.api.ApiRequests;
 import net.fabricmc.notnotmelonclient.util.ItemUtil;
-import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.item.ItemStack;
 
 import java.io.File;
@@ -76,7 +75,6 @@ public class NeuRepo {
 			ItemStack stack = entry.getValue();
 			if (childrenNames.containsKey(stackName)) {
 				String parentName = childrenNames.get(stackName);
-				Util.print(parentName+" "+stackName);
 				if (!childrenStacks.containsKey(parentName))
 					childrenStacks.put(parentName, new ArrayList<>());
 				childrenStacks.get(parentName).add(stack);
@@ -86,9 +84,12 @@ public class NeuRepo {
 		}
 
 		for (ItemListIcon icon : itemListIcons) {
-			String itemName = ItemUtil.moulberryification(ItemUtil.getFullItemID(icon.stack));
-			if (childrenStacks.containsKey(itemName))
-				icon.setChildren(childrenStacks.get(itemName));
+			String itemName = ItemUtil.getFullItemID(icon.stack);
+			if (itemName != null) {
+				itemName = ItemUtil.moulberryification(itemName);
+				if (childrenStacks.containsKey(itemName))
+					icon.setChildren(childrenStacks.get(itemName));
+			}
 		}
 	}
 }

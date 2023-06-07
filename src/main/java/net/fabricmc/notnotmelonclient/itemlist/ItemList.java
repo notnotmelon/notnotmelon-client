@@ -1,13 +1,16 @@
 package net.fabricmc.notnotmelonclient.itemlist;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.fabricmc.notnotmelonclient.Main;
 import net.fabricmc.notnotmelonclient.config.Config;
 import net.fabricmc.notnotmelonclient.misc.ScrollableTooltips;
 import net.fabricmc.notnotmelonclient.util.RenderUtil;
-import net.fabricmc.notnotmelonclient.util.Util;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
 import java.awt.*;
 import java.util.List;
@@ -15,6 +18,7 @@ import java.util.List;
 import static net.fabricmc.notnotmelonclient.Main.client;
 
 public class ItemList {
+	private static final Identifier ITEMLIST = new Identifier(Main.NAMESPACE, "textures/gui/itemlist.png");
 	public static int xOffset = 0;
 	public static int yOffset = 18;
 	public static int lastMouseX = -1;
@@ -28,6 +32,7 @@ public class ItemList {
 	public static int textRenderX;
 
 	public static void render(HandledScreen<?> screen, MatrixStack matrices, int mouseX, int mouseY) {
+		pageNumber = 1;
 		if (!NeuRepo.isDownloaded) return;
 		ItemRenderer itemRenderer = client.getItemRenderer();
 		mouseX -= xOffset;
@@ -35,14 +40,26 @@ public class ItemList {
 		int targetMouseY = mouseY - Math.abs(mouseY) % step;
 		boolean renderedTooltip = false;
 
+		matrices.push();
+		matrices.translate(0, 0, -0.01);
 		for (int i = startIndex; i < endIndex; i++) {
 			ItemListIcon icon = NeuRepo.itemListIcons.get(i);
-			itemRenderer.renderInGui(matrices, icon.stack, icon.x, icon.y);
-			if (!renderedTooltip && targetMouseX == icon.x && targetMouseY == icon.y) {
+			int x = icon.x;
+			int y = icon.y;
+			itemRenderer.renderInGui(matrices, icon.stack, x, y);
+			if (icon.children != null) {
+				RenderSystem.setShaderTexture(0, ITEMLIST);
+				matrices.push();
+				matrices.translate(0, 0, 0.01);
+				DrawableHelper.drawTexture(matrices, x + 12, y + 4, 7, 0, 7, 11, 54, 40);
+				matrices.pop();
+			}
+			if (!renderedTooltip && targetMouseX == x && targetMouseY == y) {
 				screen.renderTooltip(matrices, screen.getTooltipFromItem(icon.stack), icon.stack.getTooltipData(), mouseX + xOffset, mouseY);
 				renderedTooltip = true;
 			}
 		}
+		matrices.pop();
 
 		if (renderedTooltip && (targetMouseX != lastMouseX || targetMouseY != lastMouseY)) ScrollableTooltips.reset();
 		lastMouseX = targetMouseX;
@@ -72,7 +89,6 @@ public class ItemList {
 			if (!rectangle.contains(x, y)) {
 				if (!freezePageSize) pageSize++;
 				icons.get(i).setLocation(x + xOffset, y);
-				if (icons.get(i).children != null) Util.print(icons.get(i).stack.getName());
 				i++;
 			}
 			x += step;
