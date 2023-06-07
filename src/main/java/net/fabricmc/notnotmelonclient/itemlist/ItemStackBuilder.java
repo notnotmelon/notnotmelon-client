@@ -12,7 +12,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static net.fabricmc.notnotmelonclient.itemlist.RepoParser.petNums;
+import static net.fabricmc.notnotmelonclient.itemlist.NeuRepo.petNums;
 
 public class ItemStackBuilder {
 	public static ItemStack parseJsonObj(JsonObject obj) {

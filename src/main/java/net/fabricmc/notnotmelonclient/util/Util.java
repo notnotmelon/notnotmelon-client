@@ -20,12 +20,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static net.fabricmc.notnotmelonclient.Main.LOGGER;
+
 public class Util {
 	public static void print(Text t) {
         t = t == null ? Text.of("null") : t;
         MutableText prefixed = Text.literal("§d[nnc]§r ").append(t);
 		ClientPlayerEntity player = MinecraftClient.getInstance().player;
-        if (player != null) player.sendMessage(prefixed);
+        if (player == null) {
+            LOGGER.info(prefixed.getString());
+            return;
+        }
+        player.sendMessage(prefixed);
 	}
 
 	public static void print(String s) {

@@ -115,13 +115,13 @@ public class ItemUtil {
 				.replace("MYTHIC", "5")
 				.replace('-', ';');
         } else if (itemID.contains("POTION-")) {
-            return null;
+            return itemID.replace("POTION-", "").replace("-ENCHANTED", "");
 		} else if (itemID.contains("ENCHANTED_BOOK-")) {
-			return itemID.replace("ENCHANTED_BOOK-", "").replace('-', ';');
+			return itemID.replace("ENCHANTED_BOOK-", "").replace('-', ';').replaceFirst("-\\d", "");
 		} else if (itemID.contains("RUNE-")) {
 			return itemID.replace('-', ';');
         } else if (itemID.contains("ATTRIBUTE_SHARD-")) {
-			return null;
+			return "ATTRIBUTE_SHARD";
 		} else {
 			return itemID.replace(":", "-");
 		}
