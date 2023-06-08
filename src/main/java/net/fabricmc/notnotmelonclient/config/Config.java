@@ -73,6 +73,5 @@ public class Config {
 	@ConfigEntry public boolean bobberTimer = true;
 	@ConfigEntry public boolean itemList = true;
 	@ConfigEntry public int itemListWidth = 8;
-	@ConfigEntry public boolean includeEntities = false;
 	@ConfigEntry public SortStrategies sortStrategy = SortStrategies.Alphabetical;
 }

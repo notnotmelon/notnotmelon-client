@@ -2,7 +2,6 @@ package net.fabricmc.notnotmelonclient.itemlist;
 
 import net.fabricmc.notnotmelonclient.util.ItemUtil;
 import net.fabricmc.notnotmelonclient.util.Rect;
-import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.item.ItemStack;
 
 import java.util.List;
@@ -73,13 +72,17 @@ public class ItemListIcon {
 		int verticalDirection = gridY * 2 > gridHeight ? -1 : 1; // -1 is UP 1 is DOWN
 		int verticalSpace = verticalDirection == -1 ? gridY : gridHeight - gridY - 1;
 
-		if (verticalSpace >= childrenNum) { // case #1
+		if (verticalSpace >= childrenNum && itemNum < 12) { // case #1
 			int childY = y;
 			for (ItemListIcon child : children) {
 				childY += verticalDirection * STEP;
 				child.setLocation(x, childY);
 			}
-			playground = new Rect(x, y, STEP, -verticalDirection * itemNum * STEP);
+			playground = new Rect(x, y, STEP, verticalDirection * itemNum * STEP);
+			if (playground.height < 0) { // the item tooltip rendering function breaks with negative height
+				playground.height *= -1;
+				playground.y -= playground.height - STEP;
+			}
 		} else { // case #2
 			int resultWidth = 1;
 			int resultHeight = 1;
@@ -88,18 +91,34 @@ public class ItemListIcon {
 				if (resultHeight * resultWidth >= itemNum) break;
 				if (resultHeight != gridHeight) resultHeight++;
 			}
+			int xOffset = gridX + resultWidth > gridWidth ? gridWidth - resultWidth - gridX : 0;
+			int yOffset = gridY + resultHeight > gridHeight ? gridHeight - resultHeight - gridY : 0;
+			int resultX = x + xOffset * STEP;
+			int resultY = y + yOffset * STEP;
 
-			int horizontalDirection = gridX * 2 > gridWidth ? -1 : 1; // -1 is LEFT 1 is RIGHT
-			int horizontalSpace = horizontalDirection == -1 ? gridX : gridWidth - gridX - 1;
+			int horizontalDirection = gridX * 2 + 2 > gridWidth ? -1 : 1; // -1 is LEFT 1 is RIGHT
+			int width = resultWidth * STEP;
+			int height = resultHeight * STEP;
+			playground = new Rect(resultX, resultY, width, height);
+			if (horizontalDirection == -1 && xOffset == 0)
+				playground.x -= playground.width - STEP;
+			if (verticalDirection == -1 && yOffset == 0)
+				playground.y -= playground.height - STEP;
 
-			Util.print("itemNum: " + itemNum + " resultWidth: " + resultWidth + " resultHeight: " + resultHeight + " horizontalSpace: " + horizontalSpace + " verticalSpace: " + verticalSpace);
-			playground = new Rect(x, y, resultWidth * STEP, resultHeight * STEP);
-		}
-
-		if (playground.height < 0) { // the item tooltip rendering function breaks with negative height
-			playground.height *= -1;
-		} else {
-			playground.y -= playground.height - STEP;
+			int childX = playground.x;
+			int childY = playground.y;
+			for (int i = 0; i < childrenNum;) {
+				if (!(childX == x && childY == y)) {
+					ItemListIcon child = children.get(i);
+					child.setLocation(childX, childY);
+					i++;
+				}
+				childX += STEP;
+				if (childX >= playground.x + playground.width) {
+					childX = playground.x;
+					childY += STEP;
+				}
+			}
 		}
 	}
 

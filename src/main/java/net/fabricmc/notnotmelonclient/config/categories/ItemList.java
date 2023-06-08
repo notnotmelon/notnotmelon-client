@@ -21,7 +21,7 @@ public class ItemList {
 				.name(Text.literal("Item List"))
 				.option(itemList())
 				.option(itemListWidth())
-				.option(includeEntities())
+				.option(sortStrategy())
 				.build())
 
 			.build();
@@ -50,19 +50,6 @@ public class ItemList {
 				v -> getConfig().itemListWidth = v
 			)
 			.controller(opt -> new IntegerSliderController(opt, 1, 32, 1))
-			.build();
-	}
-
-	public static Option<?> includeEntities() {
-		return Option.createBuilder(boolean.class)
-			.name(Text.of("Include Entities"))
-			.tooltip(Text.of("Should NPCs, bosses, and mobs be included in the item list?"))
-			.binding(
-				getDefaults().includeEntities,
-				() -> getConfig().includeEntities,
-				v -> getConfig().includeEntities = v
-			)
-			.controller(TickBoxController::new)
 			.build();
 	}
 

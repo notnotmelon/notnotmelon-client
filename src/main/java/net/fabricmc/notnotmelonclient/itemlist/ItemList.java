@@ -45,6 +45,8 @@ public class ItemList {
 
 	public static void render(HandledScreen<?> screen, MatrixStack matrices, int mouseX, int mouseY) {
 		if (!NeuRepo.isDownloaded) return;
+		Arrow.draw(matrices, mouseX, mouseY);
+		RenderUtil.drawCenteredText(matrices, client, textRenderX, 7, pageNumberText, -1);
 		int offsetMouseX = mouseX - xOffset;
 		int targetMouseX = offsetMouseX - Math.abs(offsetMouseX) % STEP + xOffset;
 		int targetMouseY = mouseY - Math.abs(mouseY) % STEP;
@@ -53,7 +55,10 @@ public class ItemList {
 		if (playground != null)
 			if (playground.aabb(mouseX, mouseY))
 				renderedTooltip = renderPlayground(matrices, screen, targetMouseX, targetMouseY, mouseX, mouseY, renderedTooltip);
-			else playground = null;
+			else {
+				playground = null;
+				parent = null;
+			}
 
 		for (int i = startIndex; i < endIndex; i++) {
 			ItemListIcon icon = NeuRepo.itemListIcons.get(i);
@@ -63,11 +68,7 @@ public class ItemList {
 			if (isVisible) itemRenderer.renderInGui(matrices, icon.stack, x, y);
 
 			if (icon.children != null) {
-				matrices.push();
-				matrices.translate(0, 0, 200);
-				RenderSystem.setShaderTexture(0, ASTERISK);
-				DrawableHelper.drawTexture(matrices, x + 13, y + 1, 0, 0, 4, 4, 4, 4);
-				matrices.pop();
+				if (isVisible && icon != parent) drawAsterisk(matrices, x, y);
 				if (playground == null && targetMouseX == x && targetMouseY == y) {
 					parent = icon;
 					parent.calculateChildrenPositions();
@@ -84,9 +85,14 @@ public class ItemList {
 		if (renderedTooltip && (targetMouseX != lastMouseX || targetMouseY != lastMouseY)) ScrollableTooltips.reset();
 		lastMouseX = targetMouseX;
 		lastMouseY = targetMouseY;
+	}
 
-		RenderUtil.drawCenteredText(matrices, client, textRenderX, 7, pageNumberText, -1);
-		Arrow.draw(matrices, mouseX, mouseY);
+	private static void drawAsterisk(MatrixStack matrices, int x, int y) {
+		matrices.push();
+		matrices.translate(0, 0, 200);
+		RenderSystem.setShaderTexture(0, ASTERISK);
+		DrawableHelper.drawTexture(matrices, x + 13, y + 1, 0, 0, 4, 4, 4, 4);
+		matrices.pop();
 	}
 
 	public static boolean renderPlayground(MatrixStack matrices, HandledScreen<?> screen, int targetMouseX, int targetMouseY, int mouseX, int mouseY, boolean renderedTooltip) {
@@ -127,13 +133,12 @@ public class ItemList {
 		public static int rightX;
 
 		public static void draw(MatrixStack matrices, int mouseX, int mouseY) {
-			matrices.push();
+			RenderSystem.disableDepthTest();
 			RenderSystem.setShaderTexture(0, ARROWS);
 			int v = hoveredLeft(mouseX, mouseY) ? HEIGHT : 0;
 			int vv = hoveredRight(mouseX, mouseY) ? HEIGHT : 0;
 			DrawableHelper.drawTexture(matrices, leftX, Y, 0, v, WIDTH, HEIGHT, 14, 22);
 			DrawableHelper.drawTexture(matrices, rightX, Y, WIDTH, vv, WIDTH, HEIGHT, 14, 22);
-			matrices.pop();
 		}
 
 		public static boolean hoveredLeft(int mouseX, int mouseY) {
