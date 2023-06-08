@@ -4,23 +4,28 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.notnotmelonclient.Main;
 import net.fabricmc.notnotmelonclient.config.Config;
 import net.fabricmc.notnotmelonclient.misc.ScrollableTooltips;
+import net.fabricmc.notnotmelonclient.util.Rect;
 import net.fabricmc.notnotmelonclient.util.RenderUtil;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.gui.tooltip.TooltipBackgroundRenderer;
+import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
 import java.util.List;
 
 import static net.fabricmc.notnotmelonclient.Main.client;
+import static net.fabricmc.notnotmelonclient.util.RenderUtil.itemRenderer;
 
 public class ItemList {
-	private static final Identifier ITEMLIST = new Identifier(Main.NAMESPACE, "textures/gui/itemlist.png");
+	private static final Identifier ARROWS = new Identifier(Main.NAMESPACE, "textures/gui/arrows.png");
+	private static final Identifier ASTERISK = new Identifier(Main.NAMESPACE, "textures/gui/asterisk.png");
 	public static int xOffset = 0;
 	public static int yOffset = 18;
 	public static int lastMouseX = -1;
@@ -33,28 +38,44 @@ public class ItemList {
 	public static int endIndex;
 	public static Text pageNumberText;
 	public static int textRenderX;
+	public static int gridWidth;
+	public static int gridHeight;
+	public static Rect playground;
+	public static ItemListIcon parent;
 
 	public static void render(HandledScreen<?> screen, MatrixStack matrices, int mouseX, int mouseY) {
 		if (!NeuRepo.isDownloaded) return;
-		ItemRenderer itemRenderer = client.getItemRenderer();
 		int offsetMouseX = mouseX - xOffset;
 		int targetMouseX = offsetMouseX - Math.abs(offsetMouseX) % STEP + xOffset;
 		int targetMouseY = mouseY - Math.abs(mouseY) % STEP;
 		boolean renderedTooltip = false;
 
+		if (playground != null)
+			if (playground.aabb(mouseX, mouseY))
+				renderedTooltip = renderPlayground(matrices, screen, targetMouseX, targetMouseY, mouseX, mouseY, renderedTooltip);
+			else playground = null;
+
 		for (int i = startIndex; i < endIndex; i++) {
 			ItemListIcon icon = NeuRepo.itemListIcons.get(i);
 			int x = icon.x;
 			int y = icon.y;
-			itemRenderer.renderInGui(matrices, icon.stack, x, y);
+			boolean isVisible = playground == null || icon == parent || !playground.aabb(x, y);
+			if (isVisible) itemRenderer.renderInGui(matrices, icon.stack, x, y);
+
 			if (icon.children != null) {
 				matrices.push();
 				matrices.translate(0, 0, 200);
-				RenderSystem.setShaderTexture(0, ITEMLIST);
-				DrawableHelper.drawTexture(matrices, x + 12, y + 4, 0, 0, 7, 11, 14, 22);
+				RenderSystem.setShaderTexture(0, ASTERISK);
+				DrawableHelper.drawTexture(matrices, x + 13, y + 1, 0, 0, 4, 4, 4, 4);
 				matrices.pop();
+				if (playground == null && targetMouseX == x && targetMouseY == y) {
+					parent = icon;
+					parent.calculateChildrenPositions();
+					playground = parent.playground;
+					renderedTooltip = renderPlayground(matrices, screen, targetMouseX, targetMouseY, mouseX, mouseY, renderedTooltip);
+				}
 			}
-			if (!renderedTooltip && targetMouseX == x && targetMouseY == y) {
+			if (isVisible && !renderedTooltip && targetMouseX == x && targetMouseY == y) {
 				screen.renderTooltip(matrices, screen.getTooltipFromItem(icon.stack), icon.stack.getTooltipData(), mouseX, mouseY);
 				renderedTooltip = true;
 			}
@@ -65,8 +86,37 @@ public class ItemList {
 		lastMouseY = targetMouseY;
 
 		RenderUtil.drawCenteredText(matrices, client, textRenderX, 7, pageNumberText, -1);
-		RenderSystem.setShaderTexture(0, ITEMLIST);
 		Arrow.draw(matrices, mouseX, mouseY);
+	}
+
+	public static boolean renderPlayground(MatrixStack matrices, HandledScreen<?> screen, int targetMouseX, int targetMouseY, int mouseX, int mouseY, boolean renderedTooltip) {
+		Tessellator tessellator = Tessellator.getInstance();
+		BufferBuilder bufferBuilder = tessellator.getBuffer();
+		RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+		Matrix4f matrix4f = matrices.peek().getPositionMatrix();
+		TooltipBackgroundRenderer.render(
+			DrawableHelper::fillGradient,
+			matrix4f,
+			bufferBuilder,
+			playground.x + 2,
+			playground.y + 2,
+			playground.width - 6,
+			playground.height - 6,
+			0
+		);
+		RenderSystem.enableDepthTest();
+		RenderSystem.enableBlend();
+		RenderSystem.defaultBlendFunc();
+		BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
+		for (ItemListIcon child : parent.children) {
+			itemRenderer.renderInGui(matrices, child.stack, child.x, child.y);
+			if (!renderedTooltip && targetMouseX == child.x && targetMouseY == child.y) {
+				screen.renderTooltip(matrices, screen.getTooltipFromItem(child.stack), child.stack.getTooltipData(), mouseX, mouseY);
+				renderedTooltip = true;
+			}
+		}
+		return renderedTooltip;
 	}
 
 	public static class Arrow {
@@ -77,14 +127,17 @@ public class ItemList {
 		public static int rightX;
 
 		public static void draw(MatrixStack matrices, int mouseX, int mouseY) {
+			matrices.push();
+			RenderSystem.setShaderTexture(0, ARROWS);
 			int v = hoveredLeft(mouseX, mouseY) ? HEIGHT : 0;
 			int vv = hoveredRight(mouseX, mouseY) ? HEIGHT : 0;
 			DrawableHelper.drawTexture(matrices, leftX, Y, 0, v, WIDTH, HEIGHT, 14, 22);
 			DrawableHelper.drawTexture(matrices, rightX, Y, WIDTH, vv, WIDTH, HEIGHT, 14, 22);
+			matrices.pop();
 		}
 
 		public static boolean hoveredLeft(int mouseX, int mouseY) {
-			leftX = textRenderX - 22 - WIDTH;
+			leftX = textRenderX - 21 - WIDTH;
 			return leftX <= mouseX + 2 && mouseX - 2 < leftX + WIDTH && Y <= mouseY && mouseY <= Y + HEIGHT;
 		}
 
@@ -123,8 +176,11 @@ public class ItemList {
 		List<ItemListIcon> icons = NeuRepo.itemListIcons;
 
 		Rectangle rectangle = new Rectangle(screen.x - STEP, screen.y - STEP, screen.backgroundWidth + STEP, screen.backgroundWidth + STEP);
-		int maxX = Config.getConfig().itemListWidth * STEP;
+		gridWidth = Config.getConfig().itemListWidth;
+		int maxX = gridWidth * STEP;
 		int maxY = client.getWindow().getScaledHeight() - STEP;
+		int gridX = 0;
+		int gridY = 0;
 		int x = 0;
 		int y = yOffset;
 		xOffset = Math.max(0, (screen.x - maxX) / 2);
@@ -134,16 +190,22 @@ public class ItemList {
 		for (int i = 0; i < NeuRepo.itemListIcons.size();) {
 			if (!rectangle.contains(x, y)) {
 				if (!freezePageSize) pageSize++;
-				icons.get(i).setLocation(x + xOffset, y);
+				ItemListIcon icon = icons.get(i);
+				icon.setLocation(x + xOffset, y);
+				icon.setGridLocation(gridX, gridY);
 				i++;
 			}
 			x += STEP;
+			gridX++;
 			if (x >= maxX) {
 				x = 0;
+				gridX = 0;
 				y += STEP;
+				gridY++;
 				if (y >= maxY) {
 					freezePageSize = true;
 					y = yOffset;
+					gridY = 0;
 				}
 			}
 		}
@@ -154,6 +216,7 @@ public class ItemList {
 		endIndex = Math.min(pageSize * (pageNumber + 1), icons.size());
 		pageNumberText = Text.of((pageNumber + 1) + "/" + (maxPageNumber + 1));
 		textRenderX = Math.min(maxX / 2 + xOffset, screen.x);
+		gridHeight = pageSize / gridWidth;
 	}
 
 	public static void sort() {

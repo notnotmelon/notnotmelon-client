@@ -5,6 +5,7 @@ import net.fabricmc.notnotmelonclient.Main;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.*;
+import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.text.Text;
@@ -14,6 +15,7 @@ import java.awt.*;
 
 public class RenderUtil {
 	private final static MinecraftClient client = Main.client;
+	public static final ItemRenderer itemRenderer = client.getItemRenderer();
 
     public static void drawBoxOutline(Box box, float lineWidth, Color color1, Color color2) {
         if (!getFrustum().isVisible(box)) return;

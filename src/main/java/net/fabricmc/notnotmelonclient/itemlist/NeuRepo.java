@@ -68,7 +68,7 @@ public class NeuRepo {
 			for (JsonElement child : entry.getValue().getAsJsonArray())
 				childrenNames.put(child.getAsString(), entry.getKey());
 
-		Map<String, List<ItemStack>> childrenStacks = new HashMap<>();
+		Map<String, List<ItemListIcon>> childrenStacks = new HashMap<>();
 		itemListIcons = new ArrayList<>();
 		for (Map.Entry<String, ItemStack> entry : itemsByID.entrySet()) {
 			String stackName = entry.getKey();
@@ -77,7 +77,7 @@ public class NeuRepo {
 				String parentName = childrenNames.get(stackName);
 				if (!childrenStacks.containsKey(parentName))
 					childrenStacks.put(parentName, new ArrayList<>());
-				childrenStacks.get(parentName).add(stack);
+				childrenStacks.get(parentName).add(new ItemListIcon(stack));
 			} else {
 				itemListIcons.add(new ItemListIcon(stack));
 			}

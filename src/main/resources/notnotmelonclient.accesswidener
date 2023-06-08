@@ -34,3 +34,10 @@ accessible method net/minecraft/client/gui/hud/PlayerListHud collectPlayerEntrie
 accessible field net/minecraft/client/gui/screen/ingame/HandledScreen backgroundWidth I
 accessible field net/minecraft/client/gui/screen/ingame/HandledScreen x I
 accessible field net/minecraft/client/gui/screen/ingame/HandledScreen y I
+
+accessible method net/minecraft/client/gui/DrawableHelper fillGradient (Lorg/joml/Matrix4f;Lnet/minecraft/client/render/BufferBuilder;IIIIIII)V
+
+accessible field net/minecraft/client/util/math/Rect2i x I
+accessible field net/minecraft/client/util/math/Rect2i y I
+accessible field net/minecraft/client/util/math/Rect2i width I
+accessible field net/minecraft/client/util/math/Rect2i height I
