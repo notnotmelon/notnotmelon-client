@@ -7,8 +7,7 @@ import net.minecraft.item.ItemStack;
 
 import java.util.List;
 
-import static net.fabricmc.notnotmelonclient.itemlist.ItemList.STEP;
-import static net.fabricmc.notnotmelonclient.itemlist.ItemList.gridHeight;
+import static net.fabricmc.notnotmelonclient.itemlist.ItemList.*;
 
 public class ItemListIcon {
 	public int x = -1;
@@ -70,22 +69,34 @@ public class ItemListIcon {
 	 */
 	public void calculateChildrenPositions() {
 		int childrenNum = children.size();
-		int goalDirection = gridY * 2 > gridHeight ? -1 : 1; // -1 is UP 1 is DOWN
-		int verticalSpace = goalDirection == -1 ? gridY : gridHeight - gridY - 1;
+		int itemNum = childrenNum + 1; // include the parent
+		int verticalDirection = gridY * 2 > gridHeight ? -1 : 1; // -1 is UP 1 is DOWN
+		int verticalSpace = verticalDirection == -1 ? gridY : gridHeight - gridY - 1;
 
 		if (verticalSpace >= childrenNum) { // case #1
 			int childY = y;
 			for (ItemListIcon child : children) {
-				childY += goalDirection * STEP;
+				childY += verticalDirection * STEP;
 				child.setLocation(x, childY);
 			}
-			playground = new Rect(x, y, STEP, -goalDirection * (childrenNum + 1) * STEP);
-		} else {
-			Util.print(verticalSpace);
-			playground = new Rect(x, y, STEP, STEP);
+			playground = new Rect(x, y, STEP, -verticalDirection * itemNum * STEP);
+		} else { // case #2
+			int resultWidth = 1;
+			int resultHeight = 1;
+			while (resultHeight * resultWidth < itemNum && (resultWidth != gridWidth || resultHeight != gridHeight)) {
+				if (resultWidth != gridWidth) resultWidth++;
+				if (resultHeight * resultWidth >= itemNum) break;
+				if (resultHeight != gridHeight) resultHeight++;
+			}
+
+			int horizontalDirection = gridX * 2 > gridWidth ? -1 : 1; // -1 is LEFT 1 is RIGHT
+			int horizontalSpace = horizontalDirection == -1 ? gridX : gridWidth - gridX - 1;
+
+			Util.print("itemNum: " + itemNum + " resultWidth: " + resultWidth + " resultHeight: " + resultHeight + " horizontalSpace: " + horizontalSpace + " verticalSpace: " + verticalSpace);
+			playground = new Rect(x, y, resultWidth * STEP, resultHeight * STEP);
 		}
 
-		if (playground.height < 0) {
+		if (playground.height < 0) { // the item tooltip rendering function breaks with negative height
 			playground.height *= -1;
 		} else {
 			playground.y -= playground.height - STEP;
