@@ -74,4 +74,6 @@ public class Config {
 	@ConfigEntry public boolean itemList = true;
 	@ConfigEntry public int itemListWidth = 8;
 	@ConfigEntry public SortStrategies sortStrategy = SortStrategies.Alphabetical;
+	@ConfigEntry public int pageNumber = 0;
+	@ConfigEntry public String searchQuery = "";
 }

@@ -22,11 +22,11 @@ public class NeuRepo {
 	public static List<ItemListIcon> itemListIcons;
 
 	public static void afterDownload() {
-		isDownloaded = true;
 		try {
 			parsePetNums();
 			parseItems();
 			parseItemParents();
+			isDownloaded = true;
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

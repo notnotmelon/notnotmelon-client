@@ -8,7 +8,6 @@ import net.fabricmc.notnotmelonclient.misc.ScrollableTooltips;
 import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
@@ -20,8 +19,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.awt.*;
 
 @Mixin(HandledScreen.class)
 public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen {
@@ -58,11 +55,6 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
     private void init(CallbackInfo info) {
 		HandledScreen<?> screen = (HandledScreen<?>) (Screen) this;
 		CursorResetFix.onOpenScreen(screen);
-	    ItemList.onOpenScreen(screen);
+		screen.addDrawableChild(new ItemList());
     }
-
-	@Inject(method = "render", at = @At("TAIL"))
-	private void render(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-		ItemList.render((HandledScreen<?>) (Object) this, matrices, mouseX, mouseY);
-	}
 }

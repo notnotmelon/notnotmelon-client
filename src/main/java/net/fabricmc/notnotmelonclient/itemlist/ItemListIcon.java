@@ -66,7 +66,7 @@ public class ItemListIcon {
 	 XXXXXX
 	 XXXXXX
 	 */
-	public void calculateChildrenPositions() {
+	public void calculateChildrenPositions(int gridWidth, int gridHeight) {
 		int childrenNum = children.size();
 		int itemNum = childrenNum + 1; // include the parent
 		int verticalDirection = gridY * 2 > gridHeight ? -1 : 1; // -1 is UP 1 is DOWN

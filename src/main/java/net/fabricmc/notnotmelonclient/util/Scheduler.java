@@ -47,9 +47,11 @@ public class Scheduler {
         }
 
         public void run() {
-            if (threaded)
-                new Thread(inner).start();
-            else
+            if (threaded) {
+                Thread t = new Thread(inner);
+                t.setDaemon(true);
+                t.start();
+            } else
                 inner.run();
         }
 
