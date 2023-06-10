@@ -37,6 +37,6 @@ public class ItemSearchPattern {
 	}
 
 	private static boolean textContains(Text text, String s) {
-		return text.getString().replace("§", "").contains(s);
+		return text.getString().replaceAll("§.", "").toLowerCase().contains(s);
 	}
 }

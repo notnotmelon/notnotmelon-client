@@ -21,6 +21,7 @@ import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
+import java.util.LinkedList;
 import java.util.List;
 
 import static net.fabricmc.notnotmelonclient.Main.client;
@@ -45,38 +46,41 @@ public class ItemList extends ClickableWidget implements Drawable {
 	public ItemListIcon parent;
 	public SearchBar searchBar;
 	public HandledScreen<?> screen;
-	public ItemListIcon[] iconsToRender;
+	public final List<ItemListIcon> iconsToRender = new LinkedList<>();
+	protected Thread t;
 
 	public ItemList() {
 		super(0, 18, 0, 0, Text.empty());
 		screen = (HandledScreen<?>) client.currentScreen;
 		searchBar = new SearchBar(client.advanceValidatingTextRenderer, 120, 16, this);
 		screen.addDrawableChild(searchBar);
-		cacheItemList();
+		calculatePageSize();
+		buildIconPositions();
 		searchBar.reposition(textRenderX);
 	}
 
 	@Override
 	public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		if (!NeuRepo.isDownloaded) return;
-		drawArrow(matrices, mouseX, mouseY);
+		renderArrows(matrices, mouseX, mouseY);
 		RenderUtil.drawCenteredText(matrices, client, textRenderX, 7, pageNumberText, -1);
 		int offsetMouseX = mouseX - x;
 		int targetMouseX = offsetMouseX - Math.abs(offsetMouseX) % STEP + x;
 		int targetMouseY = mouseY - Math.abs(mouseY) % STEP;
 		boolean renderedTooltip = false;
 
-		if (playground != null)
+		if (playground != null) {
 			if (playground.aabb(mouseX, mouseY))
 				renderedTooltip = renderPlayground(matrices, screen, targetMouseX, targetMouseY, mouseX, mouseY, renderedTooltip);
 			else {
 				playground = null;
 				parent = null;
 			}
+		}
 
-		for (int i = startIndex; i < endIndex; i++) {
-			ItemListIcon icon = iconsToRender[i];
-			if (icon == null) break;
+		int maxIndex = Math.min(endIndex, iconsToRender.size() - 1);
+		for (int i = startIndex; i < maxIndex; i++) {
+			ItemListIcon icon = iconsToRender.get(i);
 			int x = icon.x;
 			int y = icon.y;
 			boolean isVisible = playground == null || icon == parent || !playground.aabb(x, y);
@@ -145,7 +149,7 @@ public class ItemList extends ClickableWidget implements Drawable {
 	public static final int arrowY = 5;
 	public int leftX;
 	public int rightX;
-	public void drawArrow(MatrixStack matrices, int mouseX, int mouseY) {
+	public void renderArrows(MatrixStack matrices, int mouseX, int mouseY) {
 		RenderSystem.disableDepthTest();
 		RenderSystem.setShaderTexture(0, ARROWS);
 		int v = hoveredLeftArrow(mouseX, mouseY) ? arrowHeight : 0;
@@ -174,46 +178,45 @@ public class ItemList extends ClickableWidget implements Drawable {
 		if (hoveredLeftArrow(mouseX, mouseY)) {
 			if (pageNumber != 0) {
 				pageNumber--;
-				cacheItemList();
+				updatePagination();
 			}
 		} else if (hoveredRightArrow(mouseX, mouseY)) {
 			if (pageNumber != maxPageNumber) {
 				pageNumber++;
-				cacheItemList();
+				updatePagination();
 			}
 		}
 		return true;
 	}
 
-	public void cacheItemList() {
+	public void buildIconPositions() {
 		if (!NeuRepo.isDownloaded) return;
-		List<ItemListIcon> icons = NeuRepo.itemListIcons;
+		if (t != null && t.isAlive()) t.interrupt();
+		iconsToRender.clear();
+		playground = null;
+		parent = null;
+		t = new Thread(this::buildIconPositionsThread);
+		t.setDaemon(true);
+		t.start();
+	}
 
-		Rectangle rectangle = new Rectangle(screen.x - STEP, screen.y - STEP, screen.backgroundWidth + STEP, screen.backgroundWidth + STEP);
-		gridWidth = Config.getConfig().itemListWidth;
-		width = gridWidth * STEP;
-		height = client.getWindow().getScaledHeight() - STEP - searchBar.distanceFromBottom;
+	private void buildIconPositionsThread() {
+		List<ItemListIcon> icons = NeuRepo.itemListIcons;
 		int gridX = 0;
 		int gridY = 0;
 		int x = 0;
 		int y = this.y;
-		this.x = Math.max(0, (screen.x - width) / 2);
 		ItemSearchPattern searchPattern = searchBar.searchPattern();
-
-		iconsToRender = new ItemListIcon[icons.size()];
-		int iconsToRenderIndex = 0;
-		boolean freezePageSize = false;
-		pageSize = 0;
+		Rectangle screenRectangle = screenDimensions();
 		for (int i = 0; i < icons.size();) {
-			if (!rectangle.contains(x, y)) {
+			if (Thread.interrupted()) return;
+			if (!screenRectangle.contains(x, y)) {
 				ItemListIcon icon = icons.get(i++);
-				if (!searchPattern.matches(icon)) {
-					continue;
-				}
+				if (!searchPattern.matches(icon)) continue;
+				if (Thread.interrupted()) return;
 				icon.setLocation(x + this.x, y);
 				icon.setGridLocation(gridX, gridY);
-				iconsToRender[iconsToRenderIndex++] = icon;
-				if (!freezePageSize) pageSize++;
+				iconsToRender.add(icon);
 			}
 			x += STEP;
 			gridX++;
@@ -223,21 +226,48 @@ public class ItemList extends ClickableWidget implements Drawable {
 				y += STEP;
 				gridY++;
 				if (y >= height) {
-					freezePageSize = true;
 					y = this.y;
 					gridY = 0;
 				}
 			}
 		}
+		if (Thread.interrupted()) return;
+		updatePagination();
+	}
 
-		maxPageNumber = pageSize == 0 ? 0 : ((iconsToRenderIndex + 1) / pageSize);
+	public void updatePagination() {
+		startIndex = pageSize * pageNumber;
+		endIndex = Math.min(pageSize * (pageNumber + 1), iconsToRender.size());
+		maxPageNumber = pageSize == 0 ? 0 : (iconsToRender.size() / pageSize);
 		pageNumber = Math.min(maxPageNumber, pageNumber);
 		Config.getConfig().pageNumber = pageNumber;
-		startIndex = pageSize * pageNumber;
-		endIndex = Math.min(pageSize * (pageNumber + 1), iconsToRenderIndex + 1);
 		pageNumberText = Text.of((pageNumber + 1) + "/" + (maxPageNumber + 1));
-		textRenderX = Math.min(width / 2 + this.x, screen.x);
+	}
+
+	public void calculatePageSize() {
+		gridWidth = Config.getConfig().itemListWidth;
+		width = gridWidth * STEP;
+		height = client.getWindow().getScaledHeight() - STEP - searchBar.distanceFromBottom;
+		Rectangle screenRectangle = screenDimensions();
+		pageSize = 0;
+		int x = 0;
+		int y = this.y;
+		this.x = Math.max(0, (screen.x - width) / 2);
+		while (true) {
+			if (!screenRectangle.contains(x, y)) pageSize++;
+			x += STEP;
+			if (x >= width) {
+				x = 0;
+				y += STEP;
+				if (y >= height) break;
+			}
+		}
 		gridHeight = pageSize / gridWidth;
+		textRenderX = Math.min(width / 2 + this.x, screen.x);
+	}
+
+	public Rectangle screenDimensions() {
+		return new Rectangle(screen.x - STEP, screen.y - STEP, screen.backgroundWidth + STEP, screen.backgroundWidth + STEP);
 	}
 
 	public static void sort() {
@@ -246,7 +276,7 @@ public class ItemList extends ClickableWidget implements Drawable {
 		if (client.currentScreen != null)
 			for (Element widget : client.currentScreen.children())
 				if (widget instanceof ItemList)
-					((ItemList) widget).cacheItemList();
+					((ItemList) widget).buildIconPositions();
 	}
 
 	@Override

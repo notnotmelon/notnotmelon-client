@@ -25,7 +25,14 @@ public class SearchBar extends TextFieldWidget {
 	@Override
 	public boolean charTyped(char chr, int modifiers) {
 		if (!super.charTyped(chr, modifiers)) return false;
-		parent.cacheItemList();
+		parent.buildIconPositions();
+		return true;
+	}
+
+	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		if (!super.keyPressed(keyCode, scanCode, modifiers)) return false;
+		parent.buildIconPositions();
 		return true;
 	}
 
