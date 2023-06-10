@@ -39,7 +39,7 @@ public class ItemList extends ClickableWidget implements Drawable {
 	public int startIndex;
 	public int endIndex;
 	public static final Text nothingToRender = Text.of("0/0");
-	public Text pageNumberText = nothingToRender;
+	public Text pageNumberText;
 	public int textRenderX;
 	public int gridWidth;
 	public int gridHeight;
@@ -64,7 +64,7 @@ public class ItemList extends ClickableWidget implements Drawable {
 	public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		if (!NeuRepo.isDownloaded) return;
 		renderArrows(matrices, mouseX, mouseY);
-		RenderUtil.drawCenteredText(matrices, client, textRenderX, 7, pageNumberText, -1);
+		if (pageNumberText != null) RenderUtil.drawCenteredText(matrices, client, textRenderX, 7, pageNumberText, -1);
 		int offsetMouseX = mouseX - x;
 		int targetMouseX = offsetMouseX - Math.abs(offsetMouseX) % STEP + x;
 		int targetMouseY = mouseY - Math.abs(mouseY) % STEP;

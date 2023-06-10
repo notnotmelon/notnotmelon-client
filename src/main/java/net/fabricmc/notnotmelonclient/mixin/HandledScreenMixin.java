@@ -2,10 +2,12 @@ package net.fabricmc.notnotmelonclient.mixin;
 
 import net.fabricmc.notnotmelonclient.config.Config;
 import net.fabricmc.notnotmelonclient.itemlist.ItemList;
+import net.fabricmc.notnotmelonclient.itemlist.SearchBar;
 import net.fabricmc.notnotmelonclient.misc.CursorResetFix;
 import net.fabricmc.notnotmelonclient.misc.FavoriteItem;
 import net.fabricmc.notnotmelonclient.misc.ScrollableTooltips;
 import net.fabricmc.notnotmelonclient.util.Util;
+import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.item.ItemStack;
@@ -18,6 +20,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(HandledScreen.class)
@@ -57,4 +60,14 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 		CursorResetFix.onOpenScreen(screen);
 		screen.addDrawableChild(new ItemList());
     }
+
+	@Redirect(method = "keyPressed", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/HandledScreen;close()V"))
+	public void keyPressed(HandledScreen<?> instance) {
+		Element focused = instance.getFocused();
+		if (focused instanceof SearchBar searchBar && searchBar.isActive()) {
+			searchBar.keyPressed(client.options.inventoryKey.boundKey.getCode(), 0, 0);
+		} else {
+			instance.close();
+		}
+	}
 }
