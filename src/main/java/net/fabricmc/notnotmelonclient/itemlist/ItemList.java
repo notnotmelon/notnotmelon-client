@@ -38,7 +38,8 @@ public class ItemList extends ClickableWidget implements Drawable {
 	public int pageSize;
 	public int startIndex;
 	public int endIndex;
-	public Text pageNumberText;
+	public static final Text nothingToRender = Text.of("0/0");
+	public Text pageNumberText = nothingToRender;
 	public int textRenderX;
 	public int gridWidth;
 	public int gridHeight;
@@ -78,7 +79,7 @@ public class ItemList extends ClickableWidget implements Drawable {
 			}
 		}
 
-		int maxIndex = Math.min(endIndex, iconsToRender.size() - 1);
+		int maxIndex = Math.min(endIndex, iconsToRender.size());
 		for (int i = startIndex; i < maxIndex; i++) {
 			ItemListIcon icon = iconsToRender.get(i);
 			int x = icon.x;
@@ -200,7 +201,7 @@ public class ItemList extends ClickableWidget implements Drawable {
 		t.start();
 	}
 
-	private void buildIconPositionsThread() {
+	protected void buildIconPositionsThread() {
 		List<ItemListIcon> icons = NeuRepo.itemListIcons;
 		int gridX = 0;
 		int gridY = 0;
@@ -236,12 +237,13 @@ public class ItemList extends ClickableWidget implements Drawable {
 	}
 
 	public void updatePagination() {
-		startIndex = pageSize * pageNumber;
-		endIndex = Math.min(pageSize * (pageNumber + 1), iconsToRender.size());
-		maxPageNumber = pageSize == 0 ? 0 : (iconsToRender.size() / pageSize);
+		int numIcons = iconsToRender.size();
+		maxPageNumber = pageSize == 0 ? 0 : (numIcons / pageSize);
 		pageNumber = Math.min(maxPageNumber, pageNumber);
 		Config.getConfig().pageNumber = pageNumber;
-		pageNumberText = Text.of((pageNumber + 1) + "/" + (maxPageNumber + 1));
+		startIndex = pageSize * pageNumber;
+		endIndex = Math.min(pageSize * (pageNumber + 1), numIcons);
+		pageNumberText = numIcons == 0 ? nothingToRender : Text.of((pageNumber + 1) + "/" + (maxPageNumber + 1));
 	}
 
 	public void calculatePageSize() {

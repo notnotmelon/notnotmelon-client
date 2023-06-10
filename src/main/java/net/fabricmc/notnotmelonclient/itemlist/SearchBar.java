@@ -1,5 +1,6 @@
 package net.fabricmc.notnotmelonclient.itemlist;
 
+import net.fabricmc.notnotmelonclient.config.Config;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
@@ -15,6 +16,7 @@ public class SearchBar extends TextFieldWidget {
 	public SearchBar(TextRenderer textRenderer, int width, int height, ItemList parent) {
 		super(textRenderer, 0, 0, width, height, Text.empty());
 		distanceFromBottom = height + 3;
+		setText(Config.getConfig().searchQuery);
 		this.parent = parent;
 	}
 
@@ -26,6 +28,7 @@ public class SearchBar extends TextFieldWidget {
 	public boolean charTyped(char chr, int modifiers) {
 		if (!super.charTyped(chr, modifiers)) return false;
 		parent.buildIconPositions();
+		Config.getConfig().searchQuery = getText();
 		return true;
 	}
 
@@ -33,6 +36,7 @@ public class SearchBar extends TextFieldWidget {
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (!super.keyPressed(keyCode, scanCode, modifiers)) return false;
 		parent.buildIconPositions();
+		Config.getConfig().searchQuery = getText();
 		return true;
 	}
 
