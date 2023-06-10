@@ -45,13 +45,15 @@ public class ItemList extends ClickableWidget implements Drawable {
 	public ItemListIcon parent;
 	public SearchBar searchBar;
 	public HandledScreen<?> screen;
+	public ItemListIcon[] iconsToRender;
 
 	public ItemList() {
 		super(0, 18, 0, 0, Text.empty());
 		screen = (HandledScreen<?>) client.currentScreen;
-		searchBar = new SearchBar(client.advanceValidatingTextRenderer, 120, 16);
+		searchBar = new SearchBar(client.advanceValidatingTextRenderer, 120, 16, this);
 		screen.addDrawableChild(searchBar);
 		cacheItemList();
+		searchBar.reposition(textRenderX);
 	}
 
 	@Override
@@ -73,7 +75,8 @@ public class ItemList extends ClickableWidget implements Drawable {
 			}
 
 		for (int i = startIndex; i < endIndex; i++) {
-			ItemListIcon icon = NeuRepo.itemListIcons.get(i);
+			ItemListIcon icon = iconsToRender[i];
+			if (icon == null) break;
 			int x = icon.x;
 			int y = icon.y;
 			boolean isVisible = playground == null || icon == parent || !playground.aabb(x, y);
@@ -195,16 +198,22 @@ public class ItemList extends ClickableWidget implements Drawable {
 		int x = 0;
 		int y = this.y;
 		this.x = Math.max(0, (screen.x - width) / 2);
+		ItemSearchPattern searchPattern = searchBar.searchPattern();
 
+		iconsToRender = new ItemListIcon[icons.size()];
+		int iconsToRenderIndex = 0;
 		boolean freezePageSize = false;
 		pageSize = 0;
 		for (int i = 0; i < icons.size();) {
 			if (!rectangle.contains(x, y)) {
-				if (!freezePageSize) pageSize++;
-				ItemListIcon icon = icons.get(i);
+				ItemListIcon icon = icons.get(i++);
+				if (!searchPattern.matches(icon)) {
+					continue;
+				}
 				icon.setLocation(x + this.x, y);
 				icon.setGridLocation(gridX, gridY);
-				i++;
+				iconsToRender[iconsToRenderIndex++] = icon;
+				if (!freezePageSize) pageSize++;
 			}
 			x += STEP;
 			gridX++;
@@ -221,15 +230,14 @@ public class ItemList extends ClickableWidget implements Drawable {
 			}
 		}
 
-		maxPageNumber = icons.size() / pageSize;
+		maxPageNumber = pageSize == 0 ? 0 : ((iconsToRenderIndex + 1) / pageSize);
 		pageNumber = Math.min(maxPageNumber, pageNumber);
 		Config.getConfig().pageNumber = pageNumber;
 		startIndex = pageSize * pageNumber;
-		endIndex = Math.min(pageSize * (pageNumber + 1), icons.size());
+		endIndex = Math.min(pageSize * (pageNumber + 1), iconsToRenderIndex + 1);
 		pageNumberText = Text.of((pageNumber + 1) + "/" + (maxPageNumber + 1));
 		textRenderX = Math.min(width / 2 + this.x, screen.x);
 		gridHeight = pageSize / gridWidth;
-		searchBar.reposition(textRenderX);
 	}
 
 	public static void sort() {

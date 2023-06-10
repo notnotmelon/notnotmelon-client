@@ -105,7 +105,7 @@ public class ItemUtil {
         return result.toString();
     }
 
-    @Nullable public static String moulberryification(String itemID) {
+    public static String moulberryification(String itemID) {
         if (itemID.contains("PET-")) {
 			return itemID.replace("PET-", "")
 				.replace("COMMON", "0")
