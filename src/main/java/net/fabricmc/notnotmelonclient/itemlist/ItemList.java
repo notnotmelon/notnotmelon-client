@@ -82,7 +82,9 @@ public class ItemList extends ClickableWidget implements Drawable {
 
 		int maxIndex = Math.min(endIndex, iconsToRender.size());
 		for (int i = startIndex; i < maxIndex; i++) {
-			ItemListIcon icon = iconsToRender.get(i);
+			ItemListIcon icon;
+			try { icon = iconsToRender.get(i); }
+			catch (NullPointerException | IndexOutOfBoundsException e) { break; }
 			int x = icon.x;
 			int y = icon.y;
 			boolean isVisible = playground == null || icon == parent || !playground.aabb(x, y);
