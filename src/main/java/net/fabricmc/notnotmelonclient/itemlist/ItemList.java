@@ -21,8 +21,8 @@ import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
 
 import static net.fabricmc.notnotmelonclient.Main.client;
@@ -48,7 +48,7 @@ public class ItemList extends ClickableWidget implements Drawable {
 	public ItemListIcon parent;
 	public SearchBar searchBar;
 	public HandledScreen<?> screen;
-	public final List<ItemListIcon> iconsToRender = new LinkedList<>();
+	public final List<ItemListIcon> iconsToRender = new ArrayList<>();
 	protected Thread t;
 
 	public ItemList() {
