@@ -2,20 +2,23 @@ package net.fabricmc.notnotmelonclient.util;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import net.minecraft.client.MinecraftClient;
+import net.fabricmc.notnotmelonclient.api.ApiRequests;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 import java.util.NoSuchElementException;
 
-public class ItemUtil {
-	private static final MinecraftClient client = MinecraftClient.getInstance();
+import static net.fabricmc.notnotmelonclient.Main.client;
 
+public class ItemUtil {
     // skyblock stores most nbt in the ExtraAttributes tag
     @Nullable public static NbtCompound getExtraAttributes(ItemStack stack) {
         if (stack == null || stack.getNbt() == null)
@@ -101,7 +104,7 @@ public class ItemUtil {
         } catch (NullPointerException | NoSuchElementException e) {
             return base;
         }
-        
+
         return result.toString();
     }
 
@@ -126,5 +129,57 @@ public class ItemUtil {
 		} else {
 			return itemID.replace(":", "-");
 		}
+    }
+
+    public static int getRarity(ItemStack stack) {
+        try {
+            NbtList nbtList = stack.getSubNbt(ItemStack.DISPLAY_KEY).getList(ItemStack.LORE_KEY, NbtElement.STRING_TYPE);
+
+            for (int j = nbtList.size() - 1; j >= 0; --j) {
+                Text t = Text.Serializer.fromJson(nbtList.getString(j));
+                if (t == null) continue;
+                String line = t.getString();
+                line = line.replaceAll("§(k.|.)", "").trim();
+                int i = line.indexOf(' ');
+                String rarity = i == -1 ? line : line.substring(0, i);
+                switch (rarity) {
+                    case "COMMON": return 1;
+                    case "UNCOMMON": return 2;
+                    case "RARE": return 3;
+                    case "EPIC": return 4;
+                    case "LEGENDARY": return 5;
+                    case "MYTHIC": return 6;
+                    case "DIVINE", "SUPREME": return 7;
+                    case "SPECIAL": return 8;
+                    case "VERY SPECIAL": return 9;
+                    case "ADMIN": return 10;
+                };
+            }
+        } catch (Exception e) { return 0; }
+        return 0;
+    }
+
+    public static float getValue(ItemStack stack) {
+        String itemID = ItemUtil.getFullItemID(stack);
+        if (itemID == null) return 0;
+
+        String bazaarID = itemID.replace('-', '_').replace("ENCHANTED_BOOK", "ENCHANTMENT");
+        JsonObject bazaarPrices = ApiRequests.bazaarPrices.getJSON();
+        if (bazaarPrices != null && bazaarPrices.has(bazaarID)) {
+            JsonObject jsonObject = bazaarPrices.getAsJsonObject(bazaarID);
+            if (!jsonObject.get("sellPrice").isJsonNull()) return jsonObject.get("sellPrice").getAsFloat();
+        }
+
+        JsonObject lowestBins = ApiRequests.lowestBins.getJSON();
+        if (lowestBins != null && lowestBins.has(itemID)) return lowestBins.get(itemID).getAsFloat();
+
+        JsonObject averageBins = ApiRequests.averageBins.getJSON();
+        String moulberryID = ItemUtil.moulberryification(itemID);
+        if (averageBins != null && averageBins.has(moulberryID)) return averageBins.get(moulberryID).getAsFloat();
+
+        JsonObject npcPrices = ApiRequests.npcPrices.getJSON();
+        if (npcPrices != null && npcPrices.has(bazaarID)) return npcPrices.get(bazaarID).getAsFloat();
+
+        return 0;
     }
 }

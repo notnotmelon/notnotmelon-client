@@ -22,6 +22,7 @@ public class ItemList {
 				.option(itemList())
 				.option(itemListWidth())
 				.option(sortStrategy())
+				.option(reversed())
 				.build())
 
 			.build();
@@ -60,9 +61,28 @@ public class ItemList {
 			.binding(
 				getDefaults().sortStrategy,
 				() -> getConfig().sortStrategy,
-				v -> getConfig().sortStrategy = v
+				v -> {
+					getConfig().sortStrategy = v;
+					net.fabricmc.notnotmelonclient.itemlist.ItemList.sort();
+				}
 			)
 			.controller(EnumController::new)
+			.build();
+	}
+
+	public static Option<?> reversed() {
+		return Option.createBuilder(boolean.class)
+			.name(Text.of("Reversed"))
+			.tooltip(Text.of("Should the item list be sorted in reverse order?"))
+			.binding(
+				getDefaults().reversed,
+				() -> getConfig().reversed,
+				v -> {
+					getConfig().reversed = v;
+					net.fabricmc.notnotmelonclient.itemlist.ItemList.sort();
+				}
+			)
+			.controller(TickBoxController::new)
 			.build();
 	}
 }

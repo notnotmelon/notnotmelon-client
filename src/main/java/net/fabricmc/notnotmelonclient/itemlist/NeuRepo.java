@@ -27,6 +27,7 @@ public class NeuRepo {
 			parseItems();
 			parseItemParents();
 			isDownloaded = true;
+			ItemList.sort();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -91,7 +92,5 @@ public class NeuRepo {
 					icon.setChildren(childrenStacks.get(itemName));
 			}
 		}
-
-		ItemList.sort();
 	}
 }

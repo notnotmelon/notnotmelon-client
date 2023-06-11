@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 
 import java.util.List;
 
-import static net.fabricmc.notnotmelonclient.itemlist.ItemList.*;
+import static net.fabricmc.notnotmelonclient.itemlist.ItemList.STEP;
 
 public class ItemListIcon {
 	public int x = -1;
@@ -15,18 +15,12 @@ public class ItemListIcon {
 	public List<ItemListIcon> children; // it breaks after 1 deep
 	public Rect playground;
 	public String skyblockID;
-	public String searchableText;
 	int gridX;
 	int gridY;
 
 	public ItemListIcon(ItemStack stack) {
 		this.stack = stack;
 		skyblockID = ItemUtil.getFullItemID(stack);
-		calculateSearchableText();
-	}
-
-	protected void calculateSearchableText() {
-		searchableText = "";
 	}
 
 	public void setLocation(int x, int y) {
@@ -125,5 +119,9 @@ public class ItemListIcon {
 	public void setGridLocation(int gridX, int gridY) {
 		this.gridX = gridX;
 		this.gridY = gridY;
+	}
+
+	public String simplifiedName() {
+		return stack.getName().getString().replaceAll("§.", "").toLowerCase().trim();
 	}
 }

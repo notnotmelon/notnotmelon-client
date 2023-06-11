@@ -21,6 +21,7 @@ import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -274,7 +275,9 @@ public class ItemList extends ClickableWidget implements Drawable {
 
 	public static void sort() {
 		if (!NeuRepo.isDownloaded) return;
-		NeuRepo.itemListIcons.sort(Config.getConfig().sortStrategy.sortFunction);
+		Comparator<ItemListIcon> sortFunction = Config.getConfig().sortStrategy.sortFunction;
+		if (Config.getConfig().reversed) sortFunction = sortFunction.reversed();
+		NeuRepo.itemListIcons.sort(sortFunction);
 		if (client.currentScreen != null)
 			for (Element widget : client.currentScreen.children())
 				if (widget instanceof ItemList)

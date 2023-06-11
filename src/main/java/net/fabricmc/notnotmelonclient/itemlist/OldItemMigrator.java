@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class OldItemMigrator {
 	private final static Map<String, String> MAPPING = Map.ofEntries(
-		Map.entry("minecraft:", "minecraft:powered_rail"),
+		Map.entry("minecraft:golden_rail", "minecraft:powered_rail"),
 		Map.entry("minecraft:lit_pumpkin", "minecraft:jack_o_lantern"),
 		Map.entry("minecraft:snow_layer", "minecraft:snow"),
 		Map.entry("minecraft:hardened_clay", "minecraft:terracotta"),
@@ -29,7 +29,8 @@ public class OldItemMigrator {
 		Map.entry("minecraft:tallgrass", "minecraft:grass"),
 		Map.entry("minecraft:stone_slab2", "minecraft:red_sandstone_slab"),
 		Map.entry("minecraft:waterlily", "minecraft:lily_pad"),
-		Map.entry("minecraft:stone_stairs", "minecraft:cobblestone_stairs")
+		Map.entry("minecraft:stone_stairs", "minecraft:cobblestone_stairs"),
+		Map.entry("minecraft:monster_egg", "minecraft:infested_stone_bricks")
 	);
 
 	private final static String[] DYE_COLORS = {
