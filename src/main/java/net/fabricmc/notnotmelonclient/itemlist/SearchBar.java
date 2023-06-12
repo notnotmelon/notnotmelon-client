@@ -2,7 +2,9 @@ package net.fabricmc.notnotmelonclient.itemlist;
 
 import net.fabricmc.notnotmelonclient.config.Config;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.glfw.GLFW;
@@ -72,6 +74,7 @@ public class SearchBar extends TextFieldWidget {
 				if (drawsBackground) i -= 4;
 				String string = textRenderer.trimToWidth(getText().substring(firstCharacterIndex), this.getInnerWidth());
 				setCursor(textRenderer.trimToWidth(string, i).length() + firstCharacterIndex);
+				doubleClick();
 				return true;
 			} else if (button == GLFW.GLFW_MOUSE_BUTTON_2) {
 				setText("");
@@ -80,5 +83,25 @@ public class SearchBar extends TextFieldWidget {
 			}
 		}
 		return false;
+	}
+
+	protected long lastClicked = -1;
+	public static boolean yellowMode = false;
+	protected void doubleClick() {
+		long time = System.currentTimeMillis();
+		if (lastClicked != -1 && lastClicked + 750 >= time) {
+			yellowMode = !yellowMode;
+			lastClicked = -1;
+		} else {
+			lastClicked = time;
+		}
+	}
+
+	@Override
+	public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+		super.renderButton(matrices, mouseX, mouseY, delta);
+		if (yellowMode && isVisible() && drawsBackground) {
+			DrawableHelper.drawBorder(matrices, x - 1, y - 1, width + 2, height + 2, 0xFFFFC105);
+		}
 	}
 }
