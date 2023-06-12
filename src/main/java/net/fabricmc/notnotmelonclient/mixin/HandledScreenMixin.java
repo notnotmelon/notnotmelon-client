@@ -1,5 +1,6 @@
 package net.fabricmc.notnotmelonclient.mixin;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.notnotmelonclient.config.Config;
 import net.fabricmc.notnotmelonclient.itemlist.ItemList;
 import net.fabricmc.notnotmelonclient.itemlist.SearchBar;
@@ -7,9 +8,11 @@ import net.fabricmc.notnotmelonclient.misc.CursorResetFix;
 import net.fabricmc.notnotmelonclient.misc.FavoriteItem;
 import net.fabricmc.notnotmelonclient.misc.ScrollableTooltips;
 import net.fabricmc.notnotmelonclient.util.Util;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
@@ -68,6 +71,14 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 			searchBar.keyPressed(client.options.inventoryKey.boundKey.getCode(), 0, 0);
 		} else {
 			instance.close();
+		}
+	}
+
+	@Inject(method = "drawSlot", at = @At("HEAD"))
+	public void drawSlot(MatrixStack matrices, Slot slot, CallbackInfo ci) {
+		if (SearchBar.yellowMode && slot.hasStack() && SearchBar.matches(slot.getStack())) {
+			RenderSystem.enableDepthTest();
+			DrawableHelper.fill(matrices, slot.x, slot.y, slot.x + 16, slot.y + 16, 0x88FFC105);
 		}
 	}
 }

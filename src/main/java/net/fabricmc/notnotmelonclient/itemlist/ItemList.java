@@ -210,13 +210,12 @@ public class ItemList extends ClickableWidget implements Drawable {
 		int gridY = 0;
 		int x = 0;
 		int y = this.y;
-		ItemSearchPattern searchPattern = searchBar.searchPattern();
 		Rectangle screenRectangle = screenDimensions();
 		for (int i = 0; i < icons.size();) {
 			if (Thread.interrupted()) return;
 			if (!screenRectangle.contains(x, y)) {
 				ItemListIcon icon = icons.get(i++);
-				if (!searchPattern.matches(icon)) continue;
+				if (!SearchBar.matches(icon)) continue;
 				if (Thread.interrupted()) return;
 				icon.setLocation(x + this.x, y);
 				icon.setGridLocation(gridX, gridY);

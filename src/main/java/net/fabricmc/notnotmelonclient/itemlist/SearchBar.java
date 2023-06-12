@@ -5,6 +5,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.glfw.GLFW;
@@ -16,11 +17,13 @@ import static net.fabricmc.notnotmelonclient.Main.client;
 public class SearchBar extends TextFieldWidget {
 	public int distanceFromBottom;
 	public ItemList parent;
+	public static ItemSearchPattern searchPattern;
 
 	public SearchBar(TextRenderer textRenderer, int width, int height, ItemList parent) {
 		super(textRenderer, 0, 0, width, height, Text.empty());
 		distanceFromBottom = height + 3;
 		setText(Config.getConfig().searchQuery);
+		searchPattern = calculateSearchPattern();
 		this.parent = parent;
 	}
 
@@ -45,13 +48,22 @@ public class SearchBar extends TextFieldWidget {
 	}
 
 	public void doSearch() {
+		searchPattern = calculateSearchPattern();
 		parent.buildIconPositions();
 		Config.getConfig().searchQuery = getText();
 	}
 
-	public ItemSearchPattern searchPattern() {
+	public static boolean matches(ItemListIcon icon) {
+		return searchPattern == null || searchPattern.matches(icon);
+	}
+
+	public static boolean matches(ItemStack stack) {
+		return searchPattern == null || searchPattern.matches(stack);
+	}
+
+	public ItemSearchPattern calculateSearchPattern() {
 		if (getText().isBlank()) return ItemSearchPattern.EMPTY;
-		ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
+		ArrayList<ArrayList<String>> result = new ArrayList<>();
 		for (String or : getText().toLowerCase().split("\\|")) {
 			ArrayList<String> and = new ArrayList<>();
 			for (String query : or.split("&")) {
