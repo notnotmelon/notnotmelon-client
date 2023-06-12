@@ -77,4 +77,5 @@ public class Config {
 	@ConfigEntry public int pageNumber = 0;
 	@ConfigEntry public String searchQuery = "";
 	@ConfigEntry public boolean reversed = false;
+	@ConfigEntry public Boolean hideRecipeBook = true;
 }

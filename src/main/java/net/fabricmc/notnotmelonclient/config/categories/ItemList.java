@@ -23,6 +23,7 @@ public class ItemList {
 				.option(itemListWidth())
 				.option(sortStrategy())
 				.option(reversed())
+				.option(hideRecipeBook())
 				.build())
 
 			.build();
@@ -81,6 +82,19 @@ public class ItemList {
 					getConfig().reversed = v;
 					net.fabricmc.notnotmelonclient.itemlist.ItemList.sort();
 				}
+			)
+			.controller(TickBoxController::new)
+			.build();
+	}
+
+	public static Option<?> hideRecipeBook() {
+		return Option.createBuilder(boolean.class)
+			.name(Text.of("Hide Recipe Book"))
+			.tooltip(Text.of("Hides the vanilla recipe book from your inventory."))
+			.binding(
+				getDefaults().hideRecipeBook,
+				() -> getConfig().hideRecipeBook,
+				v -> getConfig().hideRecipeBook = v
 			)
 			.controller(TickBoxController::new)
 			.build();

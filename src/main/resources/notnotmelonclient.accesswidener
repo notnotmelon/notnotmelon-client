@@ -31,10 +31,6 @@ accessible field net/minecraft/entity/decoration/AbstractDecorationEntity facing
 
 accessible method net/minecraft/client/gui/hud/PlayerListHud collectPlayerEntries ()Ljava/util/List;
 
-accessible field net/minecraft/client/gui/screen/ingame/HandledScreen backgroundWidth I
-accessible field net/minecraft/client/gui/screen/ingame/HandledScreen x I
-accessible field net/minecraft/client/gui/screen/ingame/HandledScreen y I
-
 accessible method net/minecraft/client/gui/DrawableHelper fillGradient (Lorg/joml/Matrix4f;Lnet/minecraft/client/render/BufferBuilder;IIIIIII)V
 
 accessible field net/minecraft/client/util/math/Rect2i x I
@@ -42,7 +38,16 @@ accessible field net/minecraft/client/util/math/Rect2i y I
 accessible field net/minecraft/client/util/math/Rect2i width I
 accessible field net/minecraft/client/util/math/Rect2i height I
 
-accessible    method    net/minecraft/client/gui/screen/Screen    addDrawableChild    (Lnet/minecraft/client/gui/Element;)Lnet/minecraft/client/gui/Element;
+accessible method net/minecraft/client/gui/screen/Screen addDrawableChild (Lnet/minecraft/client/gui/Element;)Lnet/minecraft/client/gui/Element;
+accessible method net/minecraft/client/gui/screen/Screen clearChildren ()V
+accessible method net/minecraft/client/gui/screen/Screen remove (Lnet/minecraft/client/gui/Element;)V
+accessible field net/minecraft/client/gui/screen/ingame/InventoryScreen recipeBook Lnet/minecraft/client/gui/screen/recipebook/RecipeBookWidget;
+accessible field net/minecraft/client/gui/screen/ingame/InventoryScreen RECIPE_BUTTON_TEXTURE Lnet/minecraft/util/Identifier;
+
+accessible field net/minecraft/client/gui/screen/ingame/HandledScreen backgroundWidth I
+accessible field net/minecraft/client/gui/screen/ingame/HandledScreen x I
+accessible field net/minecraft/client/gui/screen/ingame/HandledScreen y I
+
 accessible field net/minecraft/client/gui/widget/TextFieldWidget firstCharacterIndex I
 accessible field net/minecraft/client/gui/widget/TextFieldWidget focusUnlocked Z
 accessible field net/minecraft/client/gui/widget/TextFieldWidget drawsBackground Z
@@ -50,3 +55,7 @@ accessible field net/minecraft/client/gui/widget/TextFieldWidget textRenderer Ln
 
 accessible field net/minecraft/client/gui/widget/ClickableWidget y I
 accessible field net/minecraft/client/gui/widget/ClickableWidget x I
+
+accessible field net/minecraft/client/gui/widget/TexturedButtonWidget texture Lnet/minecraft/util/Identifier;
+
+accessible method net/minecraft/client/gui/screen/recipebook/RecipeBookWidget setOpen (Z)V

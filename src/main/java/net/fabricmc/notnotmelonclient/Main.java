@@ -51,7 +51,7 @@ public class Main implements ClientModInitializer {
 
 	private void registerCyclic() {
 		ApiRequests.init();
-		Scheduler.scheduleCyclicThreaded(Util::locationTracker, 20 * 45);
+		Scheduler.scheduleCyclicThreaded(Util::locationTracker, 20 * 20);
 		Scheduler.scheduleCyclicThreaded(JsonLoader.jsonInterface::save, 20 * 60 * 5);
 	}
 
