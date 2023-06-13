@@ -14,10 +14,12 @@ import net.fabricmc.notnotmelonclient.config.JsonLoader;
 import net.fabricmc.notnotmelonclient.dungeons.Dungeons;
 import net.fabricmc.notnotmelonclient.events.ChangeLobby;
 import net.fabricmc.notnotmelonclient.events.ChatTrigger;
+import net.fabricmc.notnotmelonclient.events.EntitySpawned;
 import net.fabricmc.notnotmelonclient.fishing.Fishing;
 import net.fabricmc.notnotmelonclient.misc.FavoriteItem;
 import net.fabricmc.notnotmelonclient.misc.ItemPriceTooltip;
 import net.fabricmc.notnotmelonclient.misc.Timers;
+import net.fabricmc.notnotmelonclient.slayer.MinibossPing;
 import net.fabricmc.notnotmelonclient.util.Scheduler;
 import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.client.MinecraftClient;
@@ -71,6 +73,7 @@ public class Main implements ClientModInitializer {
 		Timers.registerEvents();
 		ClientPlayConnectionEvents.JOIN.register(ChangeLobby::onServerJoin);
 		ChangeLobby.EVENT.register(Util::onChangeLobby);
+		EntitySpawned.EVENT.register(MinibossPing::onEntitySpawned);
 	}
 
 	private void registerChatTriggers() {

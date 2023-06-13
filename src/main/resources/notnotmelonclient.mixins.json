@@ -9,6 +9,7 @@
     "AbstractInventoryScreenMixin",
     "BillboardParticleMixin",
     "ChatHudListenerMixin",
+    "ClientEntityManagerMixin",
     "ClientPlayerEntityMixin",
     "ClientPlayNetworkHandlerMixin",
     "ExplosionLargeParticleMixin",
