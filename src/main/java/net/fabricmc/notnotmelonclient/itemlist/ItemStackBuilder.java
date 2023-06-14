@@ -25,7 +25,7 @@ public class ItemStackBuilder {
 
 		String id = obj.get("itemid").getAsString();
 		int damage = obj.get("damage").getAsInt();
-		root.put("id", NbtString.of(OldItemMigrator.convertItemId(id, damage)));
+		root.put("id", NbtString.of(OldItemMigrator.migrateItemId(id, damage)));
 
 		NbtCompound tag = new NbtCompound();
 		root.put("tag", tag);
