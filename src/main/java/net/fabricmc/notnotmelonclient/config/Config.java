@@ -33,6 +33,7 @@ public class Config {
 			.category(ItemList.category())
 			.category(Removals.category())
 			.category(Dungeons.category())
+			.category(Slayer.category())
 			.category(Fishing.category())
 			.category(Farming.category())
 			.category(Timers.category())
@@ -78,4 +79,5 @@ public class Config {
 	@ConfigEntry public String searchQuery = "";
 	@ConfigEntry public boolean reversed = false;
 	@ConfigEntry public Boolean hideRecipeBook = true;
+	@ConfigEntry public boolean minibossPing = true;
 }

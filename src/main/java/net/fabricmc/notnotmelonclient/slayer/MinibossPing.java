@@ -1,5 +1,6 @@
 package net.fabricmc.notnotmelonclient.slayer;
 
+import net.fabricmc.notnotmelonclient.config.Config;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -33,7 +34,7 @@ public class MinibossPing {
 	};
 
 	public static void onEntitySpawned(LivingEntity livingEntity) {
-		if (!livingEntity.hasCustomName()) return;
+		if (!Config.getConfig().minibossPing || !livingEntity.hasCustomName()) return;
 		String entityName = livingEntity.getCustomName().getString().replaceAll("§.", "");
 		for (Miniboss miniboss : minibosses) {
 			if (entityName.contains(miniboss.name)) {
