@@ -5,6 +5,11 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.notnotmelonclient.Main;
+import net.fabricmc.notnotmelonclient.dungeons.map.ThreeWeirdos;
+import net.fabricmc.notnotmelonclient.dungeons.solvers.CreeperBeam;
+import net.fabricmc.notnotmelonclient.dungeons.solvers.TicTacToe;
+import net.fabricmc.notnotmelonclient.events.ChangeLobby;
+import net.fabricmc.notnotmelonclient.events.ChatTrigger;
 import net.fabricmc.notnotmelonclient.events.EntitySpawned;
 import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.client.MinecraftClient;
@@ -60,11 +65,19 @@ public class Dungeons {
 	}
 
 	public static void registerEvents() {
+		ChangeLobby.EVENT.register(Dungeons::reset);
 		ClientTickEvents.END_CLIENT_TICK.register(Dungeons::tick);
-		WorldRenderEvents.END.register(TicTacToeSolver::render);
-		ChangeRoomEvent.EVENT.register(TicTacToeSolver::onChangeRoom);
-		EntitySpawned.EVENT.register(TicTacToeSolver::onEntitySpawned);
-		WorldRenderEvents.END.register(CreeperBeamSolver::render);
-		ChangeRoomEvent.EVENT.register(CreeperBeamSolver::onChangeRoom);
+		WorldRenderEvents.END.register(TicTacToe::render);
+		ChangeRoomEvent.EVENT.register(TicTacToe::onChangeRoom);
+		EntitySpawned.EVENT.register(TicTacToe::onEntitySpawned);
+		WorldRenderEvents.END.register(CreeperBeam::render);
+		ChangeRoomEvent.EVENT.register(CreeperBeam::onChangeRoom);
+		ChatTrigger.EVENT.register(ThreeWeirdos::onMessage);
+	}
+
+	public static void reset() {
+		CreeperBeam.lines = null;
+		TicTacToe.bestMoveIndicator = null;
+		ThreeWeirdos.correctChest = null;
 	}
 }

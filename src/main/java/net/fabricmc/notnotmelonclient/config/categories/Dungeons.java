@@ -4,8 +4,9 @@ import dev.isxander.yacl.api.ConfigCategory;
 import dev.isxander.yacl.api.Option;
 import dev.isxander.yacl.api.OptionGroup;
 import dev.isxander.yacl.gui.controllers.TickBoxController;
-import net.fabricmc.notnotmelonclient.dungeons.CreeperBeamSolver;
-import net.fabricmc.notnotmelonclient.dungeons.TicTacToeSolver;
+import net.fabricmc.notnotmelonclient.dungeons.map.ThreeWeirdos;
+import net.fabricmc.notnotmelonclient.dungeons.solvers.CreeperBeam;
+import net.fabricmc.notnotmelonclient.dungeons.solvers.TicTacToe;
 import net.minecraft.text.Text;
 
 import static net.fabricmc.notnotmelonclient.config.Config.getConfig;
@@ -18,8 +19,9 @@ public class Dungeons {
 
 			.group(OptionGroup.createBuilder()
 				.name(Text.literal("Puzzle Solvers"))
-				.option(ticTacToeSolver())
-				.option(creeperBeamSolver())
+				.option(ticTacToe())
+				.option(creeperBeam())
+				.option(threeWeirdos())
 				.build())
 
 			/*.group(OptionGroup.createBuilder()
@@ -93,27 +95,40 @@ public class Dungeons {
 			.build();
 	}
 
-	public static Option<?> ticTacToeSolver() {
+	public static Option<?> ticTacToe() {
 		return Option.createBuilder(boolean.class)
 			.name(Text.of("Tic Tac Toe"))
 			.tooltip(Text.of("Highlights the next button during the Tic Tac Toe puzzle in dungeons."))
 			.binding(
-				getDefaults().ticTacToeSolver,
-				() -> getConfig().ticTacToeSolver,
-				v -> { getConfig().ticTacToeSolver = v; TicTacToeSolver.bestMoveIndicator = null; }
+				getDefaults().ticTacToe,
+				() -> getConfig().ticTacToe,
+				v -> { getConfig().ticTacToe = v; TicTacToe.bestMoveIndicator = null; }
 			)
 			.controller(TickBoxController::new)
 			.build();
 	}
 
-	public static Option<?> creeperBeamSolver() {
+	public static Option<?> creeperBeam() {
 		return Option.createBuilder(boolean.class)
 			.name(Text.of("Creeper Beam"))
 			.tooltip(Text.of("Draws lines between valid sea lanterns in the creeper beam puzzle. A total of five lines are drawn, including the obvious line."))
 			.binding(
-				getDefaults().creeperBeamSolver,
-				() -> getConfig().creeperBeamSolver,
-				v -> { getConfig().creeperBeamSolver = v; CreeperBeamSolver.lines = null; }
+				getDefaults().creeperBeam,
+				() -> getConfig().creeperBeam,
+				v -> { getConfig().creeperBeam = v; CreeperBeam.lines = null; }
+			)
+			.controller(TickBoxController::new)
+			.build();
+	}
+
+	public static Option<?> threeWeirdos() {
+		return Option.createBuilder(boolean.class)
+			.name(Text.of("Three Weirdos"))
+			.tooltip(Text.of("Draws a box around the correct chest in the three weirdos puzzle."))
+			.binding(
+				getDefaults().threeWeirdos,
+				() -> getConfig().threeWeirdos,
+				v -> { getConfig().threeWeirdos = v; ThreeWeirdos.correctChest = null; }
 			)
 			.controller(TickBoxController::new)
 			.build();

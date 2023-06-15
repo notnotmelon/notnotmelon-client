@@ -1,8 +1,9 @@
-package net.fabricmc.notnotmelonclient.dungeons;
+package net.fabricmc.notnotmelonclient.dungeons.solvers;
 
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.notnotmelonclient.Main;
 import net.fabricmc.notnotmelonclient.config.Config;
+import net.fabricmc.notnotmelonclient.dungeons.Dungeons;
 import net.fabricmc.notnotmelonclient.util.RenderUtil;
 import net.fabricmc.notnotmelonclient.util.Scheduler;
 import net.fabricmc.notnotmelonclient.util.Util;
@@ -23,7 +24,7 @@ import java.util.List;
 // The AI can only start in the corner or center.
 // The AI is X. We are O
 
-public class TicTacToeSolver {
+public class TicTacToe {
 	private static final MinecraftClient client = Main.client;
 
 	public static BlockPos bestMoveIndicator;
@@ -33,12 +34,12 @@ public class TicTacToeSolver {
 	}
 
 	public static void onChangeRoom() {
-		if (!Config.getConfig().ticTacToeSolver) return;
+		if (!Config.getConfig().ticTacToe) return;
 		if (!updateBoard()) bestMoveIndicator = null;
 	}
 
 	public static void onEntitySpawned(Entity entity) {
-		if (!Config.getConfig().ticTacToeSolver) return;
+		if (!Config.getConfig().ticTacToe) return;
 		if (entity instanceof ItemFrameEntity itemFrame && Util.isDungeons() && Dungeons.getRoomBounds().contains(entity.getPos())) {
 			Scheduler.schedule(() -> {
 				char team = getTeam(itemFrame);

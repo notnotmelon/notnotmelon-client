@@ -12,7 +12,6 @@ import net.fabricmc.notnotmelonclient.commands.ConfigCommand;
 import net.fabricmc.notnotmelonclient.commands.Reparty;
 import net.fabricmc.notnotmelonclient.config.JsonLoader;
 import net.fabricmc.notnotmelonclient.dungeons.Dungeons;
-import net.fabricmc.notnotmelonclient.dungeons.TicTacToeSolver;
 import net.fabricmc.notnotmelonclient.events.ChangeLobby;
 import net.fabricmc.notnotmelonclient.events.ChatTrigger;
 import net.fabricmc.notnotmelonclient.events.EntitySpawned;

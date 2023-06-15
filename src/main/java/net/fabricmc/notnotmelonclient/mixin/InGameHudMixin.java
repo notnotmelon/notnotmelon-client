@@ -2,7 +2,7 @@ package net.fabricmc.notnotmelonclient.mixin;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.notnotmelonclient.config.Config;
-import net.fabricmc.notnotmelonclient.dungeons.DungeonMap;
+import net.fabricmc.notnotmelonclient.dungeons.map.DungeonMap;
 import net.fabricmc.notnotmelonclient.misc.StatusBars;
 import net.fabricmc.notnotmelonclient.misc.Timers;
 import net.fabricmc.notnotmelonclient.util.Util;

@@ -1,4 +1,4 @@
-package net.fabricmc.notnotmelonclient.dungeons;
+package net.fabricmc.notnotmelonclient.dungeons.map;
 
 import net.fabricmc.notnotmelonclient.Main;
 import net.minecraft.client.MinecraftClient;
