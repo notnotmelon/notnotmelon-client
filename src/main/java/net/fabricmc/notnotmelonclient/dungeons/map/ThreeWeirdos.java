@@ -45,7 +45,7 @@ public class ThreeWeirdos {
 	public static void solve(String message) {
 		if (correctChest != null) return;
 		String npcName = message.substring(message.indexOf("] §c") + 4, message.indexOf("§f:"));
-		Util.print(npcName + "§r has the blessing.");
+		Util.print("§c" + npcName + "§r has the blessing.");
 		ClientWorld world = client.world;
 
 		List<ArmorStandEntity> nameTags = new ArrayList<>();
