@@ -12,6 +12,7 @@ import net.fabricmc.notnotmelonclient.commands.ConfigCommand;
 import net.fabricmc.notnotmelonclient.commands.Reparty;
 import net.fabricmc.notnotmelonclient.config.JsonLoader;
 import net.fabricmc.notnotmelonclient.dungeons.Dungeons;
+import net.fabricmc.notnotmelonclient.dungeons.TicTacToeSolver;
 import net.fabricmc.notnotmelonclient.events.ChangeLobby;
 import net.fabricmc.notnotmelonclient.events.ChatTrigger;
 import net.fabricmc.notnotmelonclient.events.EntitySpawned;
@@ -74,6 +75,7 @@ public class Main implements ClientModInitializer {
 		ClientPlayConnectionEvents.JOIN.register(ChangeLobby::onServerJoin);
 		ChangeLobby.EVENT.register(Util::onChangeLobby);
 		EntitySpawned.EVENT.register(MinibossPing::onEntitySpawned);
+		EntitySpawned.EVENT.register(TicTacToeSolver::onEntitySpawned);
 	}
 
 	private void registerChatTriggers() {

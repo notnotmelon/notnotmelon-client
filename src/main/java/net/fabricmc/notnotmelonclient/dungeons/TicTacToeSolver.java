@@ -3,6 +3,7 @@ package net.fabricmc.notnotmelonclient.dungeons;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.notnotmelonclient.Main;
 import net.fabricmc.notnotmelonclient.util.RenderUtil;
+import net.fabricmc.notnotmelonclient.util.Scheduler;
 import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -32,6 +33,22 @@ public class TicTacToeSolver {
 	}
 
 	public static void onChangeRoom() {
+		if (!updateBoard()) bestMoveIndicator = null;
+	}
+
+	public static void onEntitySpawned(Entity entity) {
+		if (entity instanceof ItemFrameEntity itemFrame && Util.isDungeons() && Dungeons.getRoomBounds().contains(entity.getPos())) {
+			Scheduler.schedule(() -> {
+				char team = getTeam(itemFrame);
+				if (team == 'X')
+					updateBoard();
+				else if (team == 'O')
+					bestMoveIndicator = null;
+			}, 1);
+		}
+	}
+
+	public static boolean updateBoard() {
 		ClientWorld world = client.world;
 		List<ItemFrameEntity> itemFrames = new ArrayList<>();
 		Iterable<Entity> entities = world.getEntities();
@@ -43,7 +60,7 @@ public class TicTacToeSolver {
 			}
 		}
 
-		if (itemFrames.size() >= 9) return;
+		if (itemFrames.size() >= 9) return false;
 
 		BlockPos topLeft = null;
 		Direction facing = null;
@@ -81,13 +98,14 @@ public class TicTacToeSolver {
 			if (leftBlock == Blocks.POLISHED_ANDESITE) column = 0;
 			else if (rightBlock == Blocks.POLISHED_ANDESITE) column = 2;
 			else column = 1;
-			
+
 			if (itemFrame.facing == Direction.EAST || itemFrame.facing == Direction.NORTH)
 				column = 2 - column;
 
-			MapState mapState = FilledMapItem.getMapState(itemFrame.getHeldItemStack(), world);
-			if (mapState == null) continue;
-			board[row][column] = getTeam(mapState);
+
+			char team = getTeam(itemFrame);
+			if (team == '?') continue;
+			board[row][column] = team;
 
 			if (topLeft == null) {
 				facing = itemFrame.facing;
@@ -102,36 +120,31 @@ public class TicTacToeSolver {
 			}
 		}
 
-		if (topLeft == null) return;
+		if (topLeft == null) return false;
 		int[] bestMove = bestMove(board);
-		if (bestMove[0] == -1 && bestMove[1] == -1) return;
-		Util.print(bestMove[0]+" "+bestMove[1]);
+		if (bestMove[0] == -1 && bestMove[1] == -1) return false;
 
 		if (facing == Direction.NORTH)
 			bestMoveIndicator = topLeft.add(-bestMove[1], -bestMove[0], 0);
 		else if (facing == Direction.SOUTH)
 			bestMoveIndicator = topLeft.add(bestMove[1], -bestMove[0], 0);
 		else if (facing == Direction.EAST)
-			bestMoveIndicator = topLeft.add(0, -bestMove[0], bestMove[1]);
-		else if (facing == Direction.WEST)
 			bestMoveIndicator = topLeft.add(0, -bestMove[0], -bestMove[1]);
-
-		for (char[] z : board) {String s= "";for (char c : z) s+=c==' '?'_':c; s +=' ';Util.print(s);}
+		else if (facing == Direction.WEST)
+			bestMoveIndicator = topLeft.add(0, -bestMove[0], bestMove[1]);
+		return true;
 	}
 
-	public static boolean isBlank(Block block) {
-		return block == Blocks.STONE_BUTTON;
-	}
-
-	public static char getTeam(MapState mapState) {
+	public static char getTeam(ItemFrameEntity itemFrame) {
+		MapState mapState = FilledMapItem.getMapState(itemFrame.getHeldItemStack(), client.world);
+		if (mapState == null) return '?';
 		int red = mapState.colors[8000] & 255;
 		if (red == 114) {
 			return 'X';
 		} else if (red == 33) {
 			return 'O';
-		} else {
-			return 'X';
 		}
+		return '?';
 	}
 
 	public static int evaluate(char[][] board) {
@@ -139,18 +152,18 @@ public class TicTacToeSolver {
     	for (int i = 0; i < 3; i++)
         	if (board[0][i] != ' ' && board[0][i] == board[1][i] && board[1][i] == board[2][i])
             	return board[0][i] == 'X' ? -10 : 10;
-		
+
     	// rows
     	for (int i = 0; i < 3; i++)
         	if (board[i][0] != ' ' && board[i][0] == board[i][1] && board[i][1] == board[i][2])
             	return board[i][0] == 'X' ? -10 : 10;
-		
+
     	// diagonal
     	if (board[0][0] != ' ' && board[0][0] == board[1][1] && board[1][1] == board[2][2])
         	return board[0][0] == 'X' ? -10 : 10;
     	if (board[2][0] != ' ' && board[2][0] == board[1][1] && board[1][1] == board[0][2])
         	return board[2][0] == 'X' ? -10 : 10;
-       	
+
     	return 0;
 	}
 
@@ -165,29 +178,30 @@ public class TicTacToeSolver {
 				for (int col = 0; col < 3; col++) {
 					if (board[row][col] == ' ') {
 						board[row][col] = 'O';
-						bestScore = Math.max(bestScore, miniMax(board, false, emptySquares + 1));
+						bestScore = Math.max(bestScore, miniMax(board, false, emptySquares - 1));
 						board[row][col] = ' ';
 					}
 				}
 			}
-			return bestScore - emptySquares;
+			return bestScore + emptySquares;
 		} else {
 			int bestScore = Integer.MAX_VALUE;
 			for (int row = 0; row < 3; row++) {
 				for (int col = 0; col < 3; col++) {
 					if (board[row][col] == ' ') {
 						board[row][col] = 'X';
-						bestScore = Math.min(bestScore, miniMax(board, true, emptySquares + 1));
+						bestScore = Math.min(bestScore, miniMax(board, true, emptySquares - 1));
 						board[row][col] = ' ';
 					}
 				}
 			}
-			return bestScore + emptySquares;
+			return bestScore - emptySquares;
 		}
 	}
 
 	public static int[] bestMove(char[][] board) {
         int[] bestMove = new int[]{-1, -1};
+		int bestValue = Integer.MIN_VALUE;
 
 		int emptySquares = 0;
 		for (int i = 0; i < 3; i++)
@@ -195,22 +209,21 @@ public class TicTacToeSolver {
 				if (board[i][j] == ' ')
 					emptySquares++;
 
-		int bestValue = Integer.MAX_VALUE;
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 3; j++) {
-				if (board[i][j] == ' ') {
-					board[i][j] = 'O';
-					int moveValue = miniMax(board, false, emptySquares);
-					board[i][j] = ' ';
-					if (moveValue < bestValue) {
-						bestMove[0] = i;
-						bestMove[1] = j;
-						bestValue = moveValue;
-					}
+		for (int row = 0; row < 3; row++) {
+			for (int col = 0; col < 3; col++) {
+				if (board[row][col] != ' ') continue;
+				board[row][col] = 'O';
+				int score = miniMax(board, false, emptySquares - 1);
+				System.out.print(score);
+				board[row][col] = ' ';
+				if (score > bestValue) {
+					bestMove[0] = row;
+					bestMove[1] = col;
+					bestValue = score;
 				}
 			}
 		}
-        
+
         return bestMove;
     }
 }
