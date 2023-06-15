@@ -35,7 +35,6 @@ public class ThreeWeirdos {
 	};
 
 	public static ActionResult onMessage(Text text, String asString) {
-		System.out.println(asString);
 		if (Config.getConfig().threeWeirdos && Util.isDungeons() && asString.startsWith("§e[NPC] "))
 			for (String solution : solutions)
 				if (asString.contains(solution))
