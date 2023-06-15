@@ -2,7 +2,6 @@ package net.fabricmc.notnotmelonclient.dungeons.solvers;
 
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.notnotmelonclient.Main;
-import net.fabricmc.notnotmelonclient.config.Config;
 import net.fabricmc.notnotmelonclient.dungeons.Dungeons;
 import net.fabricmc.notnotmelonclient.util.RenderUtil;
 import net.fabricmc.notnotmelonclient.util.Scheduler;
@@ -21,6 +20,8 @@ import net.minecraft.util.math.Direction;
 
 import java.util.List;
 
+import static net.fabricmc.notnotmelonclient.config.Config.CONFIG;
+
 // The AI can only start in the corner or center.
 // The AI is X. We are O
 // PUZZLE SOLVED! notnotmelon tied Tic Tac Toe! Good Job!
@@ -35,12 +36,12 @@ public class TicTacToe {
 	}
 
 	public static void onChangeRoom() {
-		if (!Config.getConfig().ticTacToe) return;
+		if (!CONFIG.ticTacToe) return;
 		if (!updateBoard()) bestMoveIndicator = null;
 	}
 
 	public static void onEntitySpawned(Entity entity) {
-		if (!Config.getConfig().ticTacToe) return;
+		if (!CONFIG.ticTacToe) return;
 		if (entity instanceof ItemFrameEntity itemFrame && Util.isDungeons() && Dungeons.getRoomBounds().contains(entity.getPos())) {
 			Scheduler.schedule(() -> {
 				char team = getTeam(itemFrame);

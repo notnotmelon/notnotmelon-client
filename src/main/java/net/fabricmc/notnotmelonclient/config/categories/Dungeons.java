@@ -9,8 +9,7 @@ import net.fabricmc.notnotmelonclient.dungeons.solvers.CreeperBeam;
 import net.fabricmc.notnotmelonclient.dungeons.solvers.TicTacToe;
 import net.minecraft.text.Text;
 
-import static net.fabricmc.notnotmelonclient.config.Config.getConfig;
-import static net.fabricmc.notnotmelonclient.config.Config.getDefaults;
+import static net.fabricmc.notnotmelonclient.config.Config.*;
 
 public class Dungeons {
 	public static ConfigCategory category() {
@@ -49,8 +48,8 @@ public class Dungeons {
 			.tooltip(Text.of("If you are the party leader in dungeons, automatically run /rp at the end of a dungeon run. Otherwise, automatically accepts reparty requests from the party leader."))
 			.binding(
 				getDefaults().autoRepartyAccept,
-				() -> getConfig().autoRepartyAccept,
-				v -> getConfig().autoRepartyAccept = v
+				() -> CONFIG.autoRepartyAccept,
+				v -> CONFIG.autoRepartyAccept = v
 			)
 			.controller(TickBoxController::new)
 			.build();
@@ -62,8 +61,8 @@ public class Dungeons {
 			.tooltip(Text.of("Runs /showextrastats after completing a dungeon run. This command shows score, time taken, deaths, secrets, and other values."))
 			.binding(
 				getDefaults().autoExtraStats,
-				() -> getConfig().autoExtraStats,
-				v -> getConfig().autoExtraStats = v
+				() -> CONFIG.autoExtraStats,
+				v -> CONFIG.autoExtraStats = v
 			)
 			.controller(TickBoxController::new)
 			.build();
@@ -75,8 +74,8 @@ public class Dungeons {
 			.tooltip(Text.of("Shows a map of the dungeon on your HUD."))
 			.binding(
 				getDefaults().dungeonMap,
-				() -> getConfig().dungeonMap,
-				v -> getConfig().dungeonMap = v
+				() -> CONFIG.dungeonMap,
+				v -> CONFIG.dungeonMap = v
 			)
 			.controller(TickBoxController::new)
 			.build();
@@ -88,8 +87,8 @@ public class Dungeons {
 			.tooltip(Text.of("Use the old master star format for item names. Replaces ... with ..."))
 			.binding(
 				getDefaults().oldMasterStars,
-				() -> getConfig().oldMasterStars,
-				v -> getConfig().oldMasterStars = v
+				() -> CONFIG.oldMasterStars,
+				v -> CONFIG.oldMasterStars = v
 			)
 			.controller(TickBoxController::new)
 			.build();
@@ -101,8 +100,8 @@ public class Dungeons {
 			.tooltip(Text.of("Highlights the next button during the Tic Tac Toe puzzle in dungeons."))
 			.binding(
 				getDefaults().ticTacToe,
-				() -> getConfig().ticTacToe,
-				v -> { getConfig().ticTacToe = v; TicTacToe.bestMoveIndicator = null; }
+				() -> CONFIG.ticTacToe,
+				v -> { CONFIG.ticTacToe = v; TicTacToe.bestMoveIndicator = null; }
 			)
 			.controller(TickBoxController::new)
 			.build();
@@ -114,8 +113,8 @@ public class Dungeons {
 			.tooltip(Text.of("Draws lines between valid sea lanterns in the creeper beam puzzle. A total of five lines are drawn, including the obvious line."))
 			.binding(
 				getDefaults().creeperBeam,
-				() -> getConfig().creeperBeam,
-				v -> { getConfig().creeperBeam = v; CreeperBeam.lines = null; }
+				() -> CONFIG.creeperBeam,
+				v -> { CONFIG.creeperBeam = v; CreeperBeam.lines = null; }
 			)
 			.controller(TickBoxController::new)
 			.build();
@@ -127,8 +126,8 @@ public class Dungeons {
 			.tooltip(Text.of("Draws a box around the correct chest in the three weirdos puzzle."))
 			.binding(
 				getDefaults().threeWeirdos,
-				() -> getConfig().threeWeirdos,
-				v -> { getConfig().threeWeirdos = v; ThreeWeirdos.correctChest = null; }
+				() -> CONFIG.threeWeirdos,
+				v -> { CONFIG.threeWeirdos = v; ThreeWeirdos.correctChest = null; }
 			)
 			.controller(TickBoxController::new)
 			.build();

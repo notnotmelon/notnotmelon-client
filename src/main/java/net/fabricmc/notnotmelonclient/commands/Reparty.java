@@ -3,7 +3,6 @@ package net.fabricmc.notnotmelonclient.commands;
 import com.mojang.brigadier.Command;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.notnotmelonclient.config.Config;
 import net.fabricmc.notnotmelonclient.events.ChatTrigger;
 import net.fabricmc.notnotmelonclient.util.Scheduler;
 import net.fabricmc.notnotmelonclient.util.Util;
@@ -13,6 +12,8 @@ import net.minecraft.util.ActionResult;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static net.fabricmc.notnotmelonclient.config.Config.CONFIG;
 
 public class Reparty implements ChatTrigger {
     private static final MinecraftClient client = MinecraftClient.getInstance();
@@ -37,16 +38,16 @@ public class Reparty implements ChatTrigger {
     private static final Pattern PLAYER = Pattern.compile(" ([a-zA-Z0-9_]{2,16}) ●");
     private static final Pattern EXTRA_STATS = Pattern.compile("^§r                             §6> §e§lEXTRA STATS §6<$");
     public ActionResult onMessage(Text text, String asString) {
-        if (Util.isDungeons() && Config.getConfig().autoExtraStats && EXTRA_STATS.matcher(asString).matches()) {
+        if (Util.isDungeons() && CONFIG.autoExtraStats && EXTRA_STATS.matcher(asString).matches()) {
             Util.sendDelayedCommand("showextrastats", 10);
-            if (Config.getConfig().autoRepartyAccept) {
+            if (CONFIG.autoRepartyAccept) {
                 Util.sendDelayedCommand("p list", 20);
                 this.repartying = true;
                 return ActionResult.FAIL;
             }
         }
 
-        if (Config.getConfig().autoRepartyAccept && autoReparty(text, asString)) return ActionResult.PASS;
+        if (CONFIG.autoRepartyAccept && autoReparty(text, asString)) return ActionResult.PASS;
         if (!repartying) return ActionResult.PASS;
 
         if (asString.equals("-----------------------------------------------------"))

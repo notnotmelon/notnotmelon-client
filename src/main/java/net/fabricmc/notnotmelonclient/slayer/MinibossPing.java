@@ -33,7 +33,7 @@ public class MinibossPing {
 	};
 
 	public static void onEntitySpawned(Entity entity) {
-		if (!(entity instanceof ArmorStandEntity) || !Config.getConfig().minibossPing || !entity.hasCustomName()) return;
+		if (!(entity instanceof ArmorStandEntity) || !Config.CONFIG.minibossPing || !entity.hasCustomName()) return;
 		float distance = entity.distanceTo(client.player);
 		if (distance > 30) return;
 		String entityName = entity.getCustomName().getString();

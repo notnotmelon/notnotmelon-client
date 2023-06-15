@@ -1,7 +1,6 @@
 package net.fabricmc.notnotmelonclient.mixin;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.fabricmc.notnotmelonclient.config.Config;
 import net.fabricmc.notnotmelonclient.itemlist.ItemList;
 import net.fabricmc.notnotmelonclient.itemlist.SearchBar;
 import net.fabricmc.notnotmelonclient.misc.CursorResetFix;
@@ -26,6 +25,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import static net.fabricmc.notnotmelonclient.config.Config.CONFIG;
+
 @Mixin(HandledScreen.class)
 public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen {
     protected HandledScreenMixin(Text title) { super(title); }
@@ -43,7 +44,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 	@Inject(at = @At("HEAD"), method = "drawMouseoverTooltip", cancellable = true)
     private void drawMouseoverTooltip(CallbackInfo ci) {
         ScrollableTooltips.changeHoveredSlot(this.focusedSlot);
-		if (!Util.isSkyblock || !Config.getConfig().hideEmptyTooltips) return;
+		if (!Util.isSkyblock || !CONFIG.hideEmptyTooltips) return;
 
 		if (this.focusedSlot != null && this.focusedSlot.hasStack()) {
             ItemStack stack = this.focusedSlot.getStack();

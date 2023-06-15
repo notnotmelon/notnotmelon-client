@@ -2,7 +2,6 @@ package net.fabricmc.notnotmelonclient.itemlist;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.notnotmelonclient.Main;
-import net.fabricmc.notnotmelonclient.config.Config;
 import net.fabricmc.notnotmelonclient.misc.ScrollableTooltips;
 import net.fabricmc.notnotmelonclient.util.Rect;
 import net.fabricmc.notnotmelonclient.util.RenderUtil;
@@ -26,6 +25,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static net.fabricmc.notnotmelonclient.Main.client;
+import static net.fabricmc.notnotmelonclient.config.Config.CONFIG;
 import static net.fabricmc.notnotmelonclient.util.RenderUtil.itemRenderer;
 
 public class ItemList extends ClickableWidget implements Drawable {
@@ -33,7 +33,7 @@ public class ItemList extends ClickableWidget implements Drawable {
 	private static final Identifier ASTERISK = new Identifier(Main.NAMESPACE, "textures/gui/asterisk.png");
 	public static int lastMouseX = -1;
 	public static int lastMouseY = -1;
-	public int pageNumber = Config.getConfig().pageNumber;
+	public int pageNumber = CONFIG.pageNumber;
 	public int maxPageNumber;
 	public static final int STEP = 18;
 	public int pageSize;
@@ -242,14 +242,14 @@ public class ItemList extends ClickableWidget implements Drawable {
 		int numIcons = iconsToRender.size();
 		maxPageNumber = pageSize == 0 ? 0 : (numIcons / pageSize);
 		pageNumber = Math.min(maxPageNumber, pageNumber);
-		Config.getConfig().pageNumber = pageNumber;
+		CONFIG.pageNumber = pageNumber;
 		startIndex = pageSize * pageNumber;
 		endIndex = Math.min(pageSize * (pageNumber + 1), numIcons);
 		pageNumberText = numIcons == 0 ? nothingToRender : Text.of((pageNumber + 1) + "/" + (maxPageNumber + 1));
 	}
 
 	public void calculatePageSize() {
-		gridWidth = Config.getConfig().itemListWidth;
+		gridWidth = CONFIG.itemListWidth;
 		width = gridWidth * STEP;
 		height = client.getWindow().getScaledHeight() - STEP - searchBar.distanceFromBottom;
 		Rectangle screenRectangle = screenDimensions();
@@ -276,8 +276,8 @@ public class ItemList extends ClickableWidget implements Drawable {
 
 	public static void sort() {
 		if (!NeuRepo.isDownloaded) return;
-		Comparator<ItemListIcon> sortFunction = Config.getConfig().sortStrategy.sortFunction;
-		if (Config.getConfig().reversed) sortFunction = sortFunction.reversed();
+		Comparator<ItemListIcon> sortFunction = CONFIG.sortStrategy.sortFunction;
+		if (CONFIG.reversed) sortFunction = sortFunction.reversed();
 		NeuRepo.itemListIcons.sort(sortFunction);
 		if (client.currentScreen != null)
 			for (Element widget : client.currentScreen.children())

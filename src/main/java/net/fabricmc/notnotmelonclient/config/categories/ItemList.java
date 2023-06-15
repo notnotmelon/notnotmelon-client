@@ -9,8 +9,7 @@ import dev.isxander.yacl.gui.controllers.slider.IntegerSliderController;
 import net.fabricmc.notnotmelonclient.itemlist.SortStrategies;
 import net.minecraft.text.Text;
 
-import static net.fabricmc.notnotmelonclient.config.Config.getConfig;
-import static net.fabricmc.notnotmelonclient.config.Config.getDefaults;
+import static net.fabricmc.notnotmelonclient.config.Config.*;
 
 public class ItemList {
 	public static ConfigCategory category() {
@@ -35,8 +34,8 @@ public class ItemList {
 			.tooltip(Text.of("Displays a list of all Skyblock items and their recipes. Powered by the NEU API."))
 			.binding(
 				getDefaults().itemList,
-				() -> getConfig().itemList,
-				v -> getConfig().itemList = v
+				() -> CONFIG.itemList,
+				v -> CONFIG.itemList = v
 			)
 			.controller(TickBoxController::new)
 			.build();
@@ -48,8 +47,8 @@ public class ItemList {
 			.tooltip(Text.of("How many columns are displayed in the item list? If you are lagging inside GUIs, try lowering this value."))
 			.binding(
 				getDefaults().itemListWidth,
-				() -> getConfig().itemListWidth,
-				v -> getConfig().itemListWidth = v
+				() -> CONFIG.itemListWidth,
+				v -> CONFIG.itemListWidth = v
 			)
 			.controller(opt -> new IntegerSliderController(opt, 1, 32, 1))
 			.build();
@@ -61,9 +60,9 @@ public class ItemList {
 			.tooltip(Text.of("How should the item list be sorted?"))
 			.binding(
 				getDefaults().sortStrategy,
-				() -> getConfig().sortStrategy,
+				() -> CONFIG.sortStrategy,
 				v -> {
-					getConfig().sortStrategy = v;
+					CONFIG.sortStrategy = v;
 					net.fabricmc.notnotmelonclient.itemlist.ItemList.sort();
 				}
 			)
@@ -77,9 +76,9 @@ public class ItemList {
 			.tooltip(Text.of("Should the item list be sorted in reverse order?"))
 			.binding(
 				getDefaults().reversed,
-				() -> getConfig().reversed,
+				() -> CONFIG.reversed,
 				v -> {
-					getConfig().reversed = v;
+					CONFIG.reversed = v;
 					net.fabricmc.notnotmelonclient.itemlist.ItemList.sort();
 				}
 			)
@@ -93,8 +92,8 @@ public class ItemList {
 			.tooltip(Text.of("Hides the vanilla recipe book from your inventory."))
 			.binding(
 				getDefaults().hideRecipeBook,
-				() -> getConfig().hideRecipeBook,
-				v -> getConfig().hideRecipeBook = v
+				() -> CONFIG.hideRecipeBook,
+				v -> CONFIG.hideRecipeBook = v
 			)
 			.controller(TickBoxController::new)
 			.build();

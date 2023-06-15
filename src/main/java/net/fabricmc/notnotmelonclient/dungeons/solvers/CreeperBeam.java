@@ -2,7 +2,6 @@ package net.fabricmc.notnotmelonclient.dungeons.solvers;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.notnotmelonclient.config.Config;
 import net.fabricmc.notnotmelonclient.dungeons.Dungeons;
 import net.fabricmc.notnotmelonclient.util.Line;
 import net.fabricmc.notnotmelonclient.util.MathUtil;
@@ -26,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import static net.fabricmc.notnotmelonclient.Main.client;
+import static net.fabricmc.notnotmelonclient.config.Config.CONFIG;
 
 public class CreeperBeam {
 	public static List<Line> lines;
@@ -49,7 +49,7 @@ public class CreeperBeam {
 
 	public static void onChangeRoom() {
 		lines = null;
-		if (!Config.getConfig().creeperBeam) return;
+		if (!CONFIG.creeperBeam) return;
 		ClientWorld world = client.world;
 		if (world == null) return;
 		List<CreeperEntity> creepers = new ArrayList<>();

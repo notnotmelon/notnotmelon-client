@@ -42,8 +42,8 @@ public class Qol {
 			.tooltip(Text.of("Adds custom bars for mana, health, and experience."))
 			.binding(
 				getDefaults().fancyBars,
-				() -> getConfig().fancyBars,
-				v -> getConfig().fancyBars = v
+				() -> CONFIG.fancyBars,
+				v -> CONFIG.fancyBars = v
 			)
 			.controller(TickBoxController::new)
 			.build();
@@ -55,8 +55,8 @@ public class Qol {
 			.tooltip(Text.of("Allows you to scroll item tooltips with the scrollwheel. Hold SHIFT to scroll horizontally. Adjust the scroll sensitivity in your vanilla mouse settings."))
 			.binding(
 				getDefaults().scrollableTooltips,
-				() -> getConfig().scrollableTooltips,
-				v -> getConfig().scrollableTooltips = v
+				() -> CONFIG.scrollableTooltips,
+				v -> CONFIG.scrollableTooltips = v
 			)
 			.controller(TickBoxController::new)
 			.build();
@@ -68,8 +68,8 @@ public class Qol {
 			.tooltip(Text.of("Hides the explosion particles created by Wither Impact."))
 			.binding(
 				getDefaults().witherImpactHider,
-				() -> getConfig().witherImpactHider,
-				v -> getConfig().witherImpactHider = v
+				() -> CONFIG.witherImpactHider,
+				v -> CONFIG.witherImpactHider = v
 			)
 			.controller(TickBoxController::new)
 			.build();
@@ -81,8 +81,8 @@ public class Qol {
 			.tooltip(Text.of("Hides empty item tooltips in Skyblock GUIs."))
 			.binding(
 				getDefaults().hideEmptyTooltips,
-				() -> getConfig().hideEmptyTooltips,
-				v -> getConfig().hideEmptyTooltips = v
+				() -> CONFIG.hideEmptyTooltips,
+				v -> CONFIG.hideEmptyTooltips = v
 			)
 			.controller(TickBoxController::new)
 			.build();
@@ -94,8 +94,8 @@ public class Qol {
 			.tooltip(Text.of("Shows NPC, bazaar, and lowest BIN prices on item tooltips. Press SHIFT for a full stack."))
 			.binding(
 				getDefaults().priceTooltips,
-				() -> getConfig().priceTooltips,
-				v -> getConfig().priceTooltips = v
+				() -> CONFIG.priceTooltips,
+				v -> CONFIG.priceTooltips = v
 			)
 			.controller(TickBoxController::new)
 			.build();
@@ -107,8 +107,8 @@ public class Qol {
 			.tooltip(Text.of("Shows the date that an item was obtained date on its tooltip. Only works for items with a UUID."))
 			.binding(
 				getDefaults().createdDate,
-				() -> getConfig().createdDate,
-				v -> getConfig().createdDate = v
+				() -> CONFIG.createdDate,
+				v -> CONFIG.createdDate = v
 			)
 			.controller(TickBoxController::new)
 			.build();
@@ -120,8 +120,8 @@ public class Qol {
 			.tooltip(Text.of("Fixes that your cursor will reset to the center of the screen while navigating skyblock menus."))
 			.binding(
 				getDefaults().fixCursorReset,
-				() -> getConfig().fixCursorReset,
-				v -> getConfig().fixCursorReset = v
+				() -> CONFIG.fixCursorReset,
+				v -> CONFIG.fixCursorReset = v
 			)
 			.controller(TickBoxController::new)
 			.build();

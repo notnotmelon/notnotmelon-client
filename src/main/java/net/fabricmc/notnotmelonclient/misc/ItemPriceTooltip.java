@@ -3,7 +3,6 @@ package net.fabricmc.notnotmelonclient.misc;
 import com.google.gson.JsonObject;
 import net.fabricmc.notnotmelonclient.Main;
 import net.fabricmc.notnotmelonclient.api.ApiRequests;
-import net.fabricmc.notnotmelonclient.config.Config;
 import net.fabricmc.notnotmelonclient.util.ItemUtil;
 import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.client.MinecraftClient;
@@ -23,6 +22,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
+import static net.fabricmc.notnotmelonclient.config.Config.CONFIG;
+
 public class ItemPriceTooltip {
 	protected static final Logger LOGGER = Main.LOGGER;
 	private static final MinecraftClient client = MinecraftClient.getInstance();
@@ -33,24 +34,24 @@ public class ItemPriceTooltip {
 	public static void onInjectTooltip(ItemStack stack, TooltipContext context, List<Text> lines) {
         if (!Util.isSkyblock || client.player == null) return;
 
-		if (Config.getConfig().hideUnbreakable)
+		if (CONFIG.hideUnbreakable)
 			lines.removeIf(text -> text.getString().equals("Unbreakable"));
 
-		if (Config.getConfig().hideGearScore)
+		if (CONFIG.hideGearScore)
 			lines.removeIf(text -> GEAR_SCORE_PATTERN.matcher(text.getString()).matches());
 
         String itemID = ItemUtil.getFullItemID(stack);
         if (itemID == null) return;
 		
 		try {
-			if (Config.getConfig().priceTooltips) {
+			if (CONFIG.priceTooltips) {
 				addNPCPrice(stack, itemID, lines);
 				if (!addBazaarPrice(stack, itemID, lines)) {
 					addLowestBIN(stack, itemID, lines);
 					addAveragePrice(stack, itemID, lines);
 				}
 			}
-			if (Config.getConfig().createdDate)
+			if (CONFIG.createdDate)
 				addDateObtained(stack, itemID, lines);
 		} catch(Exception e) {
 			lines.add(Text.literal("ERROR PARSING PRICE DATA! Please report this.").formatted(Formatting.BOLD).formatted(Formatting.DARK_RED));

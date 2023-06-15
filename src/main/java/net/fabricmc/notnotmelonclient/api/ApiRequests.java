@@ -3,7 +3,6 @@ package net.fabricmc.notnotmelonclient.api;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.notnotmelonclient.config.Config;
 import net.fabricmc.notnotmelonclient.itemlist.ItemList;
 import net.fabricmc.notnotmelonclient.itemlist.NeuRepo;
 import net.fabricmc.notnotmelonclient.itemlist.SortStrategies;
@@ -18,6 +17,7 @@ import java.net.URL;
 import java.util.zip.GZIPInputStream;
 
 import static net.fabricmc.notnotmelonclient.Main.LOGGER;
+import static net.fabricmc.notnotmelonclient.config.Config.CONFIG;
 
 public class ApiRequests {
 	public static ApiRequest npcPrices;
@@ -42,7 +42,7 @@ public class ApiRequests {
 
 		Scheduler.schedule(() -> {
 			Scheduler.scheduleCyclicThreaded(() -> {
-				if (Config.getConfig().sortStrategy == SortStrategies.Value) ItemList.sort();
+				if (CONFIG.sortStrategy == SortStrategies.Value) ItemList.sort();
 			}, 20 * 60 * 29);
 		}, 20 * 20);
 	}

@@ -3,7 +3,6 @@ package net.fabricmc.notnotmelonclient.fishing;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
-import net.fabricmc.notnotmelonclient.config.Config;
 import net.fabricmc.notnotmelonclient.events.ChangeLobby;
 import net.fabricmc.notnotmelonclient.events.ChatTrigger;
 import net.fabricmc.notnotmelonclient.events.SoundEvent;
@@ -34,6 +33,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.joml.Matrix4f;
 
+import static net.fabricmc.notnotmelonclient.config.Config.CONFIG;
+
 public class Fishing {
     private static final MinecraftClient client = MinecraftClient.getInstance();
     public static long castTime = -1;
@@ -56,7 +57,7 @@ public class Fishing {
     private static void updateBobberTimer() {
         ClientPlayerEntity player = client.player;
         if (!Util.isSkyblock
-            || !Config.getConfig().bobberTimer
+            || !CONFIG.bobberTimer
             || player == null
             || player.fishHook == null
         ) {
@@ -120,12 +121,12 @@ public class Fishing {
         // Finally, we should also check if the sound is coming from the same direction as the bobber
         if (Math.abs(yawVector.dotProduct(soundOffset)) > 0.2) return;
 
-        if (Config.getConfig().showWhenToReel) {
+        if (CONFIG.showWhenToReel) {
             client.inGameHud.setTitleTicks(0, 10, 5);
             client.inGameHud.setTitle(catchText);
         }
 
-        if (Config.getConfig().goldenFishTimer)
+        if (CONFIG.goldenFishTimer)
             updateGoldenFishTimer();
 
         reset();
@@ -147,7 +148,7 @@ public class Fishing {
         new RareCreature("Hide no longer, a Great White Shark has tracked your scent and thirsts for your blood!", "Great White Shark!", Formatting.DARK_RED)
     };
     public static ActionResult onMessage(Text message, String asString) {
-        if (!Config.getConfig().legendaryCatchWarning) return ActionResult.PASS;
+        if (!CONFIG.legendaryCatchWarning) return ActionResult.PASS;
 
         String messageString = message.getString();
         for (RareCreature creature : rareCreatures) {

@@ -2,7 +2,6 @@ package net.fabricmc.notnotmelonclient.misc;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.notnotmelonclient.Main;
-import net.fabricmc.notnotmelonclient.config.Config;
 import net.fabricmc.notnotmelonclient.fishing.Fishing;
 import net.fabricmc.notnotmelonclient.util.RenderUtil;
 import net.fabricmc.notnotmelonclient.util.Scheduler;
@@ -15,6 +14,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
+
+import static net.fabricmc.notnotmelonclient.config.Config.CONFIG;
 
 public class Timers {
     private static final MinecraftClient client = MinecraftClient.getInstance();
@@ -32,7 +33,7 @@ public class Timers {
         if (!Util.isSkyblock) return;
         long currentTime = System.currentTimeMillis();
 
-        if (Config.getConfig().darkAuctionTimer) {
+        if (CONFIG.darkAuctionTimer) {
             long milliseconds = currentTime % hour;
             if (milliseconds > minute * 55)
                 milliseconds -= minute * 55;
@@ -46,7 +47,7 @@ public class Timers {
             ));
         }
 
-        if (Config.getConfig().goldenFishTimer && Fishing.goldenFishTimer != -1) {
+        if (CONFIG.goldenFishTimer && Fishing.goldenFishTimer != -1) {
             if (Fishing.goldfishStreak + (minute * 3) < currentTime) {
                 Util.print("Your Golden Fish timer was reset after 3 minutes of inactivity!");
                 Fishing.resetGoldfish();

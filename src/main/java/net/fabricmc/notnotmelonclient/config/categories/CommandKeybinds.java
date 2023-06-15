@@ -16,8 +16,7 @@ import java.lang.reflect.Type;
 import java.util.Objects;
 
 import static net.fabricmc.notnotmelonclient.Main.client;
-import static net.fabricmc.notnotmelonclient.config.Config.getConfig;
-import static net.fabricmc.notnotmelonclient.config.Config.getDefaults;
+import static net.fabricmc.notnotmelonclient.config.Config.*;
 
 public class CommandKeybinds {
 	public static ConfigCategory category() {
@@ -29,8 +28,8 @@ public class CommandKeybinds {
 				.tooltip(Text.of("Set custom keybinds for chat commands."))
 				.binding(
 					getDefaults().commandKeybinds,
-					() -> getConfig().commandKeybinds,
-					v -> getConfig().commandKeybinds = v
+					() -> CONFIG.commandKeybinds,
+					v -> CONFIG.commandKeybinds = v
 				)
 				.controller(KeybindController::new)
 				.initial(new CommandKeybind("", GLFW.GLFW_KEY_UNKNOWN))
@@ -44,7 +43,7 @@ public class CommandKeybinds {
 		if (client.currentScreen != null) return;
 		if (client.player == null) return;
 
-		for (CommandKeybind commandKeybind : getConfig().commandKeybinds)
+		for (CommandKeybind commandKeybind : CONFIG.commandKeybinds)
 			if (commandKeybind.keyBind == keyCode)
 				client.player.networkHandler.sendCommand(commandKeybind.command);
 	}

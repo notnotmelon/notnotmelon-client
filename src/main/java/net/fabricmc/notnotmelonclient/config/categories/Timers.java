@@ -25,8 +25,8 @@ public class Timers {
 			.tooltip(Text.of("Shows a 15 minute timer until the Golden Fish can appear on the Crimson Isle. After 15 minutes, shows the probability of catching the Golden Fish."))
 			.binding(
 				getDefaults().goldenFishTimer,
-				() -> getConfig().goldenFishTimer,
-				v -> getConfig().goldenFishTimer = v
+				() -> CONFIG.goldenFishTimer,
+				v -> CONFIG.goldenFishTimer = v
 			)
 			.controller(TickBoxController::new)
 			.build();
@@ -38,8 +38,8 @@ public class Timers {
 			.tooltip(Text.of("Shows the remaining time until the next Dark Auction. Dark Auctions always happen on the 55th minute of every hour."))
 			.binding(
 				getDefaults().darkAuctionTimer,
-				() -> getConfig().darkAuctionTimer,
-				v -> getConfig().darkAuctionTimer = v
+				() -> CONFIG.darkAuctionTimer,
+				v -> CONFIG.darkAuctionTimer = v
 			)
 			.controller(TickBoxController::new)
 			.build();
@@ -51,8 +51,8 @@ public class Timers {
 			.tooltip(Text.of("Shows the amount of time remaining on nearby deployables. Always lists the highest priority deployable."))
 			.binding(
 				getDefaults().orbTimer,
-				() -> getConfig().orbTimer,
-				v -> getConfig().orbTimer = v
+				() -> CONFIG.orbTimer,
+				v -> CONFIG.orbTimer = v
 			)
 			.controller(TickBoxController::new)
 			.build();

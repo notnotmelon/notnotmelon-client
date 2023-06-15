@@ -39,8 +39,8 @@ public class Removals {
 			.tooltip(Text.of("Fixes certian messages being spammed to your log files while on Hypixel."))
 			.binding(
 				getDefaults().logSpamFix,
-				() -> getConfig().logSpamFix,
-				v -> getConfig().logSpamFix = v
+				() -> CONFIG.logSpamFix,
+				v -> CONFIG.logSpamFix = v
 			)
 			.controller(TickBoxController::new)
 			.build();
@@ -52,8 +52,8 @@ public class Removals {
 			.tooltip(Text.of("Hides the list of active potion effects from showing in your inventory."))
 			.binding(
 				getDefaults().potionEffectsGui,
-				() -> getConfig().potionEffectsGui,
-				v -> getConfig().potionEffectsGui = v
+				() -> CONFIG.potionEffectsGui,
+				v -> CONFIG.potionEffectsGui = v
 			)
 			.controller(TickBoxController::new)
 			.build();
@@ -65,8 +65,8 @@ public class Removals {
 			.tooltip(Text.of("Prevents the first-person fire overlay from blocking your vision."))
 			.binding(
 				getDefaults().hideFireOverlay,
-				() -> getConfig().hideFireOverlay,
-				v -> getConfig().hideFireOverlay = v
+				() -> CONFIG.hideFireOverlay,
+				v -> CONFIG.hideFireOverlay = v
 			)
 			.controller(TickBoxController::new)
 			.build();
@@ -78,8 +78,8 @@ public class Removals {
 			.tooltip(Text.of("Removes gear score from dungeon equipment tooltips."))
 			.binding(
 				getDefaults().hideGearScore,
-				() -> getConfig().hideGearScore,
-				v -> getConfig().hideGearScore = v
+				() -> CONFIG.hideGearScore,
+				v -> CONFIG.hideGearScore = v
 			)
 			.controller(TickBoxController::new)
 			.build();
@@ -91,8 +91,8 @@ public class Removals {
 			.tooltip(Text.of("Hides the \"Unbreakable\" tag found on every Skyblock item description."))
 			.binding(
 				getDefaults().hideUnbreakable,
-				() -> getConfig().hideUnbreakable,
-				v -> getConfig().hideUnbreakable = v
+				() -> CONFIG.hideUnbreakable,
+				v -> CONFIG.hideUnbreakable = v
 			)
 			.controller(TickBoxController::new)
 			.build();

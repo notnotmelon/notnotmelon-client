@@ -6,8 +6,7 @@ import dev.isxander.yacl.api.OptionGroup;
 import dev.isxander.yacl.gui.controllers.TickBoxController;
 import net.minecraft.text.Text;
 
-import static net.fabricmc.notnotmelonclient.config.Config.getConfig;
-import static net.fabricmc.notnotmelonclient.config.Config.getDefaults;
+import static net.fabricmc.notnotmelonclient.config.Config.*;
 
 public class Slayer {
 	public static ConfigCategory category() {
@@ -28,8 +27,8 @@ public class Slayer {
 			.tooltip(Text.of("Shows a message whenever a slayer miniboss spawns near your player."))
 			.binding(
 				getDefaults().minibossPing,
-				() -> getConfig().minibossPing,
-				v -> getConfig().minibossPing = v
+				() -> CONFIG.minibossPing,
+				v -> CONFIG.minibossPing = v
 			)
 			.controller(TickBoxController::new)
 			.build();

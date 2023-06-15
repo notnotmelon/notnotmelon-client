@@ -30,8 +30,8 @@ public class Fishing {
 			.tooltip(Text.of("Display !!! and play a sound whenever a fish nibbles your bobber."))
 			.binding(
 				getDefaults().showWhenToReel,
-				() -> getConfig().showWhenToReel,
-				v -> getConfig().showWhenToReel = v
+				() -> CONFIG.showWhenToReel,
+				v -> CONFIG.showWhenToReel = v
 			)
 			.controller(TickBoxController::new)
 			.build();
@@ -43,8 +43,8 @@ public class Fishing {
 			.tooltip(Text.of("Shows a warning whenever you catch a legendary fish. Also works for golden fish and plhlegblast."))
 			.binding(
 				getDefaults().legendaryCatchWarning,
-				() -> getConfig().legendaryCatchWarning,
-				v -> getConfig().legendaryCatchWarning = v
+				() -> CONFIG.legendaryCatchWarning,
+				v -> CONFIG.legendaryCatchWarning = v
 			)
 			.controller(TickBoxController::new)
 			.build();
@@ -56,8 +56,8 @@ public class Fishing {
 			.tooltip(Text.of("Hides other player's fishing lines and bobbers."))
 			.binding(
 				getDefaults().hideOtherPlayersFishing,
-				() -> getConfig().hideOtherPlayersFishing,
-				v -> getConfig().hideOtherPlayersFishing = v
+				() -> CONFIG.hideOtherPlayersFishing,
+				v -> CONFIG.hideOtherPlayersFishing = v
 			)
 			.controller(TickBoxController::new)
 			.build();
@@ -69,8 +69,8 @@ public class Fishing {
 			.tooltip(Text.of("Displays a timer above your bobber. Can help with slugfishing."))
 			.binding(
 				getDefaults().bobberTimer,
-				() -> getConfig().bobberTimer,
-				v -> getConfig().bobberTimer = v
+				() -> CONFIG.bobberTimer,
+				v -> CONFIG.bobberTimer = v
 			)
 			.controller(TickBoxController::new)
 			.build();

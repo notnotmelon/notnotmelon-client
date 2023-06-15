@@ -1,7 +1,6 @@
 package net.fabricmc.notnotmelonclient.misc;
 
 import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
-import net.fabricmc.notnotmelonclient.config.Config;
 import net.fabricmc.notnotmelonclient.util.Util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LogEvent;
@@ -15,6 +14,8 @@ import java.util.HashSet;
 import java.util.logging.Filter;
 import java.util.logging.LogRecord;
 import java.util.regex.Pattern;
+
+import static net.fabricmc.notnotmelonclient.config.Config.CONFIG;
 
 // https://modrinth.com/mod/log-begone
 // https://github.com/AzureDoom/Log-Begone/blob/1.19Fabric/src/main/java/mod/azure/logbegone/LogBegoneMod.java
@@ -39,7 +40,7 @@ public class LogSpamFix implements PreLaunchEntrypoint {
 	private static final Pattern UNKNOWN_TEAM = Pattern.compile("^Received packet for unknown team .+?: team action: REMOVE, player action:");
 	private static final Pattern UNKNOWN_PLAYER = Pattern.compile("^Ignoring player info update for unknown player .+?$");
 	private static boolean shouldFilterMessage(String message) {
-		if (!Util.isSkyblock || !Config.getConfig().logSpamFix) return false;
+		if (!Util.isSkyblock || !CONFIG.logSpamFix) return false;
 		if (message.contains("Ignoring player info update for unknown player")) return true;
 		if (message.equals("Received passengers for unknown entity")) return true;
 		if (UNKNOWN_TEAM.matcher(message).find()) return true;

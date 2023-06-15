@@ -28,8 +28,8 @@ public class Farming {
 			.tooltip(Text.of("Redirects your /warp commands to the garden whenever a visitor is ready to spawn. If the queue still has space, warps you back to the original destination after 1 second."))
 			.binding(
 				getDefaults().visitorGenerator,
-				() -> getConfig().visitorGenerator,
-				v -> getConfig().visitorGenerator = v
+				() -> CONFIG.visitorGenerator,
+				v -> CONFIG.visitorGenerator = v
 			)
 			.controller(TickBoxController::new)
 			.build();
@@ -41,8 +41,8 @@ public class Farming {
 			.tooltip(Text.of("Shows a GUI with the estimated profit from a visitor trade. For bazaar items, uses buy order price. For auctionable items, uses the 1-day average BIN."))
 			.binding(
 				getDefaults().visitorProfit,
-				() -> getConfig().visitorProfit,
-				v -> getConfig().visitorProfit = v
+				() -> CONFIG.visitorProfit,
+				v -> CONFIG.visitorProfit = v
 			)
 			.controller(TickBoxController::new)
 			.build();

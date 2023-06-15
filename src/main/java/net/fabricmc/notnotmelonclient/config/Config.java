@@ -2,7 +2,6 @@ package net.fabricmc.notnotmelonclient.config;
 
 import dev.isxander.yacl.api.YetAnotherConfigLib;
 import dev.isxander.yacl.config.ConfigEntry;
-import dev.isxander.yacl.config.GsonConfigInstance;
 import net.fabricmc.notnotmelonclient.config.categories.*;
 import net.fabricmc.notnotmelonclient.itemlist.SortStrategies;
 import net.minecraft.client.MinecraftClient;
@@ -12,17 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Config {
-	public static final Config instance = new Config();
+	public static final Config CONFIG = JsonLoader.jsonInterface.getConfig();
 
-	public static Config getConfig() {
-		GsonConfigInstance<Config> jsonInterface = JsonLoader.jsonInterface;
-		if (jsonInterface == null) return instance;
-		return jsonInterface.getConfig();
-	}
 	public static Config getDefaults() {
-		GsonConfigInstance<Config> jsonInterface = JsonLoader.jsonInterface;
-		if (jsonInterface == null) return instance;
-		return jsonInterface.getDefaults();
+		return new Config();
 	}
 
 	public YetAnotherConfigLib build() {

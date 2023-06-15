@@ -1,7 +1,6 @@
 package net.fabricmc.notnotmelonclient.dungeons.map;
 
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.notnotmelonclient.config.Config;
 import net.fabricmc.notnotmelonclient.dungeons.Dungeons;
 import net.fabricmc.notnotmelonclient.util.RenderUtil;
 import net.fabricmc.notnotmelonclient.util.Util;
@@ -17,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static net.fabricmc.notnotmelonclient.Main.client;
+import static net.fabricmc.notnotmelonclient.config.Config.CONFIG;
 
 public class ThreeWeirdos {
 	public static BlockPos correctChest;
@@ -35,7 +35,7 @@ public class ThreeWeirdos {
 	};
 
 	public static ActionResult onMessage(Text text, String asString) {
-		if (Config.getConfig().threeWeirdos && Util.isDungeons() && asString.startsWith("§e[NPC] "))
+		if (CONFIG.threeWeirdos && Util.isDungeons() && asString.startsWith("§e[NPC] "))
 			for (String solution : solutions)
 				if (asString.contains(solution))
 					solve(asString);

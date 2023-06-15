@@ -1,6 +1,5 @@
 package net.fabricmc.notnotmelonclient.mixin;
 
-import net.fabricmc.notnotmelonclient.config.Config;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.gui.widget.TexturedButtonWidget;
@@ -9,11 +8,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import static net.fabricmc.notnotmelonclient.config.Config.CONFIG;
+
 @Mixin(InventoryScreen.class)
 public class InventoryScreenMixin {
 	@Inject(method = "init", at = @At("TAIL"))
 	private void init(CallbackInfo ci) {
-		if (!Config.getConfig().hideRecipeBook) return;
+		if (!CONFIG.hideRecipeBook) return;
 		InventoryScreen inventoryScreen = (InventoryScreen) (Object) this;
 		inventoryScreen.remove(inventoryScreen.recipeBook);
 		inventoryScreen.recipeBook.setOpen(false);

@@ -1,6 +1,5 @@
 package net.fabricmc.notnotmelonclient.itemlist;
 
-import net.fabricmc.notnotmelonclient.config.Config;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -13,6 +12,7 @@ import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 
 import static net.fabricmc.notnotmelonclient.Main.client;
+import static net.fabricmc.notnotmelonclient.config.Config.CONFIG;
 
 public class SearchBar extends TextFieldWidget {
 	public int distanceFromBottom;
@@ -22,7 +22,7 @@ public class SearchBar extends TextFieldWidget {
 	public SearchBar(TextRenderer textRenderer, int width, int height, ItemList parent) {
 		super(textRenderer, 0, 0, width, height, Text.empty());
 		distanceFromBottom = height + 3;
-		setText(Config.getConfig().searchQuery);
+		setText(CONFIG.searchQuery);
 		searchPattern = calculateSearchPattern();
 		this.parent = parent;
 	}
@@ -50,7 +50,7 @@ public class SearchBar extends TextFieldWidget {
 	public void doSearch() {
 		searchPattern = calculateSearchPattern();
 		parent.buildIconPositions();
-		Config.getConfig().searchQuery = getText();
+		CONFIG.searchQuery = getText();
 	}
 
 	public static boolean matches(ItemListIcon icon) {

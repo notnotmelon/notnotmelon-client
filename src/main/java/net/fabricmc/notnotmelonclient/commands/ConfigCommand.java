@@ -11,7 +11,7 @@ public class ConfigCommand {
 	public static void register(CommandDispatcher<FabricClientCommandSource> dispatcher) {
 		dispatcher.register(ClientCommandManager.literal("nnc")
 			.executes(ctx -> {
-				Scheduler.schedule(Config.instance::draw, 1);
+				Scheduler.schedule(Config.CONFIG::draw, 1);
 				return Command.SINGLE_SUCCESS;
 			})
         );
