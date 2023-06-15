@@ -73,6 +73,7 @@ public class Dungeons {
 		WorldRenderEvents.END.register(CreeperBeam::render);
 		ChangeRoomEvent.EVENT.register(CreeperBeam::onChangeRoom);
 		ChatTrigger.EVENT.register(ThreeWeirdos::onMessage);
+		WorldRenderEvents.END.register(ThreeWeirdos::render);
 	}
 
 	public static void reset() {

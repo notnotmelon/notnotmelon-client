@@ -10,7 +10,6 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.TypeFilter;
 import net.minecraft.util.math.BlockPos;
 
@@ -36,7 +35,8 @@ public class ThreeWeirdos {
 	};
 
 	public static ActionResult onMessage(Text text, String asString) {
-		if (Config.getConfig().threeWeirdos && Util.isDungeons() && asString.startsWith("[NPC] "))
+		System.out.println(asString);
+		if (Config.getConfig().threeWeirdos && Util.isDungeons() && asString.startsWith("§e[NPC] "))
 			for (String solution : solutions)
 				if (asString.contains(solution))
 					solve(asString);
@@ -45,8 +45,8 @@ public class ThreeWeirdos {
 
 	public static void solve(String message) {
 		if (correctChest != null) return;
-		String npcName = message.substring(message.indexOf("]") + 2, message.indexOf(":"));
-		client.player.sendMessage(Text.literal(npcName + "§r has the blessing.").formatted(Formatting.BOLD));
+		String npcName = message.substring(message.indexOf("] §c") + 4, message.indexOf("§f:"));
+		Util.print(npcName + "§r has the blessing.");
 		ClientWorld world = client.world;
 
 		List<ArmorStandEntity> nameTags = new ArrayList<>();
@@ -67,6 +67,8 @@ public class ThreeWeirdos {
 			correctChest = pos.south();
 		} else if (world.getBlockState(pos.west()).getBlock() == Blocks.CHEST) {
 			correctChest = pos.west();
+		} else {
+			correctChest = pos;
 		}
 	}
 }

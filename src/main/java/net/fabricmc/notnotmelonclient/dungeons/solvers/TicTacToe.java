@@ -23,6 +23,7 @@ import java.util.List;
 
 // The AI can only start in the corner or center.
 // The AI is X. We are O
+// PUZZLE SOLVED! notnotmelon tied Tic Tac Toe! Good Job!
 
 public class TicTacToe {
 	private static final MinecraftClient client = Main.client;
