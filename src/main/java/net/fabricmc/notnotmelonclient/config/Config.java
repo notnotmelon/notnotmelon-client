@@ -80,4 +80,6 @@ public class Config {
 	@ConfigEntry public boolean reversed = false;
 	@ConfigEntry public Boolean hideRecipeBook = true;
 	@ConfigEntry public boolean minibossPing = true;
+	@ConfigEntry public boolean ticTacToeSolver = true;
+	@ConfigEntry public boolean creeperBeamSolver = true;
 }

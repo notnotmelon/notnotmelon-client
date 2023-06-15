@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.notnotmelonclient.Main;
+import net.fabricmc.notnotmelonclient.events.EntitySpawned;
 import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
@@ -62,5 +63,8 @@ public class Dungeons {
 		ClientTickEvents.END_CLIENT_TICK.register(Dungeons::tick);
 		WorldRenderEvents.END.register(TicTacToeSolver::render);
 		ChangeRoomEvent.EVENT.register(TicTacToeSolver::onChangeRoom);
+		EntitySpawned.EVENT.register(TicTacToeSolver::onEntitySpawned);
+		WorldRenderEvents.END.register(CreeperBeamSolver::render);
+		ChangeRoomEvent.EVENT.register(CreeperBeamSolver::onChangeRoom);
 	}
 }

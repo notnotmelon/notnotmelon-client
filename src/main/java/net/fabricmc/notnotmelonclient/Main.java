@@ -75,7 +75,6 @@ public class Main implements ClientModInitializer {
 		ClientPlayConnectionEvents.JOIN.register(ChangeLobby::onServerJoin);
 		ChangeLobby.EVENT.register(Util::onChangeLobby);
 		EntitySpawned.EVENT.register(MinibossPing::onEntitySpawned);
-		EntitySpawned.EVENT.register(TicTacToeSolver::onEntitySpawned);
 	}
 
 	private void registerChatTriggers() {

@@ -4,6 +4,8 @@ import dev.isxander.yacl.api.ConfigCategory;
 import dev.isxander.yacl.api.Option;
 import dev.isxander.yacl.api.OptionGroup;
 import dev.isxander.yacl.gui.controllers.TickBoxController;
+import net.fabricmc.notnotmelonclient.dungeons.CreeperBeamSolver;
+import net.fabricmc.notnotmelonclient.dungeons.TicTacToeSolver;
 import net.minecraft.text.Text;
 
 import static net.fabricmc.notnotmelonclient.config.Config.getConfig;
@@ -14,11 +16,13 @@ public class Dungeons {
 		return ConfigCategory.createBuilder()
 			.name(Text.literal("Dungeons"))
 
-			/*.group(OptionGroup.createBuilder()
+			.group(OptionGroup.createBuilder()
 				.name(Text.literal("Puzzle Solvers"))
+				.option(ticTacToeSolver())
+				.option(creeperBeamSolver())
 				.build())
 
-			.group(OptionGroup.createBuilder()
+			/*.group(OptionGroup.createBuilder()
 				.name(Text.literal("Boss Fight"))
 				.build())*/
 
@@ -84,6 +88,32 @@ public class Dungeons {
 				getDefaults().oldMasterStars,
 				() -> getConfig().oldMasterStars,
 				v -> getConfig().oldMasterStars = v
+			)
+			.controller(TickBoxController::new)
+			.build();
+	}
+
+	public static Option<?> ticTacToeSolver() {
+		return Option.createBuilder(boolean.class)
+			.name(Text.of("Tic Tac Toe"))
+			.tooltip(Text.of("Highlights the next button during the Tic Tac Toe puzzle in dungeons."))
+			.binding(
+				getDefaults().ticTacToeSolver,
+				() -> getConfig().ticTacToeSolver,
+				v -> { getConfig().ticTacToeSolver = v; TicTacToeSolver.bestMoveIndicator = null; }
+			)
+			.controller(TickBoxController::new)
+			.build();
+	}
+
+	public static Option<?> creeperBeamSolver() {
+		return Option.createBuilder(boolean.class)
+			.name(Text.of("Creeper Beam"))
+			.tooltip(Text.of("Draws lines between valid sea lanterns in the creeper beam puzzle. A total of five lines are drawn, including the obvious line."))
+			.binding(
+				getDefaults().creeperBeamSolver,
+				() -> getConfig().creeperBeamSolver,
+				v -> { getConfig().creeperBeamSolver = v; CreeperBeamSolver.lines = null; }
 			)
 			.controller(TickBoxController::new)
 			.build();

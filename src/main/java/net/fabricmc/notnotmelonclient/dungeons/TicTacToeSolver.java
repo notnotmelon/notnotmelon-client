@@ -2,6 +2,7 @@ package net.fabricmc.notnotmelonclient.dungeons;
 
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.notnotmelonclient.Main;
+import net.fabricmc.notnotmelonclient.config.Config;
 import net.fabricmc.notnotmelonclient.util.RenderUtil;
 import net.fabricmc.notnotmelonclient.util.Scheduler;
 import net.fabricmc.notnotmelonclient.util.Util;
@@ -17,7 +18,6 @@ import net.minecraft.item.map.MapState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
-import java.util.ArrayList;
 import java.util.List;
 
 // The AI can only start in the corner or center.
@@ -33,10 +33,12 @@ public class TicTacToeSolver {
 	}
 
 	public static void onChangeRoom() {
+		if (!Config.getConfig().ticTacToeSolver) return;
 		if (!updateBoard()) bestMoveIndicator = null;
 	}
 
 	public static void onEntitySpawned(Entity entity) {
+		if (!Config.getConfig().ticTacToeSolver) return;
 		if (entity instanceof ItemFrameEntity itemFrame && Util.isDungeons() && Dungeons.getRoomBounds().contains(entity.getPos())) {
 			Scheduler.schedule(() -> {
 				char team = getTeam(itemFrame);
@@ -50,17 +52,12 @@ public class TicTacToeSolver {
 
 	public static boolean updateBoard() {
 		ClientWorld world = client.world;
-		List<ItemFrameEntity> itemFrames = new ArrayList<>();
-		Iterable<Entity> entities = world.getEntities();
-		for (Entity entity : entities) {
-			if (entity instanceof ItemFrameEntity itemFrame && Dungeons.getRoomBounds().contains(entity.getPos())) {
-				ItemStack stack = itemFrame.getHeldItemStack();
-				if (stack != null && stack.getItem() instanceof FilledMapItem)
-					itemFrames.add(itemFrame);
-			}
-		}
+		List<ItemFrameEntity> itemFrames = world.getEntitiesByClass(ItemFrameEntity.class, Dungeons.getRoomBounds(), (ItemFrameEntity itemFrame) -> {
+			ItemStack stack = itemFrame.getHeldItemStack();
+			return stack != null && stack.getItem() instanceof FilledMapItem;
+		});
 
-		if (itemFrames.size() >= 9) return false;
+		if (itemFrames.size() == 0 || itemFrames.size() >= 9) return false;
 
 		BlockPos topLeft = null;
 		Direction facing = null;
