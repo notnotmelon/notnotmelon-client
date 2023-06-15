@@ -27,7 +27,6 @@ public class KeybindWithTextElement extends ControllerWidget<CommandKeybinds.Key
 		setDimension(dim);
 	}
 
-	protected boolean instantApply;
 	protected String inputField;
 	protected int selectionLength = 0;
 	protected int renderOffset;

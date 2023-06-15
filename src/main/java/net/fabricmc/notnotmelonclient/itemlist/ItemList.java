@@ -46,8 +46,8 @@ public class ItemList extends ClickableWidget implements Drawable {
 	public int gridHeight;
 	public Rect playground;
 	public ItemListIcon parent;
-	public SearchBar searchBar;
-	public HandledScreen<?> screen;
+	public final SearchBar searchBar;
+	public final HandledScreen<?> screen;
 	public final List<ItemListIcon> iconsToRender = new ArrayList<>();
 	protected Thread t;
 

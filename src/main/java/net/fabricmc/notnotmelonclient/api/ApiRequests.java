@@ -40,11 +40,9 @@ public class ApiRequests {
 			LOGGER.error("[nnc] API Error!", e);
 		}
 
-		Scheduler.schedule(() -> {
-			Scheduler.scheduleCyclicThreaded(() -> {
-				if (CONFIG.sortStrategy == SortStrategies.Value) ItemList.sort();
-			}, 20 * 60 * 29);
-		}, 20 * 20);
+		Scheduler.schedule(() -> Scheduler.scheduleCyclicThreaded(() -> {
+			if (CONFIG.sortStrategy == SortStrategies.Value) ItemList.sort();
+		}, 20 * 60 * 29), 20 * 20);
 	}
 
 	public static class ApiDecypherer {

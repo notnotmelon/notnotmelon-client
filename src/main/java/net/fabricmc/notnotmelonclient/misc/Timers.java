@@ -82,7 +82,6 @@ public class Timers {
 
         Window window = client.getWindow();
         int scaledWidth = window.getScaledWidth();
-        int scaledHeight = window.getScaledHeight();
         int x = scaledWidth / 2 - 91;
         int y = 2;
 

@@ -25,7 +25,7 @@ public class ThreeWeirdos {
 		RenderUtil.drawRainbowBoxOutline(correctChest, 12, 60);
 	}
 
-	static String[] solutions = {
+	static final String[] solutions = {
 		"The reward is not in my chest!",
 		"At least one of them is lying, and the reward is not in ",
 		"My chest doesn't have the reward we are all telling the truth.",

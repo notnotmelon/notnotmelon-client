@@ -20,8 +20,8 @@ public class RepoRequest extends ApiRequest {
 		void afterDownload();
 	}
 
-	public Path outputPath;
-	public RepoCallback callback;
+	public final Path outputPath;
+	public final RepoCallback callback;
 	public RepoRequest(URL endpoint, Path outputPath, RepoCallback callback) {
 		super(endpoint, null);
 		this.outputPath = outputPath;

@@ -65,7 +65,7 @@ public class MathUtil {
         if (point2.z > maxVec.z && point1.z > maxVec.z) return false;
         if (box.contains(point1)) return true;
 
-        Holder<Vec3d> hitVec = new Holder<Vec3d>();
+        Holder<Vec3d> hitVec = new Holder<>();
         hitVec.value = new Vec3d(0, 0, 0);
         return (getIntersection(
             point1.x - minVec.x,
@@ -142,7 +142,7 @@ public class MathUtil {
         return vec.x >= box.minX && vec.x <= box.maxX && vec.y >= box.minY && vec.y <= box.maxY;
     }
 
-    private static class Holder<T>{ T value; };
+    private static class Holder<T>{ T value; }
 
     public static List<BlockPos> blocksInArea(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, @Nullable Predicate<BlockState> predicate) {
         assert client.world != null;

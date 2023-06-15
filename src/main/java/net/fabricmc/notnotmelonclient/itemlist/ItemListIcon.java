@@ -1,6 +1,5 @@
 package net.fabricmc.notnotmelonclient.itemlist;
 
-import net.fabricmc.notnotmelonclient.util.ItemUtil;
 import net.fabricmc.notnotmelonclient.util.Rect;
 import net.minecraft.item.ItemStack;
 
@@ -11,16 +10,14 @@ import static net.fabricmc.notnotmelonclient.itemlist.ItemList.STEP;
 public class ItemListIcon {
 	public int x = -1;
 	public int y = -1;
-	public ItemStack stack;
+	public final ItemStack stack;
 	public List<ItemListIcon> children; // it breaks after 1 deep
 	public Rect playground;
-	public String skyblockID;
 	int gridX;
 	int gridY;
 
 	public ItemListIcon(ItemStack stack) {
 		this.stack = stack;
-		skyblockID = ItemUtil.getFullItemID(stack);
 	}
 
 	public void setLocation(int x, int y) {

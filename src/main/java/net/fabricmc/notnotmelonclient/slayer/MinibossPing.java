@@ -1,11 +1,11 @@
 package net.fabricmc.notnotmelonclient.slayer;
 
-import net.fabricmc.notnotmelonclient.config.Config;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.text.Text;
 
 import static net.fabricmc.notnotmelonclient.Main.client;
+import static net.fabricmc.notnotmelonclient.config.Config.CONFIG;
 
 public class MinibossPing {
 	public static final String[] minibosses = new String[]{
@@ -33,7 +33,7 @@ public class MinibossPing {
 	};
 
 	public static void onEntitySpawned(Entity entity) {
-		if (!(entity instanceof ArmorStandEntity) || !Config.CONFIG.minibossPing || !entity.hasCustomName()) return;
+		if (!(entity instanceof ArmorStandEntity) || !CONFIG.minibossPing || !entity.hasCustomName()) return;
 		float distance = entity.distanceTo(client.player);
 		if (distance > 30) return;
 		String entityName = entity.getCustomName().getString();

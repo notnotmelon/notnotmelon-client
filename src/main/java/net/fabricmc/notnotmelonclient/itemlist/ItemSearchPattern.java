@@ -7,8 +7,8 @@ import net.minecraft.text.Text;
 import java.util.ArrayList;
 
 public class ItemSearchPattern {
-	ArrayList<ArrayList<String>> inner;
-	public static final ItemSearchPattern EMPTY = new ItemSearchPattern(new ArrayList<ArrayList<String>>());
+	final ArrayList<ArrayList<String>> inner;
+	public static final ItemSearchPattern EMPTY = new ItemSearchPattern(new ArrayList<>());
 
 	public ItemSearchPattern(ArrayList<ArrayList<String>> pattern) {
 		inner = pattern;

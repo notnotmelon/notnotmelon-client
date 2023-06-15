@@ -15,8 +15,8 @@ import static net.fabricmc.notnotmelonclient.Main.client;
 import static net.fabricmc.notnotmelonclient.config.Config.CONFIG;
 
 public class SearchBar extends TextFieldWidget {
-	public int distanceFromBottom;
-	public ItemList parent;
+	public final int distanceFromBottom;
+	public final ItemList parent;
 	public static ItemSearchPattern searchPattern;
 
 	public SearchBar(TextRenderer textRenderer, int width, int height, ItemList parent) {

@@ -153,7 +153,7 @@ public class ItemUtil {
                     case "SPECIAL": return 8;
                     case "VERY SPECIAL": return 9;
                     case "ADMIN": return 10;
-                };
+                }
             }
         } catch (Exception e) { return 0; }
         return 0;
