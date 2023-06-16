@@ -61,7 +61,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
     private void notnotmelonclient$init(CallbackInfo info) {
 		HandledScreen<?> screen = (HandledScreen<?>) (Screen) this;
 		CursorResetFix.onOpenScreen(screen);
-		screen.addDrawableChild(new ItemList());
+		if (CONFIG.itemList && Util.isSkyblock) screen.addDrawableChild(new ItemList());
     }
 
 	@Redirect(method = "keyPressed", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/ingame/HandledScreen;close()V"))
@@ -76,7 +76,7 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
 
 	@Inject(method = "drawSlot", at = @At("HEAD"))
 	public void notnotmelonclient$drawSlot(DrawContext context, Slot slot, CallbackInfo ci) {
-		if (SearchBar.yellowMode && slot.hasStack() && SearchBar.matches(slot.getStack())) {
+		if (CONFIG.itemList && Util.isSkyblock && SearchBar.yellowMode && slot.hasStack() && SearchBar.matches(slot.getStack())) {
 			RenderSystem.enableDepthTest();
 			context.fill(slot.x, slot.y, slot.x + 16, slot.y + 16, 0x88FFC105);
 			RenderSystem.disableDepthTest();
