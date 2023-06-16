@@ -75,4 +75,5 @@ public class Config {
 	@ConfigEntry public boolean ticTacToe = true;
 	@ConfigEntry public boolean creeperBeam = true;
 	@ConfigEntry public boolean threeWeirdos = true;
+	@ConfigEntry public boolean blaze = true;
 }

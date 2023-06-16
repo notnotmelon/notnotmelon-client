@@ -8,6 +8,7 @@ import net.fabricmc.notnotmelonclient.Main;
 import net.fabricmc.notnotmelonclient.dungeons.solvers.ThreeWeirdos;
 import net.fabricmc.notnotmelonclient.dungeons.solvers.CreeperBeam;
 import net.fabricmc.notnotmelonclient.dungeons.solvers.TicTacToe;
+import net.fabricmc.notnotmelonclient.dungeons.solvers.Blaze;
 import net.fabricmc.notnotmelonclient.events.ChangeLobby;
 import net.fabricmc.notnotmelonclient.events.ChatTrigger;
 import net.fabricmc.notnotmelonclient.events.EntitySpawned;
@@ -74,11 +75,14 @@ public class Dungeons {
 		EntitySpawned.EVENT.register(CreeperBeam::onEntitySpawned);
 		ChatTrigger.EVENT.register(ThreeWeirdos::onMessage);
 		WorldRenderEvents.END.register(ThreeWeirdos::render);
+		ChangeRoomEvent.EVENT.register(Blaze::onChangeRoom);
+		WorldRenderEvents.END.register(Blaze::render);
 	}
 
 	public static void reset() {
 		CreeperBeam.lines = null;
 		TicTacToe.bestMoveIndicator = null;
 		ThreeWeirdos.correctChest = null;
+		Blaze.puzzleBlazes = null;
 	}
 }

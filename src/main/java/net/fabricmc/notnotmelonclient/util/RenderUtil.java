@@ -59,10 +59,6 @@ public class RenderUtil {
         RenderSystem.enableCull();
         RenderSystem.disableBlend();
     }
-    
-    public static void drawBoxOutline(Box box) {
-        drawBoxOutline(box, 8, Color.WHITE, Color.WHITE);
-    }
 
 	public static void drawBoxOutline(BlockPos blockPos, float lineWidth, Color color) {
         drawBoxOutline(blockPos, lineWidth, color, color);
@@ -92,6 +88,12 @@ public class RenderUtil {
         float hue2 = (float) (hue1 + 0.25) % 1;
         drawBoxOutline(blockPos, lineWidth, Color.getHSBColor(hue1, 1, 1), Color.getHSBColor(hue2, 1, 1));
     }
+
+	public static void drawRainbowBoxOutline(Box box, float lineWidth, int period) {
+		float hue1 = (Util.getGametick() % period + 1) / (float) period;
+		float hue2 = (float) (hue1 + 0.25) % 1;
+		drawBoxOutline(box, lineWidth, Color.getHSBColor(hue1, 1, 1), Color.getHSBColor(hue2, 1, 1));
+	}
 
     public static MatrixStack matrixOf(double x, double y, double z) {
         MatrixStack matrices = new MatrixStack();

@@ -19,6 +19,7 @@ public interface ChangeLobby {
 
     static void onServerJoin(ClientPlayNetworkHandler clientPlayNetworkHandler, PacketSender packetSender, MinecraftClient minecraftClient) {
         Scheduler.schedule(() -> {
+            Util.locationTracker();
             if (Util.isSkyblock) EVENT.invoker().onChangeLobby();
         },1);
     }

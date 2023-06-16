@@ -53,12 +53,11 @@ public class CreeperBeam {
 		lines = null;
 		if (!CONFIG.creeperBeam) return;
 		ClientWorld world = client.world;
-		if (world == null) return;
+		assert world != null;
 		List<CreeperEntity> creepers = new ArrayList<>();
-		Box roomBB = Dungeons.getRoomBounds();
 		world.collectEntitiesByType(TypeFilter.instanceOf(CreeperEntity.class),
 			Dungeons.getRoomBounds(),
-			creeper -> isPuzzleCreeper(creeper) && roomBB.contains(creeper.getPos()),
+			CreeperBeam::isPuzzleCreeper,
 			creepers,
 			1);
 		if (creepers.isEmpty()) return;
