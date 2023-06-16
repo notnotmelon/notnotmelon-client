@@ -71,6 +71,7 @@ public class Dungeons {
 		EntitySpawned.EVENT.register(TicTacToe::onEntitySpawned);
 		WorldRenderEvents.END.register(CreeperBeam::render);
 		ChangeRoomEvent.EVENT.register(CreeperBeam::onChangeRoom);
+		EntitySpawned.EVENT.register(CreeperBeam::onEntitySpawned);
 		ChatTrigger.EVENT.register(ThreeWeirdos::onMessage);
 		WorldRenderEvents.END.register(ThreeWeirdos::render);
 	}

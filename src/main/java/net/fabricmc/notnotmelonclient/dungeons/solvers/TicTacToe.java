@@ -49,7 +49,7 @@ public class TicTacToe {
 					updateBoard();
 				else if (team == 'O')
 					bestMoveIndicator = null;
-			}, 1);
+			}, 3);
 		}
 	}
 
@@ -137,6 +137,10 @@ public class TicTacToe {
 
 	public static char getTeam(ItemFrameEntity itemFrame) {
 		MapState mapState = FilledMapItem.getMapState(itemFrame.getHeldItemStack(), client.world);
+		return getTeam(mapState);
+	}
+
+	public static char getTeam(MapState mapState) {
 		if (mapState == null) return '?';
 		int red = mapState.colors[8000] & 255;
 		if (red == 114) {

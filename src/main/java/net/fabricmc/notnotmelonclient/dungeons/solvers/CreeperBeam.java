@@ -6,12 +6,14 @@ import net.fabricmc.notnotmelonclient.dungeons.Dungeons;
 import net.fabricmc.notnotmelonclient.util.Line;
 import net.fabricmc.notnotmelonclient.util.MathUtil;
 import net.fabricmc.notnotmelonclient.util.RenderUtil;
+import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.util.TypeFilter;
 import net.minecraft.util.math.BlockPos;
@@ -53,14 +55,22 @@ public class CreeperBeam {
 		ClientWorld world = client.world;
 		if (world == null) return;
 		List<CreeperEntity> creepers = new ArrayList<>();
+		Box roomBB = Dungeons.getRoomBounds();
 		world.collectEntitiesByType(TypeFilter.instanceOf(CreeperEntity.class),
 			Dungeons.getRoomBounds(),
-			CreeperBeam::isPuzzleCreeper,
+			creeper -> isPuzzleCreeper(creeper) && roomBB.contains(creeper.getPos()),
 			creepers,
 			1);
 		if (creepers.isEmpty()) return;
 		CreeperEntity creeper = creepers.get(0);
 		solve(creeper);
+	}
+
+	public static void onEntitySpawned(Entity entity) {
+		if (CONFIG.creeperBeam && entity instanceof CreeperEntity creeper)
+			if (lines == null && Util.isDungeons() && Dungeons.getRoomBounds().contains(entity.getPos()))
+				if (isPuzzleCreeper(creeper))
+					solve(creeper);
 	}
 
 	public static boolean isPuzzleCreeper(CreeperEntity creeper) {

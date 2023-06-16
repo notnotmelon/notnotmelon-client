@@ -6,6 +6,7 @@ import net.fabricmc.notnotmelonclient.util.ItemUtil;
 import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.gui.tooltip.TooltipPositioner;
 import net.minecraft.entity.LivingEntity;
@@ -18,6 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 
+import static net.fabricmc.notnotmelonclient.Main.client;
 import static net.fabricmc.notnotmelonclient.config.Config.CONFIG;
 
 @Mixin(DrawContext.class)
@@ -44,7 +46,7 @@ public class DrawContextMixin {
 
 	@Inject(method = "drawTooltip(Lnet/minecraft/client/font/TextRenderer;Ljava/util/List;IILnet/minecraft/client/gui/tooltip/TooltipPositioner;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;push()V", shift = At.Shift.AFTER))
 	public void notnotmelonclient$drawTooltip(TextRenderer textRenderer, List<TooltipComponent> components, int x, int y, TooltipPositioner positioner, CallbackInfo ci) {
-		if (CONFIG.scrollableTooltips)
+		if (CONFIG.scrollableTooltips && client.currentScreen instanceof HandledScreen<?>)
 			((DrawContext) (Object) this).getMatrices().translate(ScrollableTooltips.x, ScrollableTooltips.y, 0);
 	}
 }

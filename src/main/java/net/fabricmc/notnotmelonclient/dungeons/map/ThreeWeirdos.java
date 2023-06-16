@@ -28,7 +28,7 @@ public class ThreeWeirdos {
 	static final String[] solutions = {
 		"The reward is not in my chest!",
 		"At least one of them is lying, and the reward is not in ",
-		"My chest doesn't have the reward we are all telling the truth.",
+		"My chest doesn't have the reward. We are all telling the truth.",
 		"My chest has the reward and I'm telling the truth!",
 		"The reward isn't in any of our chests.",
 		"Both of them are telling the truth. Also, "
