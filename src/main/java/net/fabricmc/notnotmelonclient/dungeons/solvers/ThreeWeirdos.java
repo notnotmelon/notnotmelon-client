@@ -1,4 +1,4 @@
-package net.fabricmc.notnotmelonclient.dungeons.map;
+package net.fabricmc.notnotmelonclient.dungeons.solvers;
 
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.notnotmelonclient.dungeons.Dungeons;

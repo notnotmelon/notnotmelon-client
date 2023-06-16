@@ -5,7 +5,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.notnotmelonclient.Main;
-import net.fabricmc.notnotmelonclient.dungeons.map.ThreeWeirdos;
+import net.fabricmc.notnotmelonclient.dungeons.solvers.ThreeWeirdos;
 import net.fabricmc.notnotmelonclient.dungeons.solvers.CreeperBeam;
 import net.fabricmc.notnotmelonclient.dungeons.solvers.TicTacToe;
 import net.fabricmc.notnotmelonclient.events.ChangeLobby;

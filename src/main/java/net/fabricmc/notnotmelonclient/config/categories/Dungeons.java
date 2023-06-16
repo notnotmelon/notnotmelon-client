@@ -5,7 +5,7 @@ import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.api.OptionGroup;
 import dev.isxander.yacl3.gui.controllers.TickBoxController;
 import dev.isxander.yacl3.api.OptionDescription;
-import net.fabricmc.notnotmelonclient.dungeons.map.ThreeWeirdos;
+import net.fabricmc.notnotmelonclient.dungeons.solvers.ThreeWeirdos;
 import net.fabricmc.notnotmelonclient.dungeons.solvers.CreeperBeam;
 import net.fabricmc.notnotmelonclient.dungeons.solvers.TicTacToe;
 import net.minecraft.text.Text;
