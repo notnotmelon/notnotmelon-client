@@ -46,6 +46,7 @@ public class Dungeons {
 
 	public static int[] getRoomCoords() {
 		PlayerEntity player = client.player;
+		assert player != null;
 		int roomX = (int) Math.ceil((player.getX() + 8.5) / 32);
 		int roomZ = (int) Math.ceil((player.getZ() + 8.5) / 32);
 		return new int[]{roomX, roomZ};
@@ -67,16 +68,20 @@ public class Dungeons {
 	public static void registerEvents() {
 		ChangeLobby.EVENT.register(Dungeons::reset);
 		ClientTickEvents.END_CLIENT_TICK.register(Dungeons::tick);
+
 		WorldRenderEvents.END.register(TicTacToe::render);
 		ChangeRoomEvent.EVENT.register(TicTacToe::onChangeRoom);
 		EntitySpawned.EVENT.register(TicTacToe::onEntitySpawned);
+
 		WorldRenderEvents.END.register(CreeperBeam::render);
 		ChangeRoomEvent.EVENT.register(CreeperBeam::onChangeRoom);
 		EntitySpawned.EVENT.register(CreeperBeam::onEntitySpawned);
 		ChatTrigger.EVENT.register(ThreeWeirdos::onMessage);
 		WorldRenderEvents.END.register(ThreeWeirdos::render);
+
 		ChangeRoomEvent.EVENT.register(Blaze::onChangeRoom);
 		WorldRenderEvents.END.register(Blaze::render);
+		EntitySpawned.EVENT.register(Blaze::onEntitySpawned);
 	}
 
 	public static void reset() {

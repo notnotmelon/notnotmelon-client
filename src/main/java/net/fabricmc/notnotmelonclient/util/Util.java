@@ -42,6 +42,11 @@ public class Util {
 		print(Text.literal(String.valueOf(c)));
 	}
 
+    public static void print(Exception e) {
+        for (StackTraceElement stackTraceElement : e.getStackTrace())
+            print(stackTraceElement.toString());
+    }
+
 	public static void print(Object o) {
 		print(Text.literal(o == null ? "null" : o.toString()));
 	}

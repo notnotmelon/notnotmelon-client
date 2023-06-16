@@ -86,7 +86,7 @@ public class CreeperBeam {
 
 	public static void solve(CreeperEntity creeper) {
 		Box creeperBB = creeper.getBoundingBox();
-		creeperBB = new Box(creeperBB.minX, 75, creeperBB.minZ, creeperBB.maxX, 78, creeperBB.maxZ);
+		Box targetBB = new Box(creeperBB.minX - 0.1, 75, creeperBB.minZ - 0.1, creeperBB.maxX + 0.1, 78, creeperBB.maxZ + 0.1);
 		Box roomBB = new Box(creeperBB.minX - 14, 67, creeperBB.minZ - 13, creeperBB.maxX + 14, 87, creeperBB.maxZ + 13);
 		List<BlockPos> lanterns = MathUtil.blocksInArea(roomBB, (BlockState blockState) -> {
 			Block block = blockState.getBlock();
@@ -104,7 +104,7 @@ public class CreeperBeam {
 
 				Vec3d centerA = a.toCenterPos();
 				Vec3d centerB = b.toCenterPos();
-				if (MathUtil.lineIntersectsWithBox(creeperBB, centerA, centerB)) {
+				if (MathUtil.lineIntersectsWithBox(targetBB, centerA, centerB)) {
 					used.add(a);
 					used.add(b);
 					Line line = new Line(centerA, centerB);
