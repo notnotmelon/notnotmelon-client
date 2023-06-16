@@ -31,8 +31,6 @@ accessible field net/minecraft/entity/decoration/AbstractDecorationEntity facing
 
 accessible method net/minecraft/client/gui/hud/PlayerListHud collectPlayerEntries ()Ljava/util/List;
 
-accessible method net/minecraft/client/gui/DrawableHelper fillGradient (Lorg/joml/Matrix4f;Lnet/minecraft/client/render/BufferBuilder;IIIIIII)V
-
 accessible field net/minecraft/client/util/math/Rect2i x I
 accessible field net/minecraft/client/util/math/Rect2i y I
 accessible field net/minecraft/client/util/math/Rect2i width I
