@@ -4,8 +4,8 @@ import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.GsonBuilder;
-import dev.isxander.yacl.config.ConfigEntry;
-import dev.isxander.yacl.config.GsonConfigInstance;
+import dev.isxander.yacl3.config.ConfigEntry;
+import dev.isxander.yacl3.config.GsonConfigInstance;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.notnotmelonclient.config.categories.CommandKeybinds;
 import net.minecraft.text.Style;
@@ -21,19 +21,21 @@ public class JsonLoader {
         configDir = FabricLoader.getInstance().getConfigDir().resolve("notnotmelonclient/config.properties");
         jsonInterface = GsonConfigInstance.createBuilder(Config.class)
             .setPath(configDir)
-            //.appendGsonBuilder(CommandKeybinds.CommandKeybindSerializer.serializer)   <- this doesnt work. yacl is broken
+            //.appendGsonBuilder(CommandKeybinds.CommandKeybindSerializer.serializer)   <- this causes infinite recursion inside yacl
             .overrideGsonBuilder(
                 new GsonBuilder().setExclusionStrategies(new ConfigExclusionStrategy())
                     .registerTypeHierarchyAdapter(Text.class, new Text.Serializer())
                     .registerTypeHierarchyAdapter(Style.class, new Style.Serializer())
                     .registerTypeHierarchyAdapter(Color.class, new GsonConfigInstance.ColorTypeAdapter())
-                    .registerTypeHierarchyAdapter(CommandKeybinds.CommandKeybind.class, new CommandKeybinds.CommandKeybindSerializer())
+                    .registerTypeHierarchyAdapter(CommandKeybinds.CommandKeybind.class, new CommandKeybinds .CommandKeybindSerializer())
                     .serializeNulls()
                     .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                     .create() // instead we need to do this silliness
             )
             .build();
         jsonInterface.load();
+
+        Config.CONFIG = JsonLoader.jsonInterface.getConfig();
     }
 
     // ctrl+c ctrl+v from GsonConfigInstance. Original is private.

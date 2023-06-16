@@ -1,15 +1,17 @@
 package net.fabricmc.notnotmelonclient.config.categories;
 
-import dev.isxander.yacl.api.ConfigCategory;
-import dev.isxander.yacl.api.Option;
-import dev.isxander.yacl.api.OptionGroup;
-import dev.isxander.yacl.gui.controllers.TickBoxController;
-import dev.isxander.yacl.gui.controllers.cycling.EnumController;
-import dev.isxander.yacl.gui.controllers.slider.IntegerSliderController;
+import dev.isxander.yacl3.api.ConfigCategory;
+import dev.isxander.yacl3.api.Option;
+import dev.isxander.yacl3.api.OptionDescription;
+import dev.isxander.yacl3.api.OptionGroup;
+import dev.isxander.yacl3.gui.controllers.TickBoxController;
+import dev.isxander.yacl3.gui.controllers.cycling.EnumController;
+import dev.isxander.yacl3.gui.controllers.slider.IntegerSliderController;
 import net.fabricmc.notnotmelonclient.itemlist.SortStrategies;
 import net.minecraft.text.Text;
 
-import static net.fabricmc.notnotmelonclient.config.Config.*;
+import static net.fabricmc.notnotmelonclient.config.Config.CONFIG;
+import static net.fabricmc.notnotmelonclient.config.Config.getDefaults;
 
 public class ItemList {
 	public static ConfigCategory category() {
@@ -31,33 +33,33 @@ public class ItemList {
 	public static Option<?> itemList() {
 		return Option.createBuilder(boolean.class)
 			.name(Text.of("Item List"))
-			.tooltip(Text.of("Displays a list of all Skyblock items and their recipes. Powered by the NEU API."))
+			.description(OptionDescription.of(Text.of("Displays a list of all Skyblock items and their recipes. Powered by the NEU API.")))
 			.binding(
 				getDefaults().itemList,
 				() -> CONFIG.itemList,
 				v -> CONFIG.itemList = v
 			)
-			.controller(TickBoxController::new)
+			.customController(TickBoxController::new)
 			.build();
 	}
 
 	public static Option<?> itemListWidth() {
 		return Option.createBuilder(int.class)
 			.name(Text.of("Item List Width"))
-			.tooltip(Text.of("How many columns are displayed in the item list? If you are lagging inside GUIs, try lowering this value."))
+			.description(OptionDescription.of(Text.of("How many columns are displayed in the item list? If you are lagging inside GUIs, try lowering this value.")))
 			.binding(
 				getDefaults().itemListWidth,
 				() -> CONFIG.itemListWidth,
 				v -> CONFIG.itemListWidth = v
 			)
-			.controller(opt -> new IntegerSliderController(opt, 1, 32, 1))
+			.customController(opt -> new IntegerSliderController(opt, 1, 32, 1))
 			.build();
 	}
 
 	public static Option<?> sortStrategy() {
 		return Option.createBuilder(SortStrategies.class)
 			.name(Text.of("Sorting Strategy"))
-			.tooltip(Text.of("How should the item list be sorted?"))
+			.description(OptionDescription.of(Text.of("How should the item list be sorted?")))
 			.binding(
 				getDefaults().sortStrategy,
 				() -> CONFIG.sortStrategy,
@@ -66,14 +68,14 @@ public class ItemList {
 					net.fabricmc.notnotmelonclient.itemlist.ItemList.sort();
 				}
 			)
-			.controller(EnumController::new)
+			.customController(option -> new EnumController<>(option, SortStrategies.class))
 			.build();
 	}
 
 	public static Option<?> reversed() {
 		return Option.createBuilder(boolean.class)
 			.name(Text.of("Reversed"))
-			.tooltip(Text.of("Should the item list be sorted in reverse order?"))
+			.description(OptionDescription.of(Text.of("Should the item list be sorted in reverse order?")))
 			.binding(
 				getDefaults().reversed,
 				() -> CONFIG.reversed,
@@ -82,20 +84,20 @@ public class ItemList {
 					net.fabricmc.notnotmelonclient.itemlist.ItemList.sort();
 				}
 			)
-			.controller(TickBoxController::new)
+			.customController(TickBoxController::new)
 			.build();
 	}
 
 	public static Option<?> hideRecipeBook() {
 		return Option.createBuilder(boolean.class)
 			.name(Text.of("Hide Recipe Book"))
-			.tooltip(Text.of("Hides the vanilla recipe book from your inventory."))
+			.description(OptionDescription.of(Text.of("Hides the vanilla recipe book from your inventory.")))
 			.binding(
 				getDefaults().hideRecipeBook,
 				() -> CONFIG.hideRecipeBook,
 				v -> CONFIG.hideRecipeBook = v
 			)
-			.controller(TickBoxController::new)
+			.customController(TickBoxController::new)
 			.build();
 	}
 }

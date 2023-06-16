@@ -1,6 +1,6 @@
 package net.fabricmc.notnotmelonclient.itemlist;
 
-import dev.isxander.yacl.api.NameableEnum;
+import dev.isxander.yacl3.api.NameableEnum;
 import net.fabricmc.notnotmelonclient.util.ItemUtil;
 import net.minecraft.text.Text;
 

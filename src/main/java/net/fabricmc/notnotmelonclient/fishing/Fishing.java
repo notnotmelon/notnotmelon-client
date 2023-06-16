@@ -191,7 +191,7 @@ public class Fishing {
 
     public static double waterLevel(FishingBobberEntity fishHook, double fallback) {
         BlockPos blockPos = fishHook.getBlockPos();
-        ClientWorld world = (ClientWorld) fishHook.world;
+        ClientWorld world = (ClientWorld) fishHook.getWorld();
         FluidState fluidState = world.getFluidState(blockPos);
         if (!fluidState.isEmpty())
             return fluidState.getHeight(world, blockPos) + blockPos.getY();

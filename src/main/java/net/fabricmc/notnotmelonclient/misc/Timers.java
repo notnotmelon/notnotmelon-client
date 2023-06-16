@@ -7,9 +7,8 @@ import net.fabricmc.notnotmelonclient.util.RenderUtil;
 import net.fabricmc.notnotmelonclient.util.Scheduler;
 import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.Window;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -77,7 +76,7 @@ public class Timers {
     }
 
     private static final ArrayList<RenderableTimer> renderables = new ArrayList<>();
-    public static void render(MatrixStack matrices) {
+    public static void render(DrawContext context) {
         if (renderables.size() == 0) return;
 
         Window window = client.getWindow();
@@ -88,18 +87,15 @@ public class Timers {
 
         for (RenderableTimer timer : renderables) {
             RenderSystem.enableBlend();
-            RenderSystem.setShaderTexture(0, ICONS);
-            timer.render(matrices, x, y);
+            timer.render(context, x, y);
             y += 18;
         }
     }
 
     private record RenderableTimer(Text text, int iconOffset, int color) {
-        public void render(MatrixStack matrices, int x, int y) {
-            DrawableHelper.drawTexture(matrices, x, y, iconOffset / 4f, 0, 16, 16, 128 / 4, 64 / 4);
-            x += 18;
-            y += 5;
-            RenderUtil.drawText(matrices, client, x, y, text, color);
+        public void render(DrawContext context, int x, int y) {
+            context.drawTexture(ICONS, x, y, iconOffset / 4f, 0, 16, 16, 128 / 4, 64 / 4);
+            RenderUtil.drawTextWithOutline(context, client.textRenderer, text, x + 18, y + 5, color);
         }
     }
 }

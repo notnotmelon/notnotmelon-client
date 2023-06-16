@@ -1,13 +1,10 @@
 package net.fabricmc.notnotmelonclient.config.categories;
 
 import com.google.gson.*;
-import dev.isxander.yacl.api.ConfigCategory;
-import dev.isxander.yacl.api.Controller;
-import dev.isxander.yacl.api.ListOption;
-import dev.isxander.yacl.api.Option;
-import dev.isxander.yacl.api.utils.Dimension;
-import dev.isxander.yacl.gui.AbstractWidget;
-import dev.isxander.yacl.gui.YACLScreen;
+import dev.isxander.yacl3.api.*;
+import dev.isxander.yacl3.api.utils.Dimension;
+import dev.isxander.yacl3.gui.AbstractWidget;
+import dev.isxander.yacl3.gui.YACLScreen;
 import net.fabricmc.notnotmelonclient.config.KeybindWithTextElement;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
@@ -16,7 +13,8 @@ import java.lang.reflect.Type;
 import java.util.Objects;
 
 import static net.fabricmc.notnotmelonclient.Main.client;
-import static net.fabricmc.notnotmelonclient.config.Config.*;
+import static net.fabricmc.notnotmelonclient.config.Config.CONFIG;
+import static net.fabricmc.notnotmelonclient.config.Config.getDefaults;
 
 public class CommandKeybinds {
 	public static ConfigCategory category() {
@@ -25,13 +23,13 @@ public class CommandKeybinds {
 
 			.option(ListOption.createBuilder(CommandKeybind.class)
 				.name(Text.of("Command Keybinds"))
-				.tooltip(Text.of("Set custom keybinds for chat commands."))
+				.description(OptionDescription.of(Text.of("Set custom keybinds for chat commands.")))
 				.binding(
 					getDefaults().commandKeybinds,
 					() -> CONFIG.commandKeybinds,
 					v -> CONFIG.commandKeybinds = v
 				)
-				.controller(KeybindController::new)
+				.customController(KeybindController::new)
 				.initial(new CommandKeybind("", GLFW.GLFW_KEY_UNKNOWN))
 				.build())
 

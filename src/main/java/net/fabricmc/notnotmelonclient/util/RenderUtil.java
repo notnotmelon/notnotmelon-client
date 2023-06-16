@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.notnotmelonclient.Main;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -122,20 +123,18 @@ public class RenderUtil {
 		);
     }
 
-    static final int[] offsets = new int[]{-1, 1};
-    public static void drawText(MatrixStack matrices, MinecraftClient client, float x, float y, Text text, int color) {
-        TextRenderer textRenderer = client.textRenderer;
-        int alpha = color>>24<<24;
-        for (int i : offsets) {
-            textRenderer.draw(matrices, text, x + i, y, alpha);
-            textRenderer.draw(matrices, text, x, y + i, alpha);
-        }
-        textRenderer.draw(matrices, text, x, y, color);
-    }
+	static final int[] offsets = new int[]{-1, 1};
+	public static void drawTextWithOutline(DrawContext context, TextRenderer textRenderer, Text text, int x, int y, int color) {
+		int alpha = color>>24<<24;
+		for (int i : offsets) {
+			context.drawText(textRenderer, text, x + i, y, alpha, false);
+			context.drawText(textRenderer, text, x, y + i, alpha, false);
+		}
+		context.drawText(textRenderer, text, x, y, color, false);
+	}
 
-    public static void drawCenteredText(MatrixStack matrices, MinecraftClient client, float x, float y, Text text, int color) {
-        TextRenderer textRenderer = client.textRenderer;
-        x -= (float) textRenderer.getWidth(text) / 2;
-        drawText(matrices, client, x, y, text, color);
-    }
+	public static void drawCenteredTextWithOutline(DrawContext context, TextRenderer textRenderer, Text text, int x, int y, int color) {
+		x -= textRenderer.getWidth(text) / 2;
+		drawTextWithOutline(context, textRenderer, text, x, y, color);
+	}
 }

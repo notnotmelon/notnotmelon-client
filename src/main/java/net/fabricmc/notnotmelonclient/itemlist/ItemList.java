@@ -5,8 +5,8 @@ import net.fabricmc.notnotmelonclient.Main;
 import net.fabricmc.notnotmelonclient.misc.ScrollableTooltips;
 import net.fabricmc.notnotmelonclient.util.Rect;
 import net.fabricmc.notnotmelonclient.util.RenderUtil;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
@@ -16,7 +16,6 @@ import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import org.joml.Matrix4f;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
@@ -26,7 +25,6 @@ import java.util.List;
 
 import static net.fabricmc.notnotmelonclient.Main.client;
 import static net.fabricmc.notnotmelonclient.config.Config.CONFIG;
-import static net.fabricmc.notnotmelonclient.util.RenderUtil.itemRenderer;
 
 public class ItemList extends ClickableWidget implements Drawable {
 	private static final Identifier ARROWS = new Identifier(Main.NAMESPACE, "textures/gui/arrows.png");
@@ -62,10 +60,10 @@ public class ItemList extends ClickableWidget implements Drawable {
 	}
 
 	@Override
-	public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+	public void renderButton(DrawContext context, int mouseX, int mouseY, float delta) {
 		if (!NeuRepo.isDownloaded) return;
-		renderArrows(matrices, mouseX, mouseY);
-		if (pageNumberText != null) RenderUtil.drawCenteredText(matrices, client, textRenderX, 7, pageNumberText, -1);
+		renderArrows(context, mouseX, mouseY);
+		if (pageNumberText != null) RenderUtil.drawCenteredTextWithOutline(context, client.textRenderer, pageNumberText, textRenderX, 7, -1);
 		int offsetMouseX = mouseX - x;
 		int targetMouseX = offsetMouseX - Math.abs(offsetMouseX) % STEP + x;
 		int targetMouseY = mouseY - Math.abs(mouseY) % STEP;
@@ -73,7 +71,7 @@ public class ItemList extends ClickableWidget implements Drawable {
 
 		if (playground != null) {
 			if (playground.aabb(mouseX, mouseY))
-				renderedTooltip = renderPlayground(matrices, screen, targetMouseX, targetMouseY, mouseX, mouseY, renderedTooltip);
+				renderedTooltip = renderPlayground(context, screen, targetMouseX, targetMouseY, mouseX, mouseY, renderedTooltip);
 			else {
 				playground = null;
 				parent = null;
@@ -88,19 +86,19 @@ public class ItemList extends ClickableWidget implements Drawable {
 			int x = icon.x;
 			int y = icon.y;
 			boolean isVisible = playground == null || icon == parent || !playground.aabb(x, y);
-			if (isVisible) itemRenderer.renderInGui(matrices, icon.stack, x, y);
+			if (isVisible) context.drawItem(icon.stack, x, y);
 
 			if (icon.children != null) {
-				if (isVisible && icon != parent) renderAsterisk(matrices, x, y);
+				if (isVisible && icon != parent) renderAsterisk(context, x, y);
 				if (playground == null && targetMouseX == x && targetMouseY == y) {
 					parent = icon;
 					parent.calculateChildrenPositions(gridWidth, gridHeight);
 					playground = parent.playground;
-					renderedTooltip = renderPlayground(matrices, screen, targetMouseX, targetMouseY, mouseX, mouseY, renderedTooltip);
+					renderedTooltip = renderPlayground(context, screen, targetMouseX, targetMouseY, mouseX, mouseY, renderedTooltip);
 				}
 			}
 			if (isVisible && !renderedTooltip && targetMouseX == x && targetMouseY == y) {
-				screen.renderTooltip(matrices, screen.getTooltipFromItem(icon.stack), icon.stack.getTooltipData(), mouseX, mouseY);
+				context.drawItemTooltip(client.textRenderer, icon.stack, mouseX, mouseY);
 				renderedTooltip = true;
 			}
 		}
@@ -110,24 +108,21 @@ public class ItemList extends ClickableWidget implements Drawable {
 		lastMouseY = targetMouseY;
 	}
 
-	private void renderAsterisk(MatrixStack matrices, int x, int y) {
+	private void renderAsterisk(DrawContext context, int x, int y) {
+		MatrixStack matrices = context.getMatrices();
 		matrices.push();
 		matrices.translate(0, 0, 200);
-		RenderSystem.setShaderTexture(0, ASTERISK);
-		DrawableHelper.drawTexture(matrices, x + 13, y + 1, 0, 0, 4, 4, 4, 4);
+		context.drawTexture(ASTERISK, x + 13, y + 1, 0, 0, 4, 4, 4, 4);
 		matrices.pop();
 	}
 
-	public boolean renderPlayground(MatrixStack matrices, HandledScreen<?> screen, int targetMouseX, int targetMouseY, int mouseX, int mouseY, boolean renderedTooltip) {
+	public boolean renderPlayground(DrawContext context, HandledScreen<?> screen, int targetMouseX, int targetMouseY, int mouseX, int mouseY, boolean renderedTooltip) {
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferBuilder = tessellator.getBuffer();
 		RenderSystem.setShader(GameRenderer::getPositionColorProgram);
 		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-		Matrix4f matrix4f = matrices.peek().getPositionMatrix();
 		TooltipBackgroundRenderer.render(
-			DrawableHelper::fillGradient,
-			matrix4f,
-			bufferBuilder,
+			context,
 			playground.x + 2,
 			playground.y + 2,
 			playground.width - 6,
@@ -138,10 +133,11 @@ public class ItemList extends ClickableWidget implements Drawable {
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
+		RenderSystem.disableBlend();
 		for (ItemListIcon child : parent.children) {
-			itemRenderer.renderInGui(matrices, child.stack, child.x, child.y);
+			context.drawItem(child.stack, child.x, child.y);
 			if (!renderedTooltip && targetMouseX == child.x && targetMouseY == child.y) {
-				screen.renderTooltip(matrices, screen.getTooltipFromItem(child.stack), child.stack.getTooltipData(), mouseX, mouseY);
+				context.drawItemTooltip(client.textRenderer, child.stack, mouseX, mouseY);
 				renderedTooltip = true;
 			}
 		}
@@ -153,13 +149,12 @@ public class ItemList extends ClickableWidget implements Drawable {
 	public static final int arrowY = 5;
 	public int leftX;
 	public int rightX;
-	public void renderArrows(MatrixStack matrices, int mouseX, int mouseY) {
+	public void renderArrows(DrawContext context, int mouseX, int mouseY) {
 		RenderSystem.disableDepthTest();
-		RenderSystem.setShaderTexture(0, ARROWS);
 		int v = hoveredLeftArrow(mouseX, mouseY) ? arrowHeight : 0;
 		int vv = hoveredRightArrow(mouseX, mouseY) ? arrowHeight : 0;
-		DrawableHelper.drawTexture(matrices, leftX, arrowY, 0, v, arrowWidth, arrowHeight, 14, 22);
-		DrawableHelper.drawTexture(matrices, rightX, arrowY, arrowWidth, vv, arrowWidth, arrowHeight, 14, 22);
+		context.drawTexture(ARROWS, leftX, arrowY, 0, v, arrowWidth, arrowHeight, 14, 22);
+		context.drawTexture(ARROWS, rightX, arrowY, arrowWidth, vv, arrowWidth, arrowHeight, 14, 22);
 	}
 
 	public boolean hoveredLeftArrow(int mouseX, int mouseY) {

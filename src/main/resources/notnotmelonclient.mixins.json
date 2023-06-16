@@ -8,7 +8,7 @@
   "client": [
     "AbstractInventoryScreenMixin",
     "BillboardParticleMixin",
-    "ChatHudListenerMixin",
+    "ChatHudMixin",
     "ClientEntityManagerMixin",
     "ClientPlayerEntityMixin",
     "ClientPlayNetworkHandlerMixin",
@@ -18,7 +18,7 @@
     "InGameHudMixin",
     "InGameOverlayRendererMixin",
     "InventoryScreenMixin",
-    "ItemRendererMixin",
+    "DrawContextMixin",
     "KeyboardMixin",
     "MouseMixin",
     "ScreenMixin",

@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ItemRenderer.class)
 public class ItemRendererMixin {
     @Inject(method = "renderGuiItemModel", at = @At("HEAD"), cancellable = true)
-    private void renderGuiItemModelHead(MatrixStack matrices, ItemStack stack, int x, int y, BakedModel model, CallbackInfo ci) {
+    private void notnotmelonclient$renderGuiItemModelHead(MatrixStack matrices, ItemStack stack, int x, int y, BakedModel model, CallbackInfo ci) {
 		if (!Util.isSkyblock) return;
 
         // don't render the skyblock menu if it's in the cursor stack
@@ -27,7 +27,7 @@ public class ItemRendererMixin {
     }
 
 	@Inject(method = "renderGuiItemModel", at = @At("TAIL"))
-    private void renderGuiItemModelTail(MatrixStack matrices, ItemStack stack, int x, int y, BakedModel model, CallbackInfo ci) {   
+    private void notnotmelonclient$renderGuiItemModelTail(MatrixStack matrices, ItemStack stack, int x, int y, BakedModel model, CallbackInfo ci) {
 		if (!Util.isSkyblock) return;
              
         // draw star icon for favorited items

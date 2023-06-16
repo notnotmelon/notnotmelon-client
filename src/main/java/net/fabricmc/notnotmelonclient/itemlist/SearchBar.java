@@ -1,9 +1,8 @@
 package net.fabricmc.notnotmelonclient.itemlist;
 
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
@@ -110,10 +109,10 @@ public class SearchBar extends TextFieldWidget {
 	}
 
 	@Override
-	public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-		super.renderButton(matrices, mouseX, mouseY, delta);
+	public void renderButton(DrawContext context, int mouseX, int mouseY, float delta) {
+		super.renderButton(context, mouseX, mouseY, delta);
 		if (yellowMode && isVisible() && drawsBackground) {
-			DrawableHelper.drawBorder(matrices, x - 1, y - 1, width + 2, height + 2, 0xFFFFC105);
+			context.drawBorder(x - 1, y - 1, width + 2, height + 2, 0xFFFFC105);
 		}
 	}
 }

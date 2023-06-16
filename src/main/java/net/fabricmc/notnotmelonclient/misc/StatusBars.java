@@ -1,17 +1,18 @@
 package net.fabricmc.notnotmelonclient.misc;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.notnotmelonclient.Main;
 import net.fabricmc.notnotmelonclient.util.RenderUtil;
+import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.Window;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static net.fabricmc.notnotmelonclient.Main.client;
 
 // this class renders stat bars for health, mana, and xp
 // it uses the overlay message sent by Hypixel
@@ -68,7 +69,7 @@ public class StatusBars {
 		return CLEANUP_PATTERN.matcher(message).replaceAll("     ").trim(); // reduce whitespace
 	}
 
-	public static void draw(MatrixStack matrices) {
+	public static void draw(DrawContext context) {
 		MinecraftClient client = MinecraftClient.getInstance();
 		Window window = client.getWindow();
         int scaledWidth = window.getScaledWidth();
@@ -76,39 +77,40 @@ public class StatusBars {
 		int x = scaledWidth / 2 - 91;
 		int y = scaledHeight - 33;
 
-		drawOrb(matrices, client, x + 184, y + 15);
-		RenderSystem.setShaderTexture(0, HEALTH_BARS);
-		drawBar(matrices, client, x, y, playerHealth, playerMaxHealth, 0xFFFF5555);
-		RenderSystem.setShaderTexture(0, MANA_BARS);
-		drawBar(matrices, client, x + 92, y, playerMana, playerMaxMana, 0xFF55FFFF);
+		drawOrb(context, client, x + 184, y + 15);
+		drawBar(context, HEALTH_BARS, x, y, playerHealth, playerMaxHealth, 0xFFFF5555);
+		drawBar(context, MANA_BARS, x + 92, y, playerMana, playerMaxMana, 0xFF55FFFF);
 	}
 
-	private static void drawBar(MatrixStack matrices, MinecraftClient client, int x, int y, int value, int maxValue, int color) {
-		DrawableHelper.drawTexture(matrices, x, y, 0, 0, 90, 9, 90, 27);
+	private static void drawBar(DrawContext context, Identifier identifier, int x, int y, int value, int maxValue, int color) {
+		context.drawTexture(identifier, x, y, 0, 0, 90, 9, 90, 27);
 		Text text = Text.literal(String.valueOf(value));
 
 		int v = 9;
 		while (value > 0 && v != 27) {
 			if (value >= maxValue) { // draw a full bar
-				DrawableHelper.drawTexture(matrices, x, y, 0, v, 90, 9, 90, 27);
+				context.drawTexture(identifier, x, y, 0, v, 90, 9, 90, 27);
 			} else { // draw a partially filled bar
 				double fill = (float) value / maxValue;
-				DrawableHelper.drawTexture(matrices, x, y, 0, v, 11 + (int) Math.ceil(fill * 78), 9, 90, 27);
+				context.drawTexture(identifier, x, y, 0, v, 11 + (int) Math.ceil(fill * 78), 9, 90, 27);
 			}
 			v += 9; // used for overflow bars. each overflow sprite is 9px lower on the sprite sheet
 			value -= maxValue;
 		}
 
-		RenderUtil.drawCenteredText(matrices, client, x + 50, y - 3, text, color);
+		RenderUtil.drawCenteredTextWithOutline(context, client.textRenderer, text, x + 50, y - 3, color);
 	}
 
-	private static void drawOrb(MatrixStack matrices, MinecraftClient client, int x, int y) {
+	private static void drawOrb(DrawContext context, MinecraftClient client, int x, int y) {
 		int level = client.player.experienceLevel;
 		float progress = client.player.experienceProgress;
-		String experience = level + "." + (int) (progress * 10);
+		if (progress > 0.99 && level == 0 && Util.isDungeons()) {
+			level += 1;
+			progress = 0;
+		}
+		Text experience = Text.of(level + "." + (int) (progress * 10));
 
-		RenderSystem.setShaderTexture(0, ORB);
-		DrawableHelper.drawTexture(matrices, x, y, 0, 0, 13, 13, 13, 13);
-		RenderUtil.drawText(matrices, client, x + 7, y + 6, Text.literal(experience), 0xFFC8FF8F);
+		context.drawTexture(ORB, x, y, 0, 0, 13, 13, 13, 13);
+		RenderUtil.drawTextWithOutline(context, client.textRenderer, experience, x + 7, y + 6, 0xFFC8FF8F);
 	}
 }
