@@ -1,12 +1,9 @@
 package net.fabricmc.notnotmelonclient.util;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.fabricmc.notnotmelonclient.Main;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.*;
-import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.text.Text;
@@ -14,10 +11,9 @@ import net.minecraft.util.math.*;
 
 import java.awt.*;
 
-public class RenderUtil {
-	private final static MinecraftClient client = Main.client;
-	public static final ItemRenderer itemRenderer = client.getItemRenderer();
+import static net.fabricmc.notnotmelonclient.Main.client;
 
+public class RenderUtil {
     public static void drawBoxOutline(Box box, float lineWidth, Color color1, Color color2) {
         if (!getFrustum().isVisible(box)) return;
         double distance = client.player.getPos().distanceTo(box.getCenter());
