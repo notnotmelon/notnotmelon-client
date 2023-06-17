@@ -1,6 +1,5 @@
 package net.fabricmc.notnotmelonclient.config;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import dev.isxander.yacl3.api.utils.Dimension;
 import dev.isxander.yacl3.gui.YACLScreen;
 import dev.isxander.yacl3.gui.controllers.ControllerWidget;
@@ -49,21 +48,10 @@ public class KeybindWithTextElement extends ControllerWidget<CommandKeybinds.Key
 		textFieldHovered = isMouseOver(mouseX, mouseY);
 		buttonHovered = buttonBounds.isPointInside(mouseX, mouseY);
 
-		Text name = control.option().changed() ? modifiedOptionName : control.option().name();
-		Text shortenedName = Text.literal(GuiUtils.shortenString(name.getString(), textRenderer, getDimension().width() - getControlWidth() - getXPadding() - 7, "...")).setStyle(name.getStyle());
-
 		drawButtonRect(context, getDimension().x(), getDimension().y(), getDimension().xLimit() - buttonWidth, getDimension().yLimit(), isTextFieldHovered(), isAvailable());
-		MatrixStack matrices = context.getMatrices();
-		matrices.push();
-		matrices.translate(getDimension().x() + getXPadding(), getTextY(), 0);
-		context.drawText(textRenderer, shortenedName, 0, 0, getValueColor(), true);
-		matrices.pop();
-
 		drawValueText(context, mouseX, mouseY, delta);
-		if (isTextFieldHovered()) {
+		if (isTextFieldHovered())
 			drawHoveredControl(context, mouseX, mouseY, delta);
-		}
-
 		drawButton(context);
 	}
 
@@ -83,10 +71,7 @@ public class KeybindWithTextElement extends ControllerWidget<CommandKeybinds.Key
 			matrices.pop();
 		}
 
-		matrices.push();
-		matrices.translate(x, getTextY(), 0);
-		context.drawText(textRenderer, text, 0, 0, 0xFFFFFFFF, true);
-		matrices.pop();
+		context.drawText(textRenderer, text, (int) x, getTextY(), 0xFFFFFFFF, true);
 	}
 
 	protected Text buttonText() {
@@ -103,13 +88,9 @@ public class KeybindWithTextElement extends ControllerWidget<CommandKeybinds.Key
 		Text valueText = getValueText();
 		if (!isTextFieldHovered()) valueText = Text.literal(GuiUtils.shortenString(valueText.getString(), textRenderer, getMaxUnwrapLength(), "...")).setStyle(valueText.getStyle());
 
-		MatrixStack matrices = context.getMatrices();
-		matrices.push();
 		int textX = getDimension().xLimit() - textRenderer.getWidth(valueText) + renderOffset - getXPadding() - buttonWidth;
-		matrices.translate(textX, getTextY(), 0);
-		context.enableScissor(textFieldBounds.x(), textFieldBounds.y() - 2, textFieldBounds.width() + 1, textFieldBounds.height() + 4);
-		context.drawText(textRenderer, valueText, 0, 0, getValueColor(), true);
-		matrices.pop();
+		context.enableScissor(textFieldBounds.x(), textFieldBounds.y() - 2, textFieldBounds.xLimit() + 1, textFieldBounds.yLimit() + 4);
+		context.drawText(textRenderer, valueText, textX, getTextY(), getValueColor(), true);
 
 		if (isTextFieldHovered()) {
 			ticks += delta;
@@ -137,7 +118,7 @@ public class KeybindWithTextElement extends ControllerWidget<CommandKeybinds.Key
 				}
 			}
 		}
-		RenderSystem.disableScissor();
+		context.disableScissor();
 	}
 
 	@Override
