@@ -12,7 +12,7 @@ import static net.fabricmc.notnotmelonclient.config.Config.CONFIG;
 
 @Mixin(ExplosionLargeParticle.class)
 public class ExplosionLargeParticleMixin {
-	@Inject(at = @At("TAIL"), method = "<init>()V")
+	@Inject(at = @At("TAIL"), method = "<init>(Lnet/minecraft/client/world/ClientWorld;DDDDLnet/minecraft/client/particle/SpriteProvider;)V")
 	private void notnotmelonclient$init(CallbackInfo ci) {
 		if (!Util.isSkyblock || !CONFIG.witherImpactHider) return;
 		
