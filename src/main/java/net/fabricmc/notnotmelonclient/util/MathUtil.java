@@ -147,8 +147,8 @@ public class MathUtil {
     public static List<BlockPos> blocksInArea(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, @Nullable Predicate<BlockState> predicate) {
         assert client.world != null;
         List<BlockPos> result = new ArrayList<>();
-        for (int x = minX; x <= maxX; x++)
-            for (int y = minY; y <= maxY; y++)
+        for (int y = maxY; y >= minY; y--)
+            for (int x = minX; x <= maxX; x++)
                 for (int z = minZ; z <= maxZ; z++) {
                     BlockPos blockPos = new BlockPos(x, y, z);
                     if (predicate == null || predicate.test(client.world.getBlockState(blockPos)))
