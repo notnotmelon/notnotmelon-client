@@ -102,15 +102,19 @@ public class StatusBars {
 	}
 
 	private static void drawOrb(DrawContext context, MinecraftClient client, int x, int y) {
+		assert client.player != null;
 		int level = client.player.experienceLevel;
 		float progress = client.player.experienceProgress;
-		if (progress > 0.99 && level == 0 && Util.isDungeons()) {
-			level += 1;
-			progress = 0;
-		}
-		Text experience = Text.of(level + "." + (int) (progress * 10));
 
-		context.drawTexture(ORB, x, y, 0, 0, 13, 13, 13, 13);
-		RenderUtil.drawTextWithOutline(context, client.textRenderer, experience, x + 7, y + 6, 0xFFC8FF8F);
+		if (Util.isDungeons()) {
+			if (progress > 0.99) progress = 1;
+			Text experience = Text.of((int) (progress * 100) + "%");
+			context.drawTexture(ORB, x, y, 13, 0, 13, 13, 26, 13);
+			RenderUtil.drawTextWithOutline(context, client.textRenderer, experience, x + 7, y + 6, 0xFFFFE000);
+		} else {
+			Text experience = Text.of(level + "." + (int) (progress * 10));
+			context.drawTexture(ORB, x, y, 0, 0, 13, 13, 26, 13);
+			RenderUtil.drawTextWithOutline(context, client.textRenderer, experience, x + 7, y + 6, 0xFFC8FF8F);
+		}
 	}
 }
