@@ -60,7 +60,7 @@ public class StatusBars {
 		if (outOfManaMatcher.find()) {
 			playerMana = 0;
 		} else if (manaMatcher.find()) {
-			int overflowMana = Integer.parseInt(manaMatcher.group(5).replace(",", ""));
+			int overflowMana = manaMatcher.group(5) == null ? 0 : Integer.parseInt(manaMatcher.group(5).replace(",", ""));
 			playerMana = Integer.parseInt(manaMatcher.group(1).replace(",", "")) + overflowMana;
 			playerMaxMana = Integer.parseInt(manaMatcher.group(3).replace(",", ""));
 			message = manaMatcher.replaceAll("");
