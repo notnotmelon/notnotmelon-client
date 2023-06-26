@@ -47,4 +47,9 @@ public class InGameHudMixin {
             ci.cancel();
         }
 	}
+
+	@Inject(method = "renderStatusBars", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderHealthBar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/entity/player/PlayerEntity;IIIIFIIIZ)V", shift = At.Shift.AFTER), cancellable = true)
+	private void notnotmelonclient$drawHeartsInRift(DrawContext context, CallbackInfo ci) {
+		if (Util.isSkyblock && CONFIG.fancyBars && Util.isRift()) ci.cancel();
+	}
 }

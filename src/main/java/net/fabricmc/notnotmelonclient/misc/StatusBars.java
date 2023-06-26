@@ -78,7 +78,7 @@ public class StatusBars {
 		int y = scaledHeight - 33;
 
 		drawOrb(context, client, x + 184, y + 15);
-		drawBar(context, HEALTH_BARS, x, y, playerHealth, playerMaxHealth, 0xFFFF5555);
+		if (!Util.isRift()) drawBar(context, HEALTH_BARS, x, y, playerHealth, playerMaxHealth, 0xFFFF5555);
 		drawBar(context, MANA_BARS, x + 92, y, playerMana, playerMaxMana, 0xFF55FFFF);
 	}
 
@@ -109,11 +109,15 @@ public class StatusBars {
 		if (Util.isDungeons()) {
 			if (progress > 0.99) progress = 1;
 			Text experience = Text.of((int) (progress * 100) + "%");
-			context.drawTexture(ORB, x, y, 13, 0, 13, 13, 26, 13);
+			context.drawTexture(ORB, x, y, 13, 0, 13, 13, 39, 13);
 			RenderUtil.drawTextWithOutline(context, client.textRenderer, experience, x + 7, y + 6, 0xFFFFE000);
+		} else if (Util.isRift()) {
+			Text experience = Text.of(Timers.formatTimer(level * 1000L));
+			context.drawTexture(ORB, x, y, 26, 0, 13, 13, 39, 13);
+			RenderUtil.drawTextWithOutline(context, client.textRenderer, experience, x + 7, y + 6, 0xFFC8FF8F);
 		} else {
 			Text experience = Text.of(level + "." + (int) (progress * 10));
-			context.drawTexture(ORB, x, y, 0, 0, 13, 13, 26, 13);
+			context.drawTexture(ORB, x, y, 0, 0, 13, 13, 39, 13);
 			RenderUtil.drawTextWithOutline(context, client.textRenderer, experience, x + 7, y + 6, 0xFFC8FF8F);
 		}
 	}

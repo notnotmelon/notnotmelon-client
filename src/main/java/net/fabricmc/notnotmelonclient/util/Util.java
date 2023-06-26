@@ -84,7 +84,7 @@ public class Util {
                     if (location == null)
                         if (playerName.startsWith("Area: "))
                             location = playerName.replaceFirst("Area: ", "");
-                        else if(playerName.startsWith("Dungeon: "))
+                        else if (playerName.startsWith("Dungeon: "))
                             location = playerName.replaceFirst("Dungeon: ", "");
                 }
             }
@@ -130,6 +130,10 @@ public class Util {
 
     public static boolean isDungeons() {
         return isDungeons || "Catacombs".equals(getLocation());
+    }
+
+    public static boolean isRift() {
+        return "The Rift".equals(getLocation());
     }
 
     public static String orderedTextAsString(OrderedText orderedText) {
