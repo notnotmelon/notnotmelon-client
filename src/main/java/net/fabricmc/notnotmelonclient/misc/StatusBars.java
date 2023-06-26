@@ -69,7 +69,7 @@ public class StatusBars {
 		return CLEANUP_PATTERN.matcher(message).replaceAll("     ").trim(); // reduce whitespace
 	}
 
-	public static void draw(DrawContext context) {
+	public static void draw(DrawContext context, boolean rift) {
 		MinecraftClient client = MinecraftClient.getInstance();
 		Window window = client.getWindow();
         int scaledWidth = window.getScaledWidth();
@@ -78,7 +78,7 @@ public class StatusBars {
 		int y = scaledHeight - 33;
 
 		drawOrb(context, client, x + 184, y + 15);
-		if (!Util.isRift()) drawBar(context, HEALTH_BARS, x, y, playerHealth, playerMaxHealth, 0xFFFF5555);
+		if (!rift) drawBar(context, HEALTH_BARS, x, y, playerHealth, playerMaxHealth, 0xFFFF5555);
 		drawBar(context, MANA_BARS, x + 92, y, playerMana, playerMaxMana, 0xFF55FFFF);
 	}
 
