@@ -7,9 +7,10 @@ import net.fabricmc.notnotmelonclient.util.StringInjector;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
 import net.minecraft.text.Text;
-import net.minecraft.util.Pair;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,7 +20,7 @@ public class ItemStackBuilder {
 	public static ItemStack parseJsonObj(JsonObject obj) {
 		String internalName = obj.get("internalname").getAsString();
 
-		StringInjector injectors = petData(internalName);
+		StringInjector injector = petData(internalName);
 
 		NbtCompound root = new NbtCompound();
 		root.put("Count", NbtByte.of((byte) 1));
@@ -38,13 +39,13 @@ public class ItemStackBuilder {
 		NbtCompound display = new NbtCompound();
 		tag.put("display", display);
 
-		String name = injectData(obj.get("displayname").getAsString(), injectors);
+		String name = injector.inject(obj.get("displayname").getAsString());
 		display.put("Name", NbtString.of(Text.Serializer.toJson(Text.of(name))));
 
 		NbtList lore = new NbtList();
 		display.put("Lore", lore);
 		obj.get("lore").getAsJsonArray().forEach(el ->
-			lore.add(NbtString.of(Text.Serializer.toJson(Text.of(injectData(el.getAsString(), injectors)))))
+			lore.add(NbtString.of(Text.Serializer.toJson(Text.of(injector.inject(el.getAsString())))))
 		);
 
 		String nbttag = obj.get("nbttag").getAsString();
@@ -92,13 +93,13 @@ public class ItemStackBuilder {
 	};
 
 	// TODO: fix stats for GOLDEN_DRAGON (lv1 -> lv200)
-	private static List<StringInjector> petData(String internalName) {
-		List<StringInjector> result = new ArrayList<>();
+	private static StringInjector petData(String internalName) {
+		StringInjector injector = new StringInjector();
 
 		String petName = internalName.split(";")[0];
-		if (!internalName.contains(";") || !petNums.has(petName)) return result;
+		if (!internalName.contains(";") || !petNums.has(petName)) return injector;
 
-		result.add(new StringInjector("\\{LVL\\}", "1 ➡ 100"));
+		injector.add("\\{LVL\\}", "1 ➡ 100");
 
 		String rarity = petRarities[Integer.parseInt(internalName.split(";")[1])];
 		JsonObject data = petNums.get(petName).getAsJsonObject().get(rarity).getAsJsonObject();
@@ -108,19 +109,17 @@ public class ItemStackBuilder {
 		Set<Map.Entry<String, JsonElement>> entrySet = statNumsMin.entrySet();
 		for (Map.Entry<String, JsonElement> entry : entrySet) {
 			String key = entry.getKey();
-			String left = "\\{" + key+ "\\}";
 			String right = statNumsMin.get(key).getAsString() + " ➡ " + statNumsMax.get(key).getAsString();
-			result.add(new StringInjector(left, right));
+			injector.add("\\{" + key + "\\}", right);
 		}
 
 		JsonArray otherNumsMin = data.get("1").getAsJsonObject().get("otherNums").getAsJsonArray();
 		JsonArray otherNumsMax = data.get("100").getAsJsonObject().get("otherNums").getAsJsonArray();
 		for (int i = 0; i < otherNumsMin.size(); ++i) {
-			String left = "\\{" + i + "\\}";
 			String right = otherNumsMin.get(i).getAsString() + " ➡ " + otherNumsMax.get(i).getAsString();
-			result.add(new StringInjector(left, right));
+			injector.add("\\{" + i + "\\}", right);
 		}
 
-		return result;
+		return injector;
 	}
 }
