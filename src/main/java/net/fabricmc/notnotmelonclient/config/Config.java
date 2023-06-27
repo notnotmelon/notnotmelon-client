@@ -76,4 +76,5 @@ public class Config {
 	@ConfigEntry public boolean creeperBeam = true;
 	@ConfigEntry public boolean threeWeirdos = true;
 	@ConfigEntry public boolean blaze = true;
+	@ConfigEntry public boolean effigyWaypoints = true;
 }
