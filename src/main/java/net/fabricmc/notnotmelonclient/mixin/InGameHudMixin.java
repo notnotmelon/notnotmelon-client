@@ -1,7 +1,7 @@
 package net.fabricmc.notnotmelonclient.mixin;
 
 import net.fabricmc.notnotmelonclient.dungeons.map.DungeonMap;
-import net.fabricmc.notnotmelonclient.misc.StatusBars;
+import net.fabricmc.notnotmelonclient.misc.FancyBars;
 import net.fabricmc.notnotmelonclient.misc.Timers;
 import net.fabricmc.notnotmelonclient.util.Util;
 import net.minecraft.client.gui.DrawContext;
@@ -20,7 +20,7 @@ public class InGameHudMixin {
 	@ModifyVariable(method = "setOverlayMessage(Lnet/minecraft/text/Text;Z)V", at = @At("HEAD"), ordinal = 0, argsOnly = true)
     private Text notnotmelonclient$setOverlayMessage(Text message) {
         if (!Util.isSkyblock || !CONFIG.fancyBars) return message;
-		return Text.literal(StatusBars.parseOverlayMessage(message.getString()));
+		return Text.literal(FancyBars.parseOverlayMessage(message.getString()));
     }
 
 	@Inject(method = "renderMountHealth", at = @At("HEAD"), cancellable = true)
@@ -44,7 +44,7 @@ public class InGameHudMixin {
 
         if (CONFIG.fancyBars) {
 			boolean rift = Util.isRift();
-            StatusBars.draw(context, rift);
+            FancyBars.draw(context, rift);
             if (!rift) ci.cancel();
         }
 	}

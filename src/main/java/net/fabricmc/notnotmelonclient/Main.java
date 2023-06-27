@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.fabricmc.notnotmelonclient.api.ApiRequests;
 import net.fabricmc.notnotmelonclient.commands.ConfigCommand;
 import net.fabricmc.notnotmelonclient.commands.Reparty;
@@ -19,6 +20,7 @@ import net.fabricmc.notnotmelonclient.fishing.Fishing;
 import net.fabricmc.notnotmelonclient.misc.FavoriteItem;
 import net.fabricmc.notnotmelonclient.misc.ItemPriceTooltip;
 import net.fabricmc.notnotmelonclient.misc.Timers;
+import net.fabricmc.notnotmelonclient.slayer.EffigyWaypoints;
 import net.fabricmc.notnotmelonclient.slayer.MinibossPing;
 import net.fabricmc.notnotmelonclient.util.Scheduler;
 import net.fabricmc.notnotmelonclient.util.Util;
@@ -39,7 +41,6 @@ public class Main implements ClientModInitializer {
 		registerCyclic();
 		registerCommands();
 		registerEvents();
-		registerChatTriggers();
 	}
 
 	private void registerConfig() {
@@ -55,6 +56,7 @@ public class Main implements ClientModInitializer {
 		ApiRequests.init();
 		Scheduler.scheduleCyclicThreaded(Util::locationTracker, 20 * 20);
 		Scheduler.scheduleCyclicThreaded(JsonLoader.jsonInterface::save, 20 * 60 * 5);
+		Scheduler.scheduleCyclicThreaded(EffigyWaypoints::calculateEffigyPositions, 63);
 	}
 
 	private void registerCommands() {
@@ -74,11 +76,7 @@ public class Main implements ClientModInitializer {
 		ClientPlayConnectionEvents.JOIN.register(ChangeLobby::onServerJoin);
 		ChangeLobby.EVENT.register(Util::onChangeLobby);
 		EntitySpawned.EVENT.register(MinibossPing::onEntitySpawned);
-	}
-
-	private void registerChatTriggers() {
-		for (ChatTrigger chatTrigger : new ChatTrigger[]{
-			new Reparty()
-		}) ChatTrigger.EVENT.register(chatTrigger);
+		ChatTrigger.EVENT.register(new Reparty());
+		WorldRenderEvents.END.register(EffigyWaypoints::render);
 	}
 }

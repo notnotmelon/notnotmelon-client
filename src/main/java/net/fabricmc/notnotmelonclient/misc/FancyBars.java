@@ -21,7 +21,7 @@ import static net.fabricmc.notnotmelonclient.Main.client;
 // example without soulflow:
 // §64,029/3,729❤     §a536§a❈ Defense     §b2,512/2,512✎ Mana§r
 
-public class StatusBars {
+public class FancyBars {
     private static final Identifier HEALTH_BARS = new Identifier(Main.NAMESPACE, "textures/gui/health_bars.png");
     private static final Identifier MANA_BARS = new Identifier(Main.NAMESPACE, "textures/gui/mana_bars.png");
     private static final Identifier ORB = new Identifier(Main.NAMESPACE, "textures/gui/orb.png");
